@@ -154,6 +154,8 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenu
     ui->minimizeToTray->setChecked(settings.value("fMinimizeToTray", false).toBool());
     ui->minimizeOnClose->setChecked(settings.value("fMinimizeOnClose", false).toBool());
     ui->alwaysRequest2FA->setChecked(settings.value("fAlwaysRequest2FA", false).toBool());
+    ui->hideBalanceStaking->setChecked(settings.value("fHideBalance", false).toBool());
+    ui->lockSendStaking->setChecked(settings.value("fLockSendStaking", false).toBool());
     connect(ui->addNewFunds, SIGNAL(stateChanged(int)), this, SLOT(setAutoConsolidate(int)));
     connect(ui->mapPortUpnp, SIGNAL(stateChanged(int)), this, SLOT(mapPortUpnp_clicked(int)));
     connect(ui->minimizeToTray, SIGNAL(stateChanged(int)), this, SLOT(minimizeToTray_clicked(int)));
@@ -1031,11 +1033,11 @@ void OptionsPage::hideBalanceStaking_clicked(int state) {
     }
 }
 
-void OptionsPage::lockSendStakingclicked(int state) {
+void OptionsPage::lockSendStaking_clicked(int state) {
     int status = model->getEncryptionStatus();
     if (status == WalletModel::Locked || status == WalletModel::UnlockedForAnonymizationOnly) {
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Balance Settings");
+        msgBox.setWindowTitle("Lock Send Settings");
         msgBox.setIcon(QMessageBox::Information);
         msgBox.setText("Please unlock the keychain wallet with your passphrase before attempting to change this setting.");
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
