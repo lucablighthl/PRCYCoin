@@ -154,11 +154,13 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenu
     ui->minimizeToTray->setChecked(settings.value("fMinimizeToTray", false).toBool());
     ui->minimizeOnClose->setChecked(settings.value("fMinimizeOnClose", false).toBool());
     ui->alwaysRequest2FA->setChecked(settings.value("fAlwaysRequest2FA", false).toBool());
+    ui->displayDollarValue->setChecked(settings.value("fDisplayDollarValue", false).toBool());
     connect(ui->addNewFunds, SIGNAL(stateChanged(int)), this, SLOT(setAutoConsolidate(int)));
     connect(ui->mapPortUpnp, SIGNAL(stateChanged(int)), this, SLOT(mapPortUpnp_clicked(int)));
     connect(ui->minimizeToTray, SIGNAL(stateChanged(int)), this, SLOT(minimizeToTray_clicked(int)));
     connect(ui->minimizeOnClose, SIGNAL(stateChanged(int)), this, SLOT(minimizeOnClose_clicked(int)));
     connect(ui->alwaysRequest2FA, SIGNAL(stateChanged(int)), this, SLOT(alwaysRequest2FA_clicked(int)));
+    connect(ui->displayDollarValue, SIGNAL(stateChanged(int)), this, SLOT(displayDollarValue_clicked(int)));
 }
 
 void OptionsPage::setStakingToggle()
@@ -1008,3 +1010,13 @@ void OptionsPage::alwaysRequest2FA_clicked(int state)
         settings.setValue("fAlwaysRequest2FA", false);
     }
 }
+
+void OptionsPage::displayDollarValue_clicked(int state)
+{
+    if (ui->displayDollarValue->isChecked()) {
+        settings.setValue("fDisplayDollarValue", true);
+    } else {
+        settings.setValue("fDisplayDollarValue", false);
+    }
+}
+
