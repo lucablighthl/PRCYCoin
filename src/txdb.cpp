@@ -234,6 +234,7 @@ bool CBlockTreeDB::ReadInt(const std::string& name, int& nValue)
 
 bool CBlockTreeDB::LoadBlockIndexGuts()
 {
+	uint256 nPreviousCheckpoint;
     boost::scoped_ptr<CDBIterator> pcursor(NewIterator());
 
     pcursor->Seek(std::make_pair(DB_BLOCK_INDEX, UINT256_ZERO));
