@@ -99,9 +99,6 @@ limitedmap<CInv, int64_t> mapAlreadyAskedFor(MAX_INV_SZ);
 static deque <string> vOneShots;
 RecursiveMutex cs_vOneShots;
 
-set <CNetAddr> setservAddNodeAddresses;
-RecursiveMutex cs_setservAddNodeAddresses;
-
 vector <std::string> vAddedNodes;
 RecursiveMutex cs_vAddedNodes;
 
