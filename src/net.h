@@ -103,12 +103,13 @@ struct CombinerAll {
 };
 
 // Signals for message handling
-struct CNodeSignals {
-    boost::signals2::signal<int()> GetHeight;
-    boost::signals2::signal<bool(CNode*), CombinerAll> ProcessMessages;
-    boost::signals2::signal<bool(CNode*, bool), CombinerAll> SendMessages;
-    boost::signals2::signal<void(NodeId, const CNode*)> InitializeNode;
-    boost::signals2::signal<void(NodeId)> FinalizeNode;
+struct CNodeSignals
+{
+    boost::signals2::signal<int ()> GetHeight;
+    boost::signals2::signal<bool (CNode*), CombinerAll> ProcessMessages;
+    boost::signals2::signal<bool (CNode*), CombinerAll> SendMessages;
+    boost::signals2::signal<void (NodeId, const CNode*)> InitializeNode;
+    boost::signals2::signal<void (NodeId)> FinalizeNode;
 };
 
 
@@ -380,6 +381,8 @@ public:
     CRollingBloomFilter addrKnown;
     bool fGetAddr;
     std::set<uint256> setKnown;
+    int64_t nNextAddrSend;
+    int64_t nNextLocalAddrSend;
 
     // inventory based relay
     mruset<CInv> setInventoryKnown;
@@ -387,6 +390,7 @@ public:
     RecursiveMutex cs_inventory;
     std::multimap<int64_t, CInv> mapAskFor;
     std::vector<uint256> vBlockRequested;
+    int64_t nNextInvSend;
 
     // Ping time measurement:
     // The pong reply we're expecting, or 0 if no pong expected.
@@ -785,5 +789,8 @@ public:
     bool Read(banmap_t& banSet);
 };
 bool IsUnsupportedVersion(std::string strSubVer);
+
+/** Return a timestamp in the future (in microseconds) for exponentially distributed events. */
+int64_t PoissonNextSend(int64_t nNow, int average_interval_seconds);
 
 #endif // BITCOIN_NET_H
