@@ -73,13 +73,12 @@ void CActiveMasternode::ManageStatus()
 
         LogPrintf("CActiveMasternode::ManageStatus() - Checking inbound connection to '%s'\n", service.ToString());
 
-        CNode* pnode = ConnectNode((CAddress)service, NULL, false);
-        if (!pnode) {
+        CAddress addr(service, NODE_NETWORK);
+        if (!OpenNetworkConnection(addr, true, nullptr)) 
             notCapableReason = "Could not connect to " + service.ToString();
             LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason);
             return;
         }
-        pnode->Release();
 
         // Choose coins to use
         CPubKey pubKeyCollateralAddress;
