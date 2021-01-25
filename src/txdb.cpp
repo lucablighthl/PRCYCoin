@@ -24,7 +24,6 @@ static const char DB_BEST_BLOCK = 'B';
 static const char DB_FLAG = 'F';
 static const char DB_REINDEX_FLAG = 'R';
 static const char DB_LAST_BLOCK = 'l';
-static const char DB_MONEY_SUPPLY = 'M';
 
 using namespace std;
 
@@ -92,7 +91,7 @@ bool CBlockTreeDB::ReadBlockFileInfo(int nFile, CBlockFileInfo& info)
 bool CBlockTreeDB::WriteReindexing(bool fReindexing)
 {
     if (fReindexing)
-       return Write(DB_REINDEX_FLAG, '1')
+       return Write(DB_REINDEX_FLAG, '1');
     else
         return Erase(DB_REINDEX_FLAG);
 }
