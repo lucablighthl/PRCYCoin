@@ -114,8 +114,10 @@ public:
     CRollingBloomFilter(unsigned int nElements, double nFPRate, unsigned int nTweak);
 
     void insert(const std::vector<unsigned char>& vKey);
+    void insert(const uint256& hash);
     bool contains(const std::vector<unsigned char>& vKey) const;
-
+    bool contains(const uint256& hash) const;
+	
     void clear();
 
 private:
