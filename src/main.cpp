@@ -6625,7 +6625,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
             for (CNode* pnode : vNodes) {
                 // Periodically clear addrKnowns to allow refresh broadcasts
                 if (nLastRebroadcast)
-                    pnode->addrKnowns.clear();
+                    pnode->addrKnown.reset();
 
                 // Rebroadcast our address
                 AdvertiseLocal(pnode);
