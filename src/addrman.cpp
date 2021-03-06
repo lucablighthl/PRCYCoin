@@ -198,6 +198,9 @@ void CAddrMan::MakeTried(CAddrInfo& info, int nId)
 void CAddrMan::Good_(const CService& addr, int64_t nTime)
 {
     int nId;
+	
+    nLastGood = nTime;
+	
     CAddrInfo* pinfo = Find(addr, &nId);
 
     // if not found, bail out
