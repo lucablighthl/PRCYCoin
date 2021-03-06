@@ -4758,12 +4758,12 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
         BlockMap::iterator mi = mapBlockIndex.find(pblock->hashPrevBlock);
         if (mi == mapBlockIndex.end() || (mi != mapBlockIndex.end() && mi->second == NULL)) {
             mapBlockIndex.erase(pblock->hashPrevBlock);
-            pfrom->PushMessage(NetMsgType::GETBLOCKS, chainActive.GetLocator(), UINT256_ZERO);
+            pfrom->PushMessage(NetMsgType::GETBLOCKS, chainActive.GetLocator(), uint256(0));
             return false;
         } else {
             CBlock r;
             if (!ReadBlockFromDisk(r, mapBlockIndex[pblock->hashPrevBlock])) {
-            pfrom->PushMessage(NetMsgType::GETBLOCKS, chainActive.GetLocator(), UINT256_ZERO);
+            pfrom->PushMessage(NetMsgType::GETBLOCKS, chainActive.GetLocator(), uint256(0));
                 return false;
             }
         }
@@ -6121,7 +6121,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 std::vector<CInv> vGetData(1,inv);
 
                 if (pfrom) {
-                    pfrom->PushMessage(NetMsgType::GETBLOCKS, chainActive.GetLocator(mapBlockIndex[inv.hash]), UINT256_ZERO);
+                    pfrom->PushMessage(NetMsgType::GETBLOCKS, chainActive.GetLocator(mapBlockIndex[inv.hash]), uint256(0));
                 }
                 if (fDebug)
                     printf("force request: %s\n", inv.ToString().c_str());
@@ -6448,7 +6448,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             // from there instead.
             LogPrintf("more getheaders (%d) to end to peer=%d (startheight:%d)\n", pindexLast->nHeight, pfrom->id,
                 pfrom->nStartingHeight);
-            pfrom->PushMessage(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexLast), UINT256_ZERO);
+            pfrom->PushMessage(NetMsgType::GETHEADERS, chainActive.GetLocator(pindexLast), uint256(0));
         }
 
         CheckBlockIndex();
@@ -6935,7 +6935,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
                 state.fSyncStarted = true;
                 nSyncStarted++;
 
-                pto->PushMessage(NetMsgType::GETBLOCKS, chainActive.GetLocator(chainActive.Tip()), UINT256_ZERO);
+                pto->PushMessage(NetMsgType::GETBLOCKS, chainActive.GetLocator(chainActive.Tip()), uint256(0));
             }
         }
 
