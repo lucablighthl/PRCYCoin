@@ -6381,14 +6381,14 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             RelayInv(inv);
         }
 
-        int nDoS = 0;
+        int nDoS;
         if (state.IsInvalid(nDoS)) {
             LogPrint("mempool", "%s from peer=%d %s was not accepted into the memory pool: %s\n",
                 tx.GetHash().ToString(),
                 pfrom->id, pfrom->cleanSubVer,
                 state.GetRejectReason());
             pfrom->PushMessage(NetMsgType::REJECT, strCommand, state.GetRejectCode(),
-                state.GetRejectReason().substr(0, MAX_REJECT_MESSAGE_LENGTH), inv.hash);
+                 state.GetRejectReason().substr(0, MAX_REJECT_MESSAGE_LENGTH), inv.hash);
             if (nDoS > 0)
                 Misbehaving(pfrom->GetId(), nDoS);
         }
@@ -6688,9 +6688,9 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
     } else {
         //probably one the extensions
         bool found = false;
-        const std::vector<std::string> &allMessages = getAllNetMessageTypes();
+        const std::vector<std::string>& allMessages = getAllNetMessageTypes();
         for (const std::string msg : allMessages) {
-            if(msg == strCommand) {
+            if (msg == strCommand) {
                 found = true;
                 break;
             }
@@ -6920,7 +6920,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
         }
 
         for (const CBlockReject& reject : state.rejects)
-            pto->PushMessage(NetMsgType::REJECT, (std::string) NetMsgType::BLOCK, reject.chRejectCode, reject.strRejectReason, reject.hashBlock);
+            pto->PushMessage(NetMsgType::REJECT, (std::string)NetMsgType::BLOCK, reject.chRejectCode, reject.strRejectReason, reject.hashBlock);
         state.rejects.clear();
 
         // Start block sync
