@@ -6702,11 +6702,10 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             budget.ProcessMessage(pfrom, strCommand, vRecv);
             masternodePayments.ProcessMessageMasternodePayments(pfrom, strCommand, vRecv);
             ProcessMessageSwiftTX(pfrom, strCommand, vRecv);
-            sporkManager.ProcessSpork(pfrom, strCommand, vRecv);
             masternodeSync.ProcessMessage(pfrom, strCommand, vRecv);
         } else {
             // Ignore unknown commands for extensibility
-            LogPrint(BCLog::NET, "Unknown command \"%s\" from peer=%d\n", SanitizeString(strCommand), pfrom->id);
+            LogPrint("net", "Unknown command \"%s\" from peer=%d\n", SanitizeString(strCommand), pfrom->id);
         }
     }
 
