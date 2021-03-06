@@ -1461,15 +1461,15 @@ bool OpenNetworkConnection(const CAddress& addrConnect, bool fCountFailure, CSem
         if (IsLocal(addrConnect) ||
             FindNode((CNetAddr) addrConnect) || CNode::IsBanned(addrConnect) ||
             FindNode(addrConnect.ToStringIPPort()))
-            return;
+            return false;
     } else if (FindNode(pszDest))
-        return;
+        return false;
 
     CNode* pnode = ConnectNode(addrConnect, pszDest, false, fCountFailure);
     boost::this_thread::interruption_point();
 
     if (!pnode)
-        return;
+        return false;
     if (grantOutbound)
         grantOutbound->MoveTo(pnode->grantOutbound);
     pnode->fNetworkNode = true;
