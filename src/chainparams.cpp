@@ -7,23 +7,17 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "chainparams.h"
-#include "random.h"
+
+#include "chainparamsseeds.h"
 #include "util.h"
 #include "utilstrencodings.h"
 
-#include <assert.h>
-
 #include <boost/assign/list_of.hpp>
+
+#include <assert.h>
 
 using namespace std;
 using namespace boost::assign;
-
-struct SeedSpec6 {
-    uint8_t addr[16];
-    uint16_t port;
-};
-
-#include "chainparamsseeds.h"
 
 std::string CDNSSeedData::getHost(uint64_t requiredServiceBits) const {
     //use default host for non-filter-capable seeds or if we use the default service bits (NODE_NETWORK)
@@ -36,29 +30,13 @@ std::string CDNSSeedData::getHost(uint64_t requiredServiceBits) const {
 /**
  * Main network
  */
-
-//! Convert the pnSeeds6 array into usable address objects.
-static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data, unsigned int count)
-{
-    // It'll only connect to one or two seed nodes because once it connects,
-    // it'll get a pile of addresses with newer timestamps.
-    // Seed nodes are given a random 'last seen time' of between one and two
-    // weeks ago.
-    const int64_t nOneWeek = 7 * 24 * 60 * 60;
-    for (unsigned int i = 0; i < count; i++) {
-        struct in6_addr ip;
-        memcpy(&ip, data[i].addr, sizeof(ip));
-        CAddress addr(CService(ip, data[i].port));
-        addr.nTime = GetTime() - GetRand(nOneWeek) - nOneWeek;
-        vSeedsOut.push_back(addr);
-    }
-}
-
-//   What makes a good checkpoint block?
-// + Is surrounded by blocks with reasonable timestamps
-//   (no blocks before with a timestamp after, none after with
-//    timestamp before)
-// + Contains no strange transactions
+/**
+ * What makes a good checkpoint block?
+ * + Is surrounded by blocks with reasonable timestamps
+ *   (no blocks before with a timestamp after, none after with
+ *    timestamp before)
+ * + Contains no strange transactions
+ */
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
     (0, uint256("000006957e238ff4e6bcf00c8a7d1b3e7249c0a2109b0391d8740821a40c1d8c"))
@@ -76,6 +54,7 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     (19317, uint256("0bd530827eff9bdc79893739c02c14c02bb35a39b943eaeeb72e04767e0597a5"))	
     (19400, uint256("cdeebfe4fdeda461ab2025d08248e89b13a1e970c76b91ac2788837c147e6f33"))
     (77852, uint256("e6ec3ddccfb6bd378ca3cf5cc292c011ec235536a9edbb8c3fdbe17abd921d44"))
+    (98715, uint256("04b3cfde139af89ddacf3cb790daf734e4953119c4a58da9b8f07be888271670"))
     (98768, uint256("43f42aaba4a1e8f7a4981b7d8620e5967974b0bbdee4ae22e42f14585be3a52f"))
     (105629, uint256("82ae47c00a0338f33a41b8505162cabaa4740f2187feb07f4ee4bc6138461acb"))
     ;
@@ -137,7 +116,6 @@ public:
         /** Height or Time Based Activations **/
         nLastPOWBlock = 500;
         nStartPOABlock = 560;
-//        nRemoveRewardBlock = 6000;
         nModifierUpdateBlock = 615800;
         nPoABlockTime = 60 * 60; //a PoA block every 60 minutes
         nMinNumPoSBlocks = 59;
@@ -227,7 +205,7 @@ public:
         // 	BIP44 coin type is from https://github.com/satoshilabs/slips/blob/master/slip-0044.md
         nExtCoinType = 0x80000355;
 
-        convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
+        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
         fRequireRPCPassword = true;
         fMiningRequiresPeers = true;
@@ -274,7 +252,6 @@ public:
         nTargetSpacing = 1 * 60;  // PRCYcoin: 1 minute
         nLastPOWBlock = 500;
         nStartPOABlock = 560;
-//        nRemoveRewardBlock = 6000;
         nPoABlockTime = 30 * 60;  //1 PoA block every 30 minutes
         nMinNumPoSBlocks = 20;
         nMaturity = 15;
@@ -282,11 +259,6 @@ public:
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         MAX_MONEY = 5000000000.0;
         nMaxMoneyOut = MAX_MONEY * COIN;
-        nBlockEnforceSerialRange = 1; //Enforce serial range starting this block
-        nBlockRecalculateAccumulators = 9908000; //Trigger a recalculation of accumulators
-        nBlockFirstFraudulent = 9891737; //First block that bad serials emerged
-        nBlockLastGoodCheckpoint = 9891730; //Last valid accumulator checkpoint
-        nBlockEnforceInvalidUTXO = 9902850; //Start enforcing the invalid UTXO's
         nSoftForkBlock = 0; // Soft fork block for difficulty change - testnet started with it
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
@@ -340,7 +312,7 @@ public:
         // Testnet prcycoin BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 0x80000001;
 
-        convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
+        vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
         fRequireRPCPassword = true;
         fMiningRequiresPeers = true;
