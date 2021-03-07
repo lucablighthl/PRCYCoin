@@ -1490,7 +1490,7 @@ void ThreadOpenAddedConnections() {
 }
 
 // if successful, this moves the passed grant to the constructed node
-void OpenNetworkConnection(const CAddress &addrConnect, bool fCountFailure, CSemaphoreGrant *grantOutbound, const char *pszDest, bool fOneShot) {
+bool OpenNetworkConnection(const CAddress &addrConnect, bool fCountFailure, CSemaphoreGrant *grantOutbound, const char *pszDest, bool fOneShot) {
     //
     // Initiate outbound network connection
     //
