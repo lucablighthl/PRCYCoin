@@ -1641,8 +1641,7 @@ bool AppInit2(bool isDaemon)
             if (!pwalletMain->TopUpKeyPool()) {
                 // Error generating keys
                 InitError(_("Unable to generate initial key") += "\n");
-                LogPrintf("%s %s\n", __func__ , "Unable to generate initial key");
-                return false;
+                return error("%s %s", __func__ , "Unable to generate initial key");
             }
 
             pwalletMain->SetBestChain(chainActive.GetLocator());
