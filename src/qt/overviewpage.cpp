@@ -582,7 +582,11 @@ void OverviewPage::checkDollarValueserviceRequestFinished(QNetworkReply* reply)
         int calculatedBalance = balance * valueDollar;
         LogPrintf("%s: balance: %d, value: %d\n", __func__, balance, calculatedBalance);
         valueString = QString::number(calculatedBalance);
-        ui->label_9->setText(defaultCurrency + " Value: $" + valueString);
+        if (walletModel->getEncryptionStatus() == WalletModel::Locked || walletModel->getEncryptionStatus() == WalletModel::UnlockedForAnonymizationOnly) {
+            ui->labelDollarValue->setText("Locked; Hidden");
+        else
+            ui->labelDollarValue->setText(defaultCurrency + " Value: $" + valueString);
+        }
     } else {
         LogPrintf("%s: Error checking for Dollar value.\n", __func__);
     }
