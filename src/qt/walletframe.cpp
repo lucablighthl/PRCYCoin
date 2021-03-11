@@ -143,7 +143,7 @@ void WalletFrame::gotoSendCoinsPage(QString addr)
 {
     QSettings settings;
     if (settings.value("fLockSendStaking", false).toBool()) {
-       LogPrintf("gotoSendCoinsPage blocked.\n"); // Remove or adjust after tests
+       LogPrintf("Attempt to go to Send tab.\n");
        return;
     }
     QMap<QString, WalletView*>::const_iterator i;
