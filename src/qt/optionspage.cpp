@@ -1043,6 +1043,7 @@ void OptionsPage::hideBalanceStaking_clicked(int state) {
                 msgBox.exec();
                 LogPrintf("Attempt to Disable 'Hide Balance when unlocked for Staking' failed or canceled. Wallet Locked for security.\n");
                 settings.setValue("fHideBalance", true);
+                ui->hideBalanceStaking->setChecked(true);
                 return;
             } else {
                 SecureString pass;
@@ -1053,6 +1054,7 @@ void OptionsPage::hideBalanceStaking_clicked(int state) {
         } else {
             LogPrintf("Attempt to Disable 'Hide Balance when unlocked for Staking' canceled.\n");
             settings.setValue("fHideBalance", true);
+            ui->hideBalanceStaking->setChecked(true);
             return;
         }
     }
@@ -1086,6 +1088,7 @@ void OptionsPage::lockSendStaking_clicked(int state) {
                 msgBox.exec();
                 LogPrintf("Attempt to Disable 'Lock Send Tab when unlocked for Staking' failed or canceled. Wallet Locked for security.\n");
                 settings.setValue("fLockSendStaking", true);
+                ui->lockSendStaking->setChecked(true);
                 return;
             } else {
                 SecureString pass;
@@ -1096,6 +1099,7 @@ void OptionsPage::lockSendStaking_clicked(int state) {
         } else {
             LogPrintf("Attempt to Disable 'Lock Send Tab when unlocked for Staking' canceled.\n");
             settings.setValue("fLockSendStaking", true);
+            ui->lockSendStaking->setChecked(true);
             return;
         }
     }
