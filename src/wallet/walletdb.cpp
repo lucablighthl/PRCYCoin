@@ -745,8 +745,11 @@ bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, CW
         } else if (strType == "autocombinesettings") {
             std::pair<bool, CAmount> pSettings;
             ssValue >> pSettings;
-            pwallet->fCombineDust = true;//pSettings.first;
-            pwallet->nAutoCombineThreshold = 150;//pSettings.second;
+            pwallet->fCombineDust = true; // Originally pSettings.first; Enable by default for rewards cleanup
+            pwallet->nAutoCombineThreshold = 150; // Originally pSettings.second;
+            // originally saved as integer
+            if (pwallet->nAutoCombineThreshold < COIN)
+                pwallet->nAutoCombineThreshold *= COIN;
         } else if (strType == "destdata") {
             std::string strAddress, strKey, strValue;
             ssKey >> strAddress;

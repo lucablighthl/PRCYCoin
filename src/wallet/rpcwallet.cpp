@@ -2194,7 +2194,7 @@ UniValue autocombinedust(const UniValue& params, bool fHelp)
     CAmount nThreshold = 0;
 
     if (fEnable) {
-        nThreshold = params[1].get_int();
+        nThreshold = AmountFromValue(params[1].get_int());
     } else {
         nThreshold = 0;
     }
@@ -2209,10 +2209,9 @@ UniValue autocombinedust(const UniValue& params, bool fHelp)
     result.push_back(Pair("autocombinedust", params[0].get_bool()));
     result.push_back(Pair("amount", int(pwalletMain->nAutoCombineThreshold)));
     return result;
-    }
-	else{
-		throw runtime_error(
-		"autocombinedust is disabled in your prcycoin.conf");
+    } else {
+        throw runtime_error(
+        "autocombinedust is disabled in your prcycoin.conf");
 	}
 }
 

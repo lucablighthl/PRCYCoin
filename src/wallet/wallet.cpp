@@ -5356,8 +5356,7 @@ void CWallet::AutoCombineDust()
         CreateSweepingTransaction(MINIMUM_STAKE_AMOUNT, max + MAX_FEE, nTime);
         return;
     }
-    // nAutoCombineTarget/ nAutoCombineThreshold are not * COIN, so that is used here
-    CreateSweepingTransaction(nAutoCombineTarget * COIN, nAutoCombineThreshold * COIN, GetAdjustedTime());
+    CreateSweepingTransaction(nAutoCombineTarget, nAutoCombineThreshold, GetAdjustedTime());
 }
 
 bool CWallet::estimateStakingConsolidationFees(CAmount& minFee, CAmount& maxFee) {
