@@ -2040,8 +2040,8 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("txcount", (int)pwalletMain->mapWallet.size()));
 
     // Autocombine settings
-    obj.push_back(Pair("autocombine_enabled", pwalletMain->fCombineDust);
-    obj.push_back(Pair("autocombine_threshold", ValueFromAmount(pwalletMain->nAutoCombineThreshold));
+    obj.push_back(Pair("autocombine_enabled", pwalletMain->fCombineDust));
+    obj.push_back(Pair("autocombine_threshold", ValueFromAmount(pwalletMain->nAutoCombineThreshold)));
 
     // Keypool information
     obj.push_back(Pair("keypoololdest", pwalletMain->GetOldestKeyPoolTime()));
@@ -2221,6 +2221,84 @@ UniValue autocombinedust(const UniValue& params, bool fHelp)
         throw runtime_error(
         "autocombinedust is disabled in your prcycoin.conf");
 	}
+}
+
+UniValue setautocombinethreshold(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() < 1 || params.size() > 2)
+        throw runtime_error(
+            "setautocombinethreshold enable ( value )\n"
+            "\nThis will set the auto-combine threshold value.\n"
+            "\nWallet will automatically monitor for any coins with value below the threshold amount, and combine them if they reside with the same PRCY address\n"
+            "When auto-combine runs it will create a transaction, and therefore will be subject to transaction fees.\n"
+
+            "\nArguments:\n"
+            "1. enable          (boolean, required) Enable auto combine (true) or disable (false)\n"
+            "2. threshold       (numeric, optional) Threshold amount (default: 0)\n"
+
+            "\nResult:\n"
+            "{\n"
+            "  \"enabled\": true|false,      (boolean) true if auto-combine is enabled, otherwise false\n"
+            "  \"threshold\": n.nnn,         (numeric) auto-combine threshold in PIV\n"
+            "  \"saved\": true|false         (boolean) true if setting was saved to the database, otherwise false\n"
+            "}\n"
+
+            "\nExamples:\n" +
+            HelpExampleCli("setautocombinethreshold", "500.12") + HelpExampleRpc("setautocombinethreshold", "500.12"));
+
+    EnsureWalletIsUnlocked();
+
+    RPCTypeCheck(params, {UniValue::VBOOL, UniValue::VNUM});
+
+    bool fEnable = false;
+    if (params.empty())
+        fEnable = params[0].get_bool();
+
+    CWalletDB walletdb(pwalletMain->strWalletFile); //CWalletDB walletdb(pwalletMain->GetDBHandle());
+    CAmount nThreshold = 0;
+
+    if (fEnable && params.size() > 1)
+        nThreshold = AmountFromValue(params[1]);
+
+    {
+        LOCK(pwalletMain->cs_wallet);
+        pwalletMain->fCombineDust = fEnable;
+        pwalletMain->nAutoCombineThreshold = nThreshold;
+
+        UniValue result(UniValue::VOBJ);
+        result.push_back(Pair("enabled", fEnable));
+        result.push_back(Pair("threshold", ValueFromAmount(pwalletMain->nAutoCombineThreshold)));
+        if (walletdb.WriteAutoCombineSettings(fEnable, nThreshold)) {
+            result.push_back(Pair("saved", "true");
+        } else {
+            result.push_back(Pair("saved", "false");
+        }
+
+        return result;
+    }
+}
+
+UniValue getautocombinethreshold(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getautocombinethreshold\n"
+            "\nReturns the current threshold for auto combining UTXOs, if any\n"
+
+            "\nResult:\n"
+            "{\n"
+            "  \"enabled\": true|false,        (boolean) true if auto-combine is enabled, otherwise false\n"
+            "  \"threshold\": n.nnn            (numeric) the auto-combine threshold amount in PIV\n"
+            "}\n"
+
+            "\nExamples:\n" +
+            HelpExampleCli("getautocombinethreshold", "") + HelpExampleRpc("getautocombinethreshold", ""));
+
+    UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("enabled", pwalletMain->fCombineDust));
+    result.push_back(Pair("threshold", ValueFromAmount(pwalletMain->nAutoCombineThreshold)));
+
+    return result;
 }
 
 UniValue printMultiSend()
