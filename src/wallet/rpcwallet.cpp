@@ -2021,6 +2021,8 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
             "  \"walletversion\": xxxxx,      (numeric) the wallet version\n"
             "  \"balance\": xxxxxxx,          (numeric) the total PRCY balance of the wallet\n"
             "  \"txcount\": xxxxxxx,          (numeric) the total number of transactions in the wallet\n"
+            "  \"autocombine_enabled\": true|false,       (boolean) true if autocombine is enabled, otherwise false\n"
+            "  \"autocombine_threshold\": x.xxx,          (numeric) the current autocombine threshold in PRCY\n"
             "  \"keypoololdest\": xxxxxx,     (numeric) the timestamp (seconds since GMT epoch) of the oldest pre-generated key in the key pool\n"
             "  \"keypoolsize\": xxxx,         (numeric) how many new keys are pre-generated\n"
             "  \"walletunlocked\": true|false,(boolean) if the wallet is unlocked\n"
@@ -2036,6 +2038,12 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("walletversion", pwalletMain->GetVersion()));
     obj.push_back(Pair("balance", ValueFromAmount(pwalletMain->GetBalance())));
     obj.push_back(Pair("txcount", (int)pwalletMain->mapWallet.size()));
+
+    // Autocombine settings
+    obj.push_back(Pair("autocombine_enabled", pwalletMain->fCombineDust);
+    obj.push_back(Pair("autocombine_threshold", ValueFromAmount(pwalletMain->nAutoCombineThreshold));
+
+    // Keypool information
     obj.push_back(Pair("keypoololdest", pwalletMain->GetOldestKeyPoolTime()));
     obj.push_back(Pair("keypoolsize", (int)pwalletMain->GetKeyPoolSize()));
     if (pwalletMain->IsCrypted())
