@@ -81,6 +81,8 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
     entry.push_back(Pair("direction", pwalletMain->GetTransactionType(tx)));
 #endif
     UniValue vin(UniValue::VARR);
+    CAmount decodedInAmount;
+    CAmount decodedOutAmount;
     for (const CTxIn& txin : tx.vin) {
         UniValue in(UniValue::VOBJ);
         if (tx.IsCoinBase())
@@ -107,15 +109,15 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
                                 if (pwalletMain->outpointToKeyImages.count(outString) == 1) {
                                     CKeyImage ki = pwalletMain->outpointToKeyImages[outString];
                                     if (ki == txin.keyImage) {
-                                        CAmount decodedAmount;
                                         CKey blind;
-                                        pwalletMain->RevealTxOutAmount(prev, prev.vout[allDecoys[i].n], decodedAmount, blind);
-                                        decoy.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));
+                                        pwalletMain->RevealTxOutAmount(prev, prev.vout[allDecoys[i].n], decodedInAmount, blind);
+                                        decoy.push_back(Pair("decoded_amount", ValueFromAmount(decodedInAmount)));
                                         decoy.push_back(Pair("isMine", true));
                                     }
                                 }
                             } else {
                                 decoy.push_back(Pair("isMine", false));
+                                decodedInAmount = 0;
                             }
                         }
                     }
@@ -152,27 +154,29 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
 
 #ifdef ENABLE_WALLET
         if (pwalletMain->IsMine(txout)) {
-            CAmount decodedAmount;
             CKey blind;
             unsigned char zeroBlind[32];
             memset(zeroBlind, 0, 32);
             const unsigned char* pBlind;
-            pwalletMain->RevealTxOutAmount(tx, txout, decodedAmount, blind);
+            pwalletMain->RevealTxOutAmount(tx, txout, decodedOutAmount, blind);
             if (txout.nValue >0) {
                 pBlind = zeroBlind;
             } else {
                 pBlind = blind.begin();
             }
-            out.push_back(Pair("decoded_amount", ValueFromAmount(decodedAmount)));
+            out.push_back(Pair("decoded_amount", ValueFromAmount(decodedOutAmount)));
             out.push_back(Pair("isMine", true));
         } else {
             out.push_back(Pair("isMine", false));
+            decodedOutAmount = 0;
         }
 #endif
         vout.push_back(out);
     }
     entry.push_back(Pair("vout", vout));
-
+    if ((decodedInAmount - decodedOutAmount) > 0) {
+        entry.push_back(Pair("value", ValueFromAmount(decodedInAmount - decodedOutAmount - tx.nTxFee)));
+    }
     if (hashBlock != 0) {
         entry.push_back(Pair("blockhash", hashBlock.GetHex()));
         BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
