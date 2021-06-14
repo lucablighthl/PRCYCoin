@@ -2269,9 +2269,9 @@ UniValue setautocombinethreshold(const UniValue& params, bool fHelp)
         result.push_back(Pair("enabled", fEnable));
         result.push_back(Pair("threshold", ValueFromAmount(pwalletMain->nAutoCombineThreshold)));
         if (walletdb.WriteAutoCombineSettings(fEnable, nThreshold)) {
-            result.push_back(Pair("saved", "true");
+            result.push_back(Pair("saved", "true"));
         } else {
-            result.push_back(Pair("saved", "false");
+            result.push_back(Pair("saved", "false"));
         }
 
         return result;
