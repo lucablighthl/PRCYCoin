@@ -360,6 +360,10 @@ int CMasternodeMan::stable_size ()
         if (mn.protocolVersion < nMinProtocol) {
             continue; // Skip obsolete versions
         }
+            nMasternode_Age = GetAdjustedTime() - mn.sigTime;
+            if ((nMasternode_Age) < nMasternode_Min_Age) {
+                continue; // Skip masternodes younger than (default) 8000 sec (MUST be > MASTERNODE_REMOVAL_SECONDS)
+            }
         mn.Check ();
         if (!mn.IsEnabled ())
             continue; // Skip not-enabled masternodes
@@ -436,7 +440,7 @@ CMasternode* CMasternodeMan::Find(const CScript& payee)
     CScript payee2;
 
     for (CMasternode& mn : vMasternodes) {
-        payee2 = GetScriptForDestination(mn.pubKeyCollateralAddress);
+        payee2 = GetScriptForDestination(mn.pubKeyCollateralAddress.GetID());
         if (payee2 == payee)
             return &mn;
     }
@@ -603,6 +607,11 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
             continue;                                                       // Skip obsolete versions
         }
 
+            nMasternode_Age = GetAdjustedTime() - mn.sigTime;
+            if ((nMasternode_Age) < nMasternode_Min_Age) {
+                if (fDebug) LogPrint("masternode","Skipping just activated Masternode. Age: %ld\n", nMasternode_Age);
+                continue;                                                   // Skip masternodes younger than (default) 1 hour
+            }
         if (fOnlyActive) {
             mn.Check();
             if (!mn.IsEnabled()) continue;
@@ -822,7 +831,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                     if (!mapSeenMasternodeBroadcast.count(hash)) mapSeenMasternodeBroadcast.insert(make_pair(hash, mnb));
 
                     if (vin == mn.vin) {
-                        LogPrint("masternode", "\ndseg - Sent 1 Masternode entry to peer %i\n", pfrom->GetId());
+                        LogPrint("masternode", "dseg - Sent 1 Masternode entry to peer %i\n", pfrom->GetId());
                         return;
                     }
                 }
@@ -831,7 +840,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         if (vin == CTxIn()) {
             pfrom->PushMessage("ssc", MASTERNODE_SYNC_LIST, nInvCount);
-            LogPrint("masternode", "\ndseg - Sent %d Masternode entries to peer %i\n", nInvCount, pfrom->GetId());
+            LogPrint("masternode", "dseg - Sent %d Masternode entries to peer %i\n", nInvCount, pfrom->GetId());
         }
     }
     /*
@@ -915,7 +924,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         }
 
         CScript pubkeyScript;
-        pubkeyScript = GetScriptForDestination(pubkey);
+        pubkeyScript = GetScriptForDestination(pubkey.GetID());
 
         if ((pubkey.IsCompressed() && pubkeyScript.size() != 35) || (!pubkey.IsCompressed() && pubkeyScript.size() != 67)) {
             LogPrintf("CMasternodeMan::ProcessMessage() : dsee - pubkey the wrong size\n");
@@ -940,7 +949,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         std::string errorMessage = "";
         CScript sc = GetScriptForDestination(pubkey);
         if (!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, errorMessage)) {
-            LogPrintf("CMasternodeMan::ProcessMessage() : dsee - Got bad Masternode address signature\n");;
+            LogPrintf("CMasternodeMan::ProcessMessage() : dsee - Got bad Masternode address signature\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
         }
@@ -1016,6 +1025,22 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                 LogPrintf("CMasternodeMan::ProcessMessage() : dsee - Input must have least %d confirmations\n", MASTERNODE_MIN_CONFIRMATIONS);
                 Misbehaving(pfrom->GetId(), 20);
                 return;
+            }
+
+            // verify that sig time is legit in past
+            // should be at least not earlier than block when 1000 PIVX tx got MASTERNODE_MIN_CONFIRMATIONS
+            uint256 hashBlock = 0;
+            CTransaction tx2;
+            GetTransaction(vin.prevout.hash, tx2, hashBlock, true);
+            BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
+            if (mi != mapBlockIndex.end() && (*mi).second) {
+                CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 10000 PIV tx -> 1 confirmation
+                CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + MASTERNODE_MIN_CONFIRMATIONS - 1]; // block where tx got MASTERNODE_MIN_CONFIRMATIONS
+                if (pConfIndex->GetBlockTime() > sigTime) {
+                    LogPrint("masternode","mnb - Bad sigTime %d for Masternode %s (%i conf block is at %d)\n",
+                        sigTime, vin.prevout.hash.ToString(), MASTERNODE_MIN_CONFIRMATIONS, pConfIndex->GetBlockTime());
+                    return;
+                }
             }
 
             // use this as a peer
@@ -1118,6 +1143,8 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
+        LogPrint("masternode", "dseep - Couldn't find Masternode entry %s peer=%i\n", vin.prevout.hash.ToString(), pfrom->GetId());
+
         AskForMN(pfrom, vin);
     }
 
@@ -1143,20 +1170,18 @@ void CMasternodeMan::Remove(CTxIn vin)
 
 void CMasternodeMan::UpdateMasternodeList(CMasternodeBroadcast mnb)
 {
-    LOCK(cs);
-    mapSeenMasternodePing.insert(std::make_pair(mnb.lastPing.GetHash(), mnb.lastPing));
-    mapSeenMasternodeBroadcast.insert(std::make_pair(mnb.GetHash(), mnb));
+    mapSeenMasternodePing.insert(make_pair(mnb.lastPing.GetHash(), mnb.lastPing));
+    mapSeenMasternodeBroadcast.insert(make_pair(mnb.GetHash(), mnb));
+    masternodeSync.AddedMasternodeList(mnb.GetHash());
 
-    LogPrint("masternode","CMasternodeMan::UpdateMasternodeList -- masternode=%s\n", mnb.vin.prevout.ToStringShort());
+    LogPrint("masternode","CMasternodeMan::UpdateMasternodeList() -- masternode=%s\n", mnb.vin.prevout.ToString());
 
     CMasternode* pmn = Find(mnb.vin);
     if (pmn == NULL) {
         CMasternode mn(mnb);
-        if (Add(mn)) {
-            masternodeSync.AddedMasternodeList(mnb.GetHash());
-        }
-    } else if (pmn->UpdateFromNewBroadcast(mnb)) {
-        masternodeSync.AddedMasternodeList(mnb.GetHash());
+        Add(mn);
+    } else {
+        pmn->UpdateFromNewBroadcast(mnb);
     }
 }
 
