@@ -720,7 +720,7 @@ UniValue getmasternodestatus (const UniValue& params, bool fHelp)
         return mnObj;
     }
     throw runtime_error("Masternode not found in the list of available masternodes. Current status: "
-                        + activeMasternode.GetStatus());
+                        + activeMasternode.GetStatus() + "\n");
 }
 
 UniValue getmasternodewinners (const UniValue& params, bool fHelp)
