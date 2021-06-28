@@ -555,6 +555,8 @@ void OverviewPage::updateLockStatus(int status) {
 
 void OverviewPage::checkDollarValue()
 {
+    // Don't bother to check value if wallet is locked
+    if (pwalletMain->IsLocked()) return;
     QString defaultCurrency = "USD";
     QUrl serviceUrl = QUrl("https://api.coingecko.com/api/v3/simple/price?ids=prcy-coin&vs_currencies=" + defaultCurrency + "&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false");
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
