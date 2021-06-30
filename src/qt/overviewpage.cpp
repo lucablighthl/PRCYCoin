@@ -560,9 +560,9 @@ void OverviewPage::updateLockStatus(int status) {
 void OverviewPage::checkDollarValue()
 {
     QSettings settings;
-    // Don't bother to check value if wallet is locked
     bool fDisplayDollarValue = settings.value("fDisplayDollarValue").toBool();
 
+    // Don't bother to check value if wallet is locked or fDisplayDollarValue is set to false
     if (pwalletMain->IsLocked() || !fDisplayDollarValue) {
         ui->labelDollarValue->setText("");
         return;
@@ -583,8 +583,8 @@ void OverviewPage::checkDollarValueserviceRequestFinished(QNetworkReply* reply)
         // Check if balance is 0 for early return
         int balance = pwalletMain->GetBalance() / COIN;
         if (balance == 0) return;
-        QString defaultCurrency = "USD"; // Will be a setting
-        // Parse data
+        QString defaultCurrency = "USD";
+        // Parse data, not the best way but functional
         QByteArray data = reply->readAll();
         QString valueString = data.trimmed();
         valueString.remove(0,20);
