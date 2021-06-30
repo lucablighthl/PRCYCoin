@@ -123,12 +123,7 @@ OverviewPage::OverviewPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMe
     pingNetworkInterval->setInterval(3000);
     pingNetworkInterval->start();
 
-    QSettings settings;
-    // Check Dollar Value functions
-    bool fDisplayDollarValue = settings.value("fDisplayDollarValue").toBool();
-    if (fDisplayDollarValue) {
-        checkDollarValue();
-    }
+    checkDollarValue();
     checkDollarValueInterval = new QTimer(this);
     connect(checkDollarValueInterval, SIGNAL(timeout()), this, SLOT(checkDollarValue()));
     checkDollarValueInterval->setInterval(300000);
