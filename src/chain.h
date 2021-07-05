@@ -171,7 +171,6 @@ public:
     unsigned int nTime;
     unsigned int nBits;
     unsigned int nNonce;
-    uint256 nAccumulatorCheckpoint;
 
     //! PoA block header
     uint256 hashPoAMerkleRoot;
@@ -209,7 +208,6 @@ public:
         nTime = 0;
         nBits = 0;
         nNonce = 0;
-        nAccumulatorCheckpoint = 0;
 
         hashPoAMerkleRoot = uint256();
         minedHash = uint256();
@@ -230,8 +228,6 @@ public:
         nTime = block.nTime;
         nBits = block.nBits;
         nNonce = block.nNonce;
-        if(block.nVersion > 3)
-            nAccumulatorCheckpoint = block.nAccumulatorCheckpoint;
 
         //Proof of Stake
         bnChainTrust = uint256();
@@ -295,7 +291,6 @@ public:
         block.nTime = nTime;
         block.nBits = nBits;
         block.nNonce = nNonce;
-        block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
         return block;
     }
 
@@ -506,7 +501,6 @@ public:
         block.nTime = nTime;
         block.nBits = nBits;
         block.nNonce = nNonce;
-        block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
         return block.GetHash();
     }
 

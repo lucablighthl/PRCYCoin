@@ -301,11 +301,6 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                         return error("LoadBlockIndex() : CheckProofOfWork failed: %s", pindexNew->ToString());
                 }
 
-                //populate accumulator checksum map in memory
-                if(pindexNew->nAccumulatorCheckpoint != 0 && pindexNew->nAccumulatorCheckpoint != nPreviousCheckpoint) {
-                    nPreviousCheckpoint = pindexNew->nAccumulatorCheckpoint;
-                }
-
                 pcursor->Next();
             } else {
                 break; // if shutdown requested or finished loading block index

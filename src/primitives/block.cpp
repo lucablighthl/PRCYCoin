@@ -82,7 +82,6 @@ uint256 CBlockHeader::GetHash() const
 {
     if (IsPoABlockByVersion()) {
         //Only hash necessary fields for PoA block header
-        //Dont add nAccumulatorCheckpoint to the hash
         return Hash(BEGIN(hashPrevBlock), END(hashPrevBlock),
             BEGIN(minedHash), END(minedHash));
     }
@@ -90,7 +89,7 @@ uint256 CBlockHeader::GetHash() const
         return HashQuark(BEGIN(nVersion), END(nNonce));
     }
 
-    return Hash(BEGIN(nVersion), END(nAccumulatorCheckpoint));
+    return Hash(BEGIN(nVersion), END(0));
 }
 
 uint256 CBlock::BuildMerkleTree(bool* fMutated) const
