@@ -455,7 +455,7 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
         return false;
     }
 
-    if (amount != 5000 * COIN) {
+    if (amount != Params().MNCollateralAmt()) {
         LogPrintf("dsee - masternode collateralization not equal to 5K %s\n", vin.prevout.hash.ToString());
         return false;
     }
@@ -501,7 +501,7 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 
         // Filter
         for (const COutput& out : vCoins) {
-            if (pwalletMain->getCTxOutValue(*out.tx, out.tx->vout[out.i]) == 5000 * COIN) { //exactly
+            if (pwalletMain->getCTxOutValue(*out.tx, out.tx->vout[out.i]) == Params().MNCollateralAmt()) { //exactly
                 filteredCoins.push_back(out);
             }
         }

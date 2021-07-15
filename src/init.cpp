@@ -201,15 +201,16 @@ void PrepareShutdown()
     GeneratePrcycoins(false, NULL, 0);
 #endif
     StopNode();
-    DumpMasternodes();
-    DumpBudgets();
-    DumpMasternodePayments();
-    UnregisterNodeSignals(GetNodeSignals());
 
     // After everything has been shut down, but before things get flushed, stop the
     // CScheduler/checkqueue threadGroup
     threadGroup.interrupt_all();
     threadGroup.join_all();
+
+    DumpMasternodes();
+    DumpBudgets();
+    DumpMasternodePayments();
+    UnregisterNodeSignals(GetNodeSignals());
 
     if (fFeeEstimatesInitialized) {
         boost::filesystem::path est_path = GetDataDir() / FEE_ESTIMATES_FILENAME;
@@ -392,7 +393,6 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-pid=<file>", strprintf(_("Specify pid file (default: %s)"), "prcycoind.pid"));
 #endif
     strUsage += HelpMessageOpt("-reindex", _("Rebuild block chain index from current blk000??.dat files") + " " + _("on startup"));
-    strUsage += HelpMessageOpt("-reindexaccumulators", _("Reindex the accumulator database") + " " + _("on startup"));
     strUsage += HelpMessageOpt("-reindexmoneysupply", _("Reindex the PRCY money supply statistics") + " " + _("on startup"));
     strUsage += HelpMessageOpt("-resync", _("Delete blockchain folders and resync from scratch") + " " + _("on startup"));
 #if !defined(WIN32)
@@ -1727,8 +1727,11 @@ bool AppInit2(bool isDaemon)
 
     // scan for better chains in the block chain database, that are not yet connected in the active best chain
     CValidationState state;
-    if (!ActivateBestChain(state))
+    if (!ActivateBestChain(state)) {
         strErrors << "Failed to connect best block";
+        StartShutdown();
+        return false;
+    }
     // update g_best_block if needed
     {
         LOCK(g_best_block_mutex);
@@ -1933,7 +1936,6 @@ bool AppInit2(bool isDaemon)
 
 #ifdef ENABLE_WALLET
     bool storedStakingStatus = false;
-    nDefaultConsolidateTime = GetArg("-autoconsolidatetime", 300);
 
     if (pwalletMain) {
         // Add wallet transactions that aren't already in a block to mapTransactions
@@ -1947,7 +1949,6 @@ bool AppInit2(bool isDaemon)
         } else {
             LogPrintf("Autocombinedust is disabled\n");
         }
-        LogPrintf("nDefaultConsolidateTime = %ss\n", nDefaultConsolidateTime);
 		
         storedStakingStatus = pwalletMain->ReadStakingStatus();
         if (GetBoolArg("-staking", false) || storedStakingStatus) {
@@ -1955,13 +1956,13 @@ bool AppInit2(bool isDaemon)
             pwalletMain->WriteStakingStatus(true);
             LogPrintf("Starting staking\n");
             threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
-            // stakingMode should be STOPPED on first launch or keep previous setting when available
+            // combineMode should be OFF on first launch or keep previous setting when available
             // This changes that setting only if staking is on
             if (GetBoolArg("-autoconsolidate", false)){
-                LogPrintf("Autoconsolidate is enabled and we are setting StakingMode::STAKING_WITH_CONSOLIDATION now\n");
-                pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
+                LogPrintf("Autoconsolidate is enabled and we are setting CombineMode::ON now\n");
+                pwalletMain->combineMode = CombineMode::ON;
             } else {
-                pwalletMain->stakingMode = StakingMode::STAKING_WITHOUT_CONSOLIDATION;
+                pwalletMain->combineMode = CombineMode::OFF;
                 LogPrintf("Autoconsolidate is disabled\n");
             }
         } else {
