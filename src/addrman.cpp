@@ -336,6 +336,7 @@ void CAddrMan::Attempt_(const CService& addr, bool fCountFailure, int64_t nTime)
 
     // update info
     info.nLastTry = nTime;
+    LogPrintf("%s: debugging Addrman-offline-attempts\n", __func__);
     if (fCountFailure) info.nAttempts++;
 }
 

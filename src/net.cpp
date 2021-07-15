@@ -375,6 +375,7 @@ CNode *FindNode(const CService &addr) {
 
 CNode* ConnectNode(CAddress addrConnect, const char* pszDest, bool obfuScationMaster, bool fCountFailure)
 {
+    LogPrintf("%s:\n debugging Addrman-offline-attempts\n", __func__);
     if (pszDest == NULL) {
         // we clean masternode connections in CMasternodeMan::ProcessMasternodeConnections()
         // so should be safe to skip this and connect to local Hot MN on CActiveMasternode::ManageStatus()
@@ -408,6 +409,7 @@ CNode* ConnectNode(CAddress addrConnect, const char* pszDest, bool obfuScationMa
             return NULL;
         }
 
+        LogPrintf("%s:\n addrman.Attempt(addrConnect, fCountFailure)\n", __func__);
         addrman.Attempt(addrConnect, fCountFailure);
 
         // Add node
@@ -426,6 +428,7 @@ CNode* ConnectNode(CAddress addrConnect, const char* pszDest, bool obfuScationMa
     } else if (!proxyConnectionFailed) {
         // If connecting to the node failed, and failure is not caused by a problem connecting to
         // the proxy, mark this as an attempt.
+        LogPrintf("%s:\n addrman.Attempt(addrConnect, fCountFailure) SECOND\n", __func__);
         addrman.Attempt(addrConnect, fCountFailure);
     }
 
@@ -1281,7 +1284,9 @@ void static ProcessOneShot() {
     CAddress addr;
     CSemaphoreGrant grant(*semOutbound, true);
     if (grant) {
+        LogPrintf("%s: if grant\n", __func__);
         if (!OpenNetworkConnection(addr, false, &grant, strDest.c_str(), true))
+            LogPrintf("%s: AddOneShot\n", __func__);
             AddOneShot(strDest);
     }
 }
@@ -1293,6 +1298,7 @@ void ThreadOpenConnections() {
             ProcessOneShot();
             for (string strAddr : mapMultiArgs["-connect"]) {
                 CAddress addr;
+                LogPrintf("%s: OpenNetworkConnection(addr, false, NULL, strAddr.c_str());\n", __func__);
                 OpenNetworkConnection(addr, false, NULL, strAddr.c_str());
                 for (int i = 0; i < 10 && i < nLoop; i++) {
                     MilliSleep(500);
@@ -1375,6 +1381,7 @@ void ThreadOpenConnections() {
         }
 
         if (addrConnect.IsValid())
+            LogPrintf("%s: if addrConnect.IsValid()->OpenNetworkConnection(addrConnect, (int)setConnected.size() >= std::min(nMaxConnections - 1, 2), &grant);\n", __func__);
             OpenNetworkConnection(addrConnect, (int)setConnected.size() >= std::min(nMaxConnections - 1, 2), &grant);
     }
 }
@@ -1397,6 +1404,7 @@ void ThreadOpenAddedConnections() {
             {
                 CAddress addr;
                 CSemaphoreGrant grant(*semOutbound);
+                LogPrintf("%s: OpenNetworkConnection(addr, false, &grant, strAddNode.c_str());\n", __func__);
                 OpenNetworkConnection(addr, false, &grant, strAddNode.c_str());
                 MilliSleep(500);
             }
@@ -1443,6 +1451,7 @@ void ThreadOpenAddedConnections() {
         for (vector < CService > &vserv : lservAddressesToAdd)
         {
             CSemaphoreGrant grant(*semOutbound);
+            LogPrintf("%s: OpenNetworkConnection(CAddress(vserv[i % vserv.size()]), false, &grant);\n", __func__);
             OpenNetworkConnection(CAddress(vserv[i % vserv.size()]), false, &grant);
             MilliSleep(500);
         }

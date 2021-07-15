@@ -179,6 +179,7 @@ UniValue addnode(const UniValue& params, bool fHelp)
 
     if (strCommand == "onetry") {
         CAddress addr;
+        LogPrintf("%s: OpenNetworkConnection(addr, false, NULL, strNode.c_str());\n", __func__);
         OpenNetworkConnection(addr, false, NULL, strNode.c_str());
         return NullUniValue;
     }

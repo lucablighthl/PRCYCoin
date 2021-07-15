@@ -73,6 +73,7 @@ void CActiveMasternode::ManageStatus()
 
         LogPrintf("CActiveMasternode::ManageStatus() - Checking inbound connection to '%s'\n", service.ToString());
 
+        LogPrintf("%s: debugging Addrman-offline-attempts\n", __func__);
         CNode* pnode = ConnectNode((CAddress)service, NULL, false, true);
         if (!pnode) {
             notCapableReason = "Could not connect to " + service.ToString();

@@ -288,6 +288,7 @@ UniValue masternodeconnect(const UniValue& params, bool fHelp)
 
     CService addr = CService(strAddress);
 
+    LogPrintf("%s: CNode* pnode = ConnectNode((CAddress)addr, NULL, false, true);\n", __func__);
     CNode* pnode = ConnectNode((CAddress)addr, NULL, false, true);
     if (pnode) {
         pnode->Release();
