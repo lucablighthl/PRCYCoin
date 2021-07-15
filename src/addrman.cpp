@@ -199,6 +199,7 @@ void CAddrMan::Good_(const CService& addr, int64_t nTime)
 {
     int nId;
 	
+    LogPrintf("%s: nLastGood = nTime;\n", __func__);
     nLastGood = nTime;
 	
     CAddrInfo* pinfo = Find(addr, &nId);

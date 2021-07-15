@@ -1470,10 +1470,13 @@ bool OpenNetworkConnection(const CAddress& addrConnect, bool fCountFailure, CSem
         if (IsLocal(addrConnect) ||
             FindNode((CNetAddr) addrConnect) || CNode::IsBanned(addrConnect) ||
             FindNode(addrConnect.ToStringIPPort()))
+            LogPrintf("%s: if\n", __func__);
             return false;
     } else if (FindNode(pszDest))
+        LogPrintf("%s: else if\n", __func__);
         return false;
 
+    LogPrintf("%s: CNode* pnode = ConnectNode(addrConnect, pszDest, false, fCountFailure);\n", __func__);
     CNode* pnode = ConnectNode(addrConnect, pszDest, false, fCountFailure);
     boost::this_thread::interruption_point();
 
