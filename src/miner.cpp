@@ -560,9 +560,9 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& 
     assert(txCoinbase.vin[0].scriptSig.size() <= 100);
 
     pblock->vtx[0] = txCoinbase;
-    pblock->hashMerkleRoot = pblock->BuildMerkleTree();
+    pblock->hashMerkleRoot = pblock->ComputeMerkleRoot();
 
-    pblock->hashPoAMerkleRoot = pblock->BuildPoAMerkleTree();
+    pblock->hashPoAMerkleRoot = pblock->ComputePoAMerkleTree();
     pblock->minedHash = pblock->ComputeMinedHash();
 
     return pblocktemplate.release();
@@ -583,7 +583,7 @@ void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& 
     assert(txCoinbase.vin[0].scriptSig.size() <= 100);
 
     pblock->vtx[0] = txCoinbase;
-    pblock->hashMerkleRoot = pblock->BuildMerkleTree();
+    pblock->hashMerkleRoot = pblock->ComputeMerkleRoot();
 }
 
 #ifdef ENABLE_WALLET
