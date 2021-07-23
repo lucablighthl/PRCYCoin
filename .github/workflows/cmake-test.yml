@@ -72,6 +72,7 @@ jobs:
       - name: Setup Environment
         run: |
           if [[ ${{ matrix.config.os }} = ubuntu* ]]; then
+            sudo add-apt-repository "ppa:pivx/pivx" -y
             sudo apt-add-repository "ppa:ondrej/php" -y
             sudo apt-get --yes update
             sudo apt-get install --no-install-recommends --no-upgrade -qq "$APT_BASE" ${{ matrix.config.packages }}
