@@ -101,7 +101,6 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/csvmodelwriter.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/guiutil.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/intro.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/multisigdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/masternodelist.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/networkstyle.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/notificator.cpp

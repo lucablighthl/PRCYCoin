@@ -306,7 +306,6 @@ source_group("BitcoinHeaders" FILES
 
 set(SERVER_SOURCES
         ./src/addrman.cpp
-        ./src/alert.cpp
         ./src/bloom.cpp
         ./src/blocksignature.cpp
         ./src/chain.cpp
