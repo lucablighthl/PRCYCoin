@@ -319,7 +319,7 @@ set(SERVER_SOURCES
         ./src/miner.cpp
         ./src/net.cpp
         ./src/noui.cpp
-        ./src/pow.cpp
+        ./src/poa.cpp
         ./src/rest.cpp
         ./src/rpc/blockchain.cpp
         ./src/rpc/masternode.cpp
