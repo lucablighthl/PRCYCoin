@@ -84,7 +84,7 @@ if (ZMQ_Found)
     link_directories ( ${ZMQ_LIB_DIRS} )
 endif()
 
-find_package(Boost COMPONENTS system filesystem thread program_options REQUIRED)
+#find_package(Boost COMPONENTS system filesystem thread program_options REQUIRED)
 include_directories( ${Boost_INCLUDE_DIRS} )
 link_directories ( ${Boost_LIBRARY_DIRS} )
 
