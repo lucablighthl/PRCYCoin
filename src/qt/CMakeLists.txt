@@ -174,7 +174,7 @@ add_dependencies(prcycoin-qt translations_target libunivalue libsecp256k1 libsec
 target_link_libraries(prcycoin-qt
         qt_stuff
         univalue
-        SERVER_A UTIL_A WALLET_A CLI_A COMMON_A BITCOIN_CRYPTO_A ZEROCOIN_A
+        SERVER_A UTIL_A WALLET_A CLI_A COMMON_A BITCOIN_CRYPTO_A
         leveldb leveldb_sse42 memenv miniupnpc secp256k1 secp256k1-mw
         ${BerkeleyDB_LIBRARIES} ${OPENSSL_LIBRARIES} ${Boost_LIBRARIES} ${PROTOBUF_LIBRARIES} ${LIBEVENT_LIB}
         pthread

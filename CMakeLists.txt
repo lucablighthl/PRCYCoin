@@ -331,7 +331,6 @@ set(SERVER_SOURCES
         ./src/rpc/rawtransaction.cpp
         ./src/rpc/server.cpp
         ./src/script/sigcache.cpp
-        ./src/sporkdb.cpp
         ./src/timedata.cpp
         ./src/torcontrol.cpp
         ./src/txdb.cpp
@@ -408,37 +407,6 @@ set(BITCOIN_CRYPTO_SOURCES
         )
 add_library(BITCOIN_CRYPTO_A STATIC ${BITCOIN_CRYPTO_SOURCES})
 
-set(ZEROCOIN_SOURCES
-        ./src/libzerocoin/Accumulator.h
-        ./src/libzerocoin/AccumulatorProofOfKnowledge.h
-        ./src/libzerocoin/bignum.h
-        ./src/libzerocoin/bignum.cpp
-        ./src/libzerocoin/Coin.h
-        ./src/libzerocoin/CoinSpend.h
-        ./src/libzerocoin/Commitment.h
-        ./src/libzerocoin/Denominations.h
-        ./src/libzerocoin/ParamGeneration.h
-        ./src/libzerocoin/Params.h
-        ./src/libzerocoin/SerialNumberSignatureOfKnowledge.h
-        ./src/libzerocoin/SpendType.h
-        ./src/libzerocoin/ZerocoinDefines.h
-        ./src/libzerocoin/Accumulator.cpp
-        ./src/libzerocoin/AccumulatorProofOfKnowledge.cpp
-        ./src/libzerocoin/Coin.cpp
-        ./src/libzerocoin/Denominations.cpp
-        ./src/libzerocoin/CoinSpend.cpp
-        ./src/libzerocoin/Commitment.cpp
-        ./src/libzerocoin/ParamGeneration.cpp
-        ./src/libzerocoin/Params.cpp
-        ./src/libzerocoin/SerialNumberSignatureOfKnowledge.cpp
-        )
-if(GMP_FOUND)
-    list(APPEND ZEROCOIN_SOURCES ./src/libzerocoin/bignum_gmp.cpp)
-else()
-    list(APPEND ZEROCOIN_SOURCES ./src/libzerocoin/bignum_openssl.cpp)
-endif()
-add_library(ZEROCOIN_A STATIC ${ZEROCOIN_SOURCES})
-
 set(COMMON_SOURCES
         ./src/allocators.cpp
         ./src/amount.cpp
@@ -464,8 +432,6 @@ set(COMMON_SOURCES
         ./src/script/sign.cpp
         ./src/script/standard.cpp
         ./src/script/script_error.cpp
-        ./src/spork.cpp
-        ./src/sporkdb.cpp
         )
 add_library(COMMON_A STATIC ${BitcoinHeaders} ${COMMON_SOURCES})
 
@@ -506,7 +472,6 @@ add_dependencies(prcycoin-tx libunivalue libsecp256k1 libsecp256k1-mw)
 target_link_libraries(prcycoin-tx
         univalue
         COMMON_A
-        ZEROCOIN_A
         UTIL_A
         BITCOIN_CRYPTO_A
         secp256k1
@@ -523,7 +488,6 @@ target_link_libraries(prcycoind
         SERVER_A
         COMMON_A
         univalue
-        ZEROCOIN_A
         UTIL_A
         WALLET_A
         BITCOIN_CRYPTO_A
