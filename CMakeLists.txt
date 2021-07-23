@@ -351,7 +351,6 @@ endif()
 set(WALLET_SOURCES
         ./src/activemasternode.cpp
         ./src/bip38.cpp
-        ./src/denomination_functions.cpp
         ./src/obfuscation.cpp
         ./src/obfuscation-relay.cpp
         ./src/wallet/db.cpp
@@ -420,7 +419,6 @@ set(COMMON_SOURCES
         ./src/core_read.cpp
         ./src/core_write.cpp
         ./src/hash.cpp
-        ./src/invalid.cpp
         ./src/key.cpp
         ./src/keystore.cpp
         ./src/netbase.cpp

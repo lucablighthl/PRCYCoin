@@ -99,7 +99,6 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/bitcoinunits.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/clientmodel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/csvmodelwriter.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/governancepage.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/guiutil.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/intro.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/multisigdialog.cpp
