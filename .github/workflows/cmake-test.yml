@@ -55,7 +55,7 @@ jobs:
         config:
           - name: Linux
             os: ubuntu-18.04
-            packages: python3-zmq qttools5-dev qtbase5-dev qttools5-dev-tools libqt5svg5-dev libqt5charts5-dev libevent-dev bsdmainutils libboost-system-dev libboost-filesystem-dev libboost-chrono-dev libboost-test-dev libboost-thread-dev libdb5.3++-dev libminiupnpc-dev libzmq3-dev libqrencode-dev libgmp-dev libsodium-dev cargo
+            packages: python3-zmq qttools5-dev qtbase5-dev qttools5-dev-tools libqt5svg5-dev libqt5charts5-dev libevent-dev bsdmainutils libboost-system-dev libboost-filesystem-dev libboost-chrono-dev libboost-test-dev libboost-thread-dev libdb4.8-dev libdb4.8++-dev libminiupnpc-dev libzmq3-dev libqrencode-dev libgmp-dev libsodium-dev cargo
             cc: gcc
             cxx: g++
 
