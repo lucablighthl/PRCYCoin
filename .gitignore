@@ -146,7 +146,6 @@ qa/pull-tester/test.*/*
 /nbproject/
 
 .idea
-CMakeLists.txt
 cmake-build-debug
 .vscode/*
 BackupWallet*
