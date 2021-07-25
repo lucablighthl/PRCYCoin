@@ -276,6 +276,7 @@ public:
     }
 
     int64_t GetLastPaid();
+    int64_t GetLastPaidHeight();
     bool IsValidNetAddr();
 };
 
