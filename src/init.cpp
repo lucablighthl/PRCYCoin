@@ -1970,6 +1970,7 @@ bool AppInit2(bool isDaemon)
         }
         //read decoy confirmation min
         pwalletMain->DecoyConfirmationMinimum = GetArg("-decoyconfirm", 15);
+        pwalletMain->DecoyConfirmationMaximum = GetArg("-decoyconfirm", 10000);
     }
 
     CWalletDB walletdb(strWalletFile);

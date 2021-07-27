@@ -3643,7 +3643,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                     CBlockIndex* atTheblock = mapBlockIndex[it->second];
                     if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
                     if (!chainActive.Contains(atTheblock)) continue;
-                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum || 1 + chainActive.Height() - atTheblock->nHeight > DecoyConfirmationMaximum) continue;
                     COutPoint outpoint = it->first;
                     for (size_t d = 0; d < tx.vin[i].decoys.size(); d++) {
                         if (tx.vin[i].decoys[d] == outpoint) {
@@ -3664,7 +3664,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                     CBlockIndex* atTheblock = mapBlockIndex[it->second];
                     if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
                     if (!chainActive.Contains(atTheblock)) continue;
-                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum || 1 + chainActive.Height() - atTheblock->nHeight > DecoyConfirmationMaximum) continue;
                     COutPoint outpoint = it->first;
                     tx.vin[i].decoys.push_back(outpoint);
                     numDecoys++;
@@ -3685,7 +3685,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                     CBlockIndex* atTheblock = mapBlockIndex[it->second];
                     if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
                     if (!chainActive.Contains(atTheblock)) continue;
-                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum || 1 + chainActive.Height() - atTheblock->nHeight > DecoyConfirmationMaximum) continue;
                     COutPoint outpoint = it->first;
                     for (size_t d = 0; d < tx.vin[i].decoys.size(); d++) {
                         if (tx.vin[i].decoys[d] == outpoint) {
@@ -3706,7 +3706,7 @@ bool CWallet::selectDecoysAndRealIndex(CTransaction& tx, int& myIndex, int ringS
                     CBlockIndex* atTheblock = mapBlockIndex[it->second];
                     if (!atTheblock || !chainActive.Contains(atTheblock)) continue;
                     if (!chainActive.Contains(atTheblock)) continue;
-                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum) continue;
+                    if (1 + chainActive.Height() - atTheblock->nHeight < DecoyConfirmationMinimum || 1 + chainActive.Height() - atTheblock->nHeight > DecoyConfirmationMaximum) continue;
                     COutPoint outpoint = it->first;
                     tx.vin[i].decoys.push_back(outpoint);
                     numDecoys++;

@@ -2828,7 +2828,8 @@ UniValue getdecoyconfirmation(const UniValue& params, bool fHelp)
     EnsureWallet();
 
     UniValue ret(UniValue::VOBJ);
-    ret.push_back(Pair("decoy_confirmation", pwalletMain->DecoyConfirmationMinimum));
+    ret.push_back(Pair("min_decoy_confirmation", pwalletMain->DecoyConfirmationMinimum));
+    ret.push_back(Pair("max_decoy_confirmation", pwalletMain->DecoyConfirmationMaximum));
     return ret;
 }
 

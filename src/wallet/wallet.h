@@ -350,6 +350,7 @@ public:
 
     CombineMode combineMode = OFF;
     int64_t DecoyConfirmationMinimum = 15;
+    int64_t DecoyConfirmationMaximum = 10000;
 
     mutable std::map<std::string, CKeyImage> outpointToKeyImages;
     std::map<std::string, bool> keyImagesSpends;
