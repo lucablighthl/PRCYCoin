@@ -405,6 +405,7 @@ bool CMasternodeBroadcast::Create(std::string strService, std::string strKeyMast
 
     // The service needs the correct default port to work properly
     if(!CheckDefaultPort(strService, strErrorRet, "CMasternodeBroadcast::Create"))
+        LogPrintf("%s: The service needs the correct default port to work properly\n", __func__);
         return false;
 
     return Create(txin, CService(strService), keyCollateralAddressNew, pubKeyCollateralAddressNew, keyMasternodeNew, pubKeyMasternodeNew, strErrorRet, mnbRet);
