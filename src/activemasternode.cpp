@@ -20,12 +20,12 @@ void CActiveMasternode::ManageStatus()
 
     if (!fMasterNode) return;
 
-    if (fDebug) LogPrint("masternode", "CActiveMasternode::ManageStatus() - Begin\n");
+    if (fDebug) LogPrintf("CActiveMasternode::ManageStatus() - Begin\n");
 
     //need correct blocks to send ping
     if (Params().NetworkID() != CBaseChainParams::REGTEST && !masternodeSync.IsBlockchainSynced()) {
         status = ACTIVE_MASTERNODE_SYNC_IN_PROCESS;
-        LogPrint("masternode", "CActiveMasternode::ManageStatus() - %s\n", GetStatus());
+        LogPrintf("CActiveMasternode::ManageStatus() - %s\n", GetStatus());
         return;
     }
 
@@ -210,7 +210,7 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
             return false;
         }
 
-        LogPrint("masternode", "dseep - relaying from active mn, %s \n", vin.ToString().c_str());
+        LogPrintf("dseep - relaying from active mn, %s \n", vin.ToString().c_str());
         LOCK(cs_vNodes);
         for (CNode* pnode : vNodes)
             pnode->PushMessage("dseep", vin, vchMasterNodeSignature, masterNodeSignatureTime, false);
