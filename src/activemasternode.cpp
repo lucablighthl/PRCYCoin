@@ -437,7 +437,7 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
     CTransaction prev;
     uint256 bh;
     if (!GetTransaction(prevout.hash, prev, bh, true)) {
-        LogPrint("masternode","dsee - failed to read transaction hash %s\n", vin.prevout.hash.ToString());
+        LogPrintf("dsee - failed to read transaction hash %s\n", vin.prevout.hash.ToString());
         return false;
     }
 
