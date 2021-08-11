@@ -208,19 +208,17 @@ public:
 enum StakingStatusError
 {
     STAKING_OK, //use case B, C, D, no consolidation needed, 
-    UNSTAKABLE_BALANCE_TOO_LOW, //coin is not mature yet (balance > 400k)
-    UNSTAKABLE_BALANCE_TOO_LOW_CONSOLIDATION_FAILED, //coin is not mature yet (balance > 400k)
+    UNSTAKABLE_BALANCE_TOO_LOW, //coin is not mature yet (balance > 2.5k)
+    UNSTAKABLE_BALANCE_TOO_LOW_CONSOLIDATION_FAILED, //coin is not mature yet (balance > 2.5k)
     UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH,
     UNSTAKABLE_BALANCE_RESERVE_TOO_HIGH_CONSOLIDATION_FAILED, //even consolidation does not help
     STAKABLE_NEED_CONSOLIDATION,   //stable and consolidation, needs to estimate fees
     STAKABLE_NEED_CONSOLIDATION_WITH_RESERVE_BALANCE  //stable and consolidation, needs to estimate fees
 };
 
-enum StakingMode {
-    STOPPED, //staking disabled or balance < 400k
-    STAKING_WITHOUT_CONSOLIDATION,
-    STAKING_WITH_CONSOLIDATION,
-    STAKING_WITH_CONSOLIDATION_WITH_STAKING_NEWW_FUNDS
+enum CombineMode {
+    OFF,
+    ON,
 };
 
 /**
@@ -257,8 +255,6 @@ private:
     void SyncMetaData(std::pair<TxSpends::iterator, TxSpends::iterator>);
 
 public:
-    static const CAmount MINIMUM_STAKE_AMOUNT = 2500 * COIN;
-    static const CAmount DEFAULT_STAKE_SPLIT_THRESHOLD = 100000;
     static const int32_t MAX_DECOY_POOL = 500;
     static const int32_t PROBABILITY_NEW_COIN_SELECTED = 70;
     bool RescanAfterUnlock(int fromHeight);
@@ -318,6 +314,7 @@ public:
     //Auto Combine Inputs
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
+    CAmount nAutoCombineTarget;
     bool CreateSweepingTransaction(CAmount target, CAmount threshold, uint32_t nTimeBefore);
     bool SendAll(std::string des);
 
@@ -350,7 +347,7 @@ public:
 
     int64_t nTimeFirstKey;
 
-    StakingMode stakingMode = STOPPED;
+    CombineMode combineMode = OFF;
     int64_t DecoyConfirmationMinimum = 15;
 
     mutable std::map<std::string, CKeyImage> outpointToKeyImages;

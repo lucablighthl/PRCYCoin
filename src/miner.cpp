@@ -3,9 +3,9 @@
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+// Copyright (c) 2020-2021 The PRCY developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
 
 
 #include "miner.h"
@@ -23,10 +23,10 @@
 #include "utilmoneystr.h"
 #ifdef ENABLE_WALLET
 #include "wallet/wallet.h"
-extern CWallet *pwalletMain;
+extern CWallet* pwalletMain;
 #endif
-#include "validationinterface.h"
 #include "masternode-payments.h"
+#include "validationinterface.h"
 
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -97,7 +97,8 @@ void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
 }
 
-uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& audits) {
+uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& audits)
+{
     //A PoA block should be mined only after at least 59 PoS blocks have not been audited
     //Look for the previous PoA block
     uint32_t nloopIdx = currentHeight;
@@ -109,7 +110,7 @@ uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& 
     }
     if (nloopIdx <= Params().START_POA_BLOCK()) {
         //this is the first PoA block ==> take all PoS blocks from LAST_POW_BLOCK up to currentHeight - 60 inclusive
-        for (int i = Params().LAST_POW_BLOCK() + 1; i <= Params().LAST_POW_BLOCK() + 60; i++) {
+        for (int i = Params().LAST_POW_BLOCK() + 1; i <= Params().LAST_POW_BLOCK() + (size_t)Params().MAX_NUM_POS_BLOCKS_AUDITED(); i++) {
             PoSBlockSummary pos;
             pos.hash = chainActive[i]->GetBlockHash();
             CBlockIndex* pindex = mapBlockIndex[pos.hash];
@@ -128,7 +129,7 @@ uint32_t GetListOfPoSInfo(uint32_t currentHeight, std::vector<PoSBlockSummary>& 
             PoSBlockSummary back = block.posBlocksAudited.back();
             uint32_t lastAuditedHeight = back.height;
             uint32_t nextAuditHeight = lastAuditedHeight + 1;
-            
+
             while (nextAuditHeight <= currentHeight) {
                 CBlockIndex* posIndex = chainActive[nextAuditHeight];
                 CBlock posBlock;
@@ -168,8 +169,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
     // -blockversion=N to test forking scenarios
     if (Params().MineBlocksOnDemand())
         pblock->nVersion = GetArg("-blockversion", pblock->nVersion);
-
-    pblock->nVersion = 3;
+    pblock->nVersion = 5;   // Supports CLTV activation
 
     // Create coinbase tx
     CMutableTransaction txNew;
@@ -181,7 +181,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
     std::copy(txPriv.begin(), txPriv.end(), std::back_inserter(txNew.vout[0].txPriv));
 
     CBlockIndex* prev = chainActive.Tip();
-    CAmount nValue = GetBlockValue(prev);
+    CAmount nValue = GetBlockValue(prev->nHeight);
     txNew.vout[0].nValue = nValue;
 
     pblock->vtx.push_back(txNew);
@@ -256,12 +256,12 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
         for (map<uint256, CTxMemPoolEntry>::iterator mi = mempool.mapTx.begin();
              mi != mempool.mapTx.end(); ++mi) {
             const CTransaction& tx = mi->second.GetTx();
-            if (tx.IsCoinBase() || tx.IsCoinStake() || !IsFinalTx(tx, nHeight)){
+            if (tx.IsCoinBase() || tx.IsCoinStake() || !IsFinalTx(tx, nHeight)) {
                 continue;
             }
             bool fKeyImageCheck = true;
             // Check key images not duplicated with what in db
-            for (const CTxIn& txin: tx.vin) {
+            for (const CTxIn& txin : tx.vin) {
                 const CKeyImage& keyImage = txin.keyImage;
                 if (IsKeyImageSpend1(keyImage.GetHex(), uint256())) {
                     fKeyImageCheck = false;
@@ -289,7 +289,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             CFeeRate feeRate(tx.nTxFee, nTxSize);
 
             bool isDuplicate = false;
-            for (const CTxIn& txin: tx.vin) {
+            for (const CTxIn& txin : tx.vin) {
                 const CKeyImage& keyImage = txin.keyImage;
                 if (keyImages.count(keyImage)) {
                     isDuplicate = true;
@@ -353,6 +353,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             // Note that flags: we don't want to set mempool/IsStandard()
             // policy here, but we still have to ensure that the block we
             // create only contains transactions that are valid in new blocks.
+
             CValidationState state;
             if (!CheckInputs(tx, state, view, true, MANDATORY_SCRIPT_VERIFY_FLAGS, true))
                 continue;
@@ -415,7 +416,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
             pblock->vtx[1].vout[2].nValue += nFees;
             pblocktemplate->vTxFees[0] = nFees;
         }
-        
+
         CPubKey sharedSec;
         sharedSec.Set(txPub.begin(), txPub.end());
         //compute commitment
@@ -428,11 +429,13 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
                 return NULL;
             }
         } else {
-            sharedSec.Set(pblock->vtx[1].vout[2].txPub.begin(), pblock->vtx[1].vout[2].txPub.end());
-            pwallet->EncodeTxOutAmount(pblock->vtx[1].vout[2], pblock->vtx[1].vout[2].nValue, sharedSec.begin());
-            nValue = pblock->vtx[1].vout[2].nValue;
-            pblock->vtx[1].vout[2].commitment.clear();
-            if (!pwallet->CreateCommitment(zeroBlind, nValue, pblock->vtx[1].vout[2].commitment)) {
+            pblock->vtx[1].vout[1].nValue += pblock->vtx[1].vout[2].nValue;
+            pblock->vtx[1].vout[2].SetEmpty();
+            sharedSec.Set(pblock->vtx[1].vout[1].txPub.begin(), pblock->vtx[1].vout[1].txPub.end());
+            pwallet->EncodeTxOutAmount(pblock->vtx[1].vout[1], pblock->vtx[1].vout[1].nValue, sharedSec.begin());
+            nValue = pblock->vtx[1].vout[1].nValue;
+            pblock->vtx[1].vout[1].commitment.clear();
+            if (!pwallet->CreateCommitment(zeroBlind, nValue, pblock->vtx[1].vout[1].commitment)) {
                 return NULL;
             }
 
@@ -464,7 +467,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, const CPubKey& txP
     return pblocktemplate.release();
 }
 
-CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, const CKey& txPriv, CWallet* pwallet) {
+CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& txPub, const CKey& txPriv, CWallet* pwallet)
+{
     CReserveKey reservekey(pwallet);
 
     if (chainActive.Tip()->nHeight < Params().START_POA_BLOCK()) {
@@ -500,19 +504,19 @@ CBlockTemplate* CreateNewPoABlock(const CScript& scriptPubKeyIn, const CPubKey& 
 
     int nprevPoAHeight;
 
-
     nprevPoAHeight = GetListOfPoSInfo(pindexPrev->nHeight, pblock->posBlocksAudited);
+
     if (pblock->posBlocksAudited.size() == 0) {
         return NULL;
     }
+
     // Set block version to differentiate PoA blocks from PoS blocks
     pblock->SetVersionPoABlock();
     pblock->nTime = GetAdjustedTime();
 
     //compute PoA block reward
-    CAmount nReward = pblock->posBlocksAudited.size() * 0.5 * COIN;
+    CAmount nReward = pblock->posBlocksAudited.size() * 0.25 * COIN;
     pblock->vtx[0].vout[0].nValue = nReward;
-
     pblock->vtx[0].txType = TX_TYPE_REVEAL_AMOUNT;
 
     CPubKey sharedSec;
@@ -705,21 +709,20 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
                     continue;
                 }
             }
-            
         }
         MilliSleep(nDefaultMinerSleep);
         //
         // Create new block
         //
         unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
-        CBlockIndex* pindexPrev; 
+        CBlockIndex* pindexPrev;
         {
             LOCK(cs_main);
             pindexPrev = chainActive.Tip();
         }
         if (!pindexPrev)
             continue;
- 
+
         unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlockWithKey(reservekey, pwallet, fProofOfStake));
         if (!pblocktemplate.get())
             continue;
@@ -749,8 +752,8 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake, MineType mineType)
             continue;
         }
         GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION);
-        LogPrint("staking", "Running PRCYcoinMiner with %u transactions in block (%u bytes)\n", pblock->vtx.size(), 
-                 ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
+        LogPrint("staking", "Running PRCYcoinMiner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
+            ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
         //
         // Search
@@ -910,10 +913,11 @@ void GeneratePrcycoins(bool fGenerate, CWallet* pwallet, int nThreads)
 }
 
 // ppcoin: stake minter thread
-void ThreadStakeMinter() {
+void ThreadStakeMinter()
+{
     boost::this_thread::interruption_point();
     LogPrintf("ThreadStakeMinter started\n");
-    CWallet *pwallet = pwalletMain;
+    CWallet* pwallet = pwalletMain;
     try {
         BitcoinMiner(pwallet, true);
         boost::this_thread::interruption_point();

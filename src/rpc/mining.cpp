@@ -148,7 +148,8 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
         if (nGenProcLimit == 0)
             fGenerate = false;
     }
-
+	pwalletMain->WriteStakingStatus(fGenerate);
+	
     // -regtest mode: don't return until nGenProcLimit blocks are generated
     if (fGenerate && Params().MineBlocksOnDemand()) {
         int nHeightStart = 0;
@@ -193,7 +194,7 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
     {
         mapArgs["-gen"] = (fGenerate ? "1" : "0");
         mapArgs["-genproclimit"] = itostr(nGenProcLimit);
-        pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
+        pwalletMain->combineMode = CombineMode::ON;
         GeneratePrcycoins(fGenerate, pwalletMain, nGenProcLimit);
     }
 

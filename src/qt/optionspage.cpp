@@ -47,6 +47,9 @@ OptionsPage::OptionsPage(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenu
     mapper = new QDataWidgetMapper(this);
     mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 
+    ui->toggleTheme->setState(settings.value("theme")!="webwallet");
+    connect(ui->toggleTheme, SIGNAL(stateChanged(ToggleButton*)), this, SLOT(changeTheme(ToggleButton*)));
+
     connect(ui->lineEditNewPass, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPass()));
     connect(ui->lineEditNewPassRepeat, SIGNAL(textChanged(const QString &)), this, SLOT(validateNewPassRepeat()));
     connect(ui->lineEditOldPass, SIGNAL(textChanged(const QString &)), this, SLOT(onOldPassChanged()));
@@ -432,8 +435,8 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
 {
     if (!masternodeSync.IsSynced()) {
         QMessageBox msgBox;
-        msgBox.setWindowTitle("Staking Disabled - Syncing");
-        msgBox.setText("Enable Staking is disabled when you are still syncing the wallet. Please allow the wallet to fully sync before attempting to Enable Staking.");
+        msgBox.setWindowTitle("Staking Disabled - Syncing Masternode list");
+        msgBox.setText("Enable Staking is disabled when you are still syncing the Masternode list as this is required. Please allow the wallet to fully sync this list before attempting to Enable Staking.");
         msgBox.setStyleSheet(GUIUtil::loadStyleSheet());
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.exec();
@@ -504,7 +507,7 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             Q_EMIT model->stakingStatusChanged(true);
             model->generateCoins(true, 1);
             pwalletMain->fCombineDust = true;
-            pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
+            pwalletMain->combineMode = CombineMode::ON;
             saveConsolidationSettingTime(ui->addNewFunds->isChecked());
             return;
         }
@@ -521,15 +524,15 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             Q_EMIT model->stakingStatusChanged(true);
             model->generateCoins(true, 1);
             pwalletMain->fCombineDust = true;
-            pwalletMain->stakingMode = StakingMode::STAKING_WITH_CONSOLIDATION;
+            pwalletMain->combineMode = CombineMode::ON;
             saveConsolidationSettingTime(ui->addNewFunds->isChecked());
             bool success = false;
             try {
                 uint32_t nTime = pwalletMain->ReadAutoConsolidateSettingTime();
                 nTime = (nTime == 0)? GetAdjustedTime() : nTime;
                 success = model->getCWallet()->CreateSweepingTransaction(
-                                CWallet::MINIMUM_STAKE_AMOUNT,
-                                CWallet::MINIMUM_STAKE_AMOUNT, nTime);
+                                Params().MinimumStakeAmount(),
+                                Params().MinimumStakeAmount(), nTime);
                 if (success) {
                     //nConsolidationTime = 1800;
                     QString msg = "Consolidation transaction created!";
@@ -545,7 +548,6 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             }            
             return;
         } else {
-            pwalletMain->stakingMode = StakingMode::STOPPED;
             nLastCoinStakeSearchInterval = 0;
             model->generateCoins(false, 0);
             Q_EMIT model->stakingStatusChanged(false);
@@ -583,7 +585,7 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
                     try {
                         success = model->getCWallet()->SendToStealthAddress(
                                 masterAddr,
-                                CWallet::MINIMUM_STAKE_AMOUNT,
+                                Params().MinimumStakeAmount(),
                                 resultTx,
                                 false
                         );
@@ -625,7 +627,6 @@ void OptionsPage::on_EnableStaking(ToggleButton* widget)
             }
         }*/
     } else {
-        pwalletMain->stakingMode = StakingMode::STOPPED;
         nLastCoinStakeSearchInterval = 0;
         model->generateCoins(false, 0);
         Q_EMIT model->stakingStatusChanged(false);
@@ -698,6 +699,14 @@ void OptionsPage::dialogIsFinished(int result) {
 
    if (result == QDialog::Rejected)
         ui->toggle2FA->setState(false);
+}
+
+void OptionsPage::changeTheme(ToggleButton* widget)
+{
+    if (widget->getState())
+        settings.setValue("theme", "dark");
+    else settings.setValue("theme", "webwallet");
+        GUIUtil::refreshStyleSheet();
 }
 
 void OptionsPage::disable2FA() {

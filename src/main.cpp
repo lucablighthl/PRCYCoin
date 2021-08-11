@@ -648,42 +648,17 @@ bool ReVerifyPoSBlock(CBlockIndex* pindex)
         nValueOut = coinstake.GetValueOut();
 
         size_t numUTXO = coinstake.vout.size();
-        CAmount posBlockReward = PoSBlockReward();
         if (mapBlockIndex.count(block.hashPrevBlock) < 1) {
             LogPrintf("ReVerifyPoSBlock() : Previous block not found, received block %s, previous %s, current tip %s", block.GetHash().GetHex(), block.hashPrevBlock.GetHex(), chainActive.Tip()->GetBlockHash().GetHex());
             return false;
         }
-        int thisBlockHeight = mapBlockIndex[block.hashPrevBlock]->nHeight + 1; //avoid potential block disorder during download
-        CAmount blockValue = GetBlockValue(mapBlockIndex[block.hashPrevBlock]);
-        /*if (blockValue > posBlockReward) {
-            numUTXO - 1 is team rewards, numUTXO - 2 is masternode reward
-            const CTxOut& mnOut = coinstake.vout[numUTXO - 2];
-            std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-            if (!VerifyDerivedAddress(mnOut, mnsa)) {
-                LogPrintf("ReVerifyPoSBlock() : Incorrect derived address for masternode rewards");
-                return false;
-            }
-
-            CAmount teamReward = blockValue - posBlockReward;
-            const CTxOut& foundationOut = coinstake.vout[numUTXO - 1];
-            if (foundationOut.nValue != teamReward) {
-                LogPrintf("ReVerifyPoSBlock() : Incorrect amount PoS rewards for foundation, reward = %d while the correct reward = %d", foundationOut.nValue, teamReward);
-                return false;
-            }
-
-            if (!VerifyDerivedAddress(foundationOut, FOUNDATION_WALLET)) {
-                LogPrintf("ReVerifyPoSBlock() : Incorrect derived address PoS rewards for foundation");
-                return false;
-            }
-        } else {*/
-            //there is no team rewards in this block
-            const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
-            std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-            if (!VerifyDerivedAddress(mnOut, mnsa)) {
-                LogPrintf("ReVerifyPoSBlock() : Incorrect derived address for masternode rewards");
-                return false;
-            }
-        //}
+        CAmount blockValue = GetBlockValue(mapBlockIndex[block.hashPrevBlock]->nHeight);
+        const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
+        std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
+        if (!VerifyDerivedAddress(mnOut, mnsa)) {
+            LogPrintf("ReVerifyPoSBlock() : Incorrect derived address for masternode rewards");
+            return false;
+        }
 
         // track money supply and mint amount info
         CAmount nMoneySupplyPrev = pindex->pprev ? pindex->pprev->nMoneySupply : 0;
@@ -692,7 +667,7 @@ bool ReVerifyPoSBlock(CBlockIndex* pindex)
         pindex->nMint = pindex->nMoneySupply - nMoneySupplyPrev + nFees;
 
         //PoW phase redistributed fees to miner. PoS stage destroys fees.
-        CAmount nExpectedMint = GetBlockValue(pindex->pprev);
+        CAmount nExpectedMint = GetBlockValue(pindex->pprev->nHeight);
         nExpectedMint += nFees;
 
         if (!IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
@@ -1402,22 +1377,6 @@ int GetIXConfirmations(uint256 nTXHash)
     return 0;
 }
 
-bool IsSerialInBlockchain(const CBigNum& bnSerial, int& nHeightTx)
-{
-    uint256 txHash = 0;
-
-    CTransaction tx;
-    uint256 hashBlock;
-    if (!GetTransaction(txHash, tx, hashBlock, true))
-        return false;
-
-    bool inChain = mapBlockIndex.count(hashBlock) && chainActive.Contains(mapBlockIndex[hashBlock]);
-    if (inChain)
-        nHeightTx = mapBlockIndex.at(hashBlock)->nHeight;
-
-    return inChain;
-}
-
 bool VerifyShnorrKeyImageTxIn(const CTxIn& txin, uint256 ctsHash)
 {
     COutPoint prevout = txin.prevout;
@@ -1474,7 +1433,7 @@ bool VerifyShnorrKeyImageTx(const CTransaction& tx)
     return VerifyShnorrKeyImageTxIn(tx.vin[0], cts);
 }
 
-bool CheckTransaction(const CTransaction& tx, bool fzcActive, bool fRejectBadUTXO, CValidationState& state)
+bool CheckTransaction(const CTransaction& tx, bool fRejectBadUTXO, CValidationState& state)
 {
     // Basic checks that don't depend on any context
     if (tx.vin.empty())
@@ -1635,7 +1594,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         *pfMissingInputs = false;
 
     // Check transaction
-    if (!CheckTransaction(tx, false, true, state))
+    if (!CheckTransaction(tx, true, state))
         return state.DoS(100, error("%s : CheckTransaction failed", __func__), REJECT_INVALID, "bad-tx");
 
     // Coinbase is only valid in a block, not as a loose transaction
@@ -1673,11 +1632,18 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 return false;
             }
 
+            int banscore;
             if (!tx.IsCoinStake() && !tx.IsCoinBase() && !tx.IsCoinAudit()) {
                 if (!tx.IsCoinAudit()) {
-                    if (!VerifyRingSignatureWithTxFee(tx, chainActive.Tip()))
-                        return state.DoS(100, error("AcceptToMemoryPool() : Ring Signature check for transaction %s failed", tx.GetHash().ToString()),
+                    if (masternodeSync.IsBlockchainSynced()) {
+                        banscore = 100;
+                    } else {
+                        banscore = 1;
+                    }
+                    if (!VerifyRingSignatureWithTxFee(tx, chainActive.Tip())) {
+                        return state.DoS(banscore, error("AcceptToMemoryPool() : Ring Signature check for transaction %s failed", tx.GetHash().ToString()),
                             REJECT_INVALID, "bad-ring-signature");
+                    }
                     if (!VerifyBulletProofAggregate(tx))
                         return state.DoS(100, error("AcceptToMemoryPool() : Bulletproof check for transaction %s failed", tx.GetHash().ToString()),
                             REJECT_INVALID, "bad-bulletproof");
@@ -1759,12 +1725,17 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
             }
         }
 
+        bool fCLTVIsActivated = chainActive.Tip()->nHeight >= Params().BIP65ActivationHeight();
+
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
-
-        if (!CheckInputs(tx, state, view, true, STANDARD_SCRIPT_VERIFY_FLAGS, true)) {
+        int flags = STANDARD_SCRIPT_VERIFY_FLAGS;
+        if (fCLTVIsActivated)
+            flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
+        if (!CheckInputs(tx, state, view, true, flags, true)) {
             return error("AcceptToMemoryPool: ConnectInputs failed %s", hash.ToString());
         }
+
         // Check again against just the consensus-critical mandatory script
         // verification flags, in case of bugs in the standard flags that cause
         // transactions to pass as valid when they're actually invalid. For
@@ -1774,7 +1745,10 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         // There is a similar check in CreateNewBlock() to prevent creating
         // invalid blocks, however allowing such transactions into the mempool
         // can be exploited as a DoS attack.
-        if (!CheckInputs(tx, state, view, true, MANDATORY_SCRIPT_VERIFY_FLAGS, true)) {
+        flags = MANDATORY_SCRIPT_VERIFY_FLAGS;
+        if (fCLTVIsActivated)
+            flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
+        if (!CheckInputs(tx, state, view, true, flags, true)) {
             return error(
                 "AcceptToMemoryPool: BUG! PLEASE REPORT THIS! ConnectInputs failed against MANDATORY but not STANDARD flags %s",
                 hash.ToString());
@@ -1816,7 +1790,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 
     const int chainHeight = chainActive.Height();
 
-    if (!CheckTransaction(tx, false, true, state))
+    if (!CheckTransaction(tx, true, state))
         return error("AcceptableInputs: CheckTransaction failed");
 
     // Coinbase is only valid in a block, not as a loose transaction
@@ -1879,14 +1853,6 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
                     if (pfMissingInputs)
                         *pfMissingInputs = true;
                     return false;
-                }
-
-                // check for invalid/fraudulent inputs
-                if (!ValidOutPoint(txin.prevout, chainHeight)) {
-                    return state.Invalid(
-                        error("%s : tried to spend invalid input %s in tx %s", __func__, txin.prevout.ToString(),
-                            tx.GetHash().GetHex()),
-                        REJECT_INVALID, "bad-txns-invalid-inputs");
                 }
             }
 
@@ -1970,9 +1936,14 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
                 hash.ToString(),
                 nFees, ::minRelayTxFee.GetFee(nSize) * 10000);
 
+        bool fCLTVIsActivated = chainActive.Tip()->nHeight >= Params().BIP65ActivationHeight();
+
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
-        if (!CheckInputs(tx, state, view, false, STANDARD_SCRIPT_VERIFY_FLAGS, true)) {
+        int flags = STANDARD_SCRIPT_VERIFY_FLAGS;
+        if (fCLTVIsActivated)
+            flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
+        if (!CheckInputs(tx, state, view, false, flags, true)) {
             return error("AcceptableInputs: ConnectInputs failed %s", hash.ToString());
         }
 
@@ -2140,64 +2111,24 @@ double ConvertBitsToDouble(unsigned int nBits)
     return dDiff;
 }
 
-CAmount PoSBlockReward()
-{
-    return 1 * COIN;
-}
-
-//CAmount TeamRewards(const CBlockIndex* ptip)
-//{
-//    const CBlockIndex* pForkTip = ptip;
-//    if (!ptip) {
-//        pForkTip = chainActive.Tip();
-//    }
-
-//    if (!pForkTip->IsProofOfAudit() || pForkTip->nHeight >= Params().REMOVE_REWARD_BLOCK()) return 0;
-//    const CBlockIndex* lastPoABlock = pForkTip;
-//    if (lastPoABlock->hashPrevPoABlock.IsNull()) {
-//        //pay prcy team after the first PoA block
-//        return (pForkTip->nHeight - Params().LAST_POW_BLOCK() - 1 + 1 /*+1 for the being created PoS block*/) * 0.5 * COIN;
-//    }
-
-    //loop back to find the PoA block right after which the prcy team is paid
-//    uint256 lastPoAHash = lastPoABlock->hashPrevPoABlock;
-//    CAmount ret = 0;
-//    int numPoABlocks = 1;
-//    while (!lastPoAHash.IsNull()) {
-//        if (numPoABlocks != 0 && numPoABlocks % Params().TEAM_REWARD_FREQUENCY == 0) break;
-//        CBlockIndex* p = mapBlockIndex[lastPoAHash];
-//        lastPoAHash = p->hashPrevPoABlock;
-//        numPoABlocks++;
-//    }
-
-//    if (!lastPoAHash.IsNull() && numPoABlocks != 0 && numPoABlocks % 24 == 0) {
-//        ret = (pForkTip->nHeight - (mapBlockIndex[lastPoAHash]->nHeight + 1) - numPoABlocks + 1 /*+1 for the being created PoS block*/) * 0.5 * COIN;
-//    }
-//    return ret;
-//}
-
-int64_t GetBlockValue(const CBlockIndex* ptip)
+CAmount GetBlockValue(int nHeight)
 {
     LOCK(cs_main);
     int64_t nSubsidy = 0;
-    const CBlockIndex* pForkTip = ptip;
-    if (!ptip) {
-        pForkTip = chainActive.Tip();
-    }
+    int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
 
-    if (pForkTip->nMoneySupply >= Params().TOTAL_SUPPLY) {
+    if (nMoneySupply >= Params().TOTAL_SUPPLY) {
         //zero rewards when total supply reach 70M PRCY
         return 0;
     }
-    if (pForkTip->nHeight < Params().LAST_POW_BLOCK()) {
+    if (nHeight < Params().LAST_POW_BLOCK()) {
         nSubsidy = 120000 * COIN;
     } else {
-        nSubsidy = PoSBlockReward();
- //       nSubsidy += TeamRewards(pForkTip);
+        nSubsidy = 1 * COIN;
     }
 
-    if (pForkTip->nMoneySupply + nSubsidy >= Params().TOTAL_SUPPLY) {
-        nSubsidy = Params().TOTAL_SUPPLY - pForkTip->nMoneySupply;
+    if (nMoneySupply + nSubsidy >= Params().TOTAL_SUPPLY) {
+        nSubsidy = Params().TOTAL_SUPPLY - nMoneySupply;
     }
 
     return nSubsidy;
@@ -2205,27 +2136,24 @@ int64_t GetBlockValue(const CBlockIndex* ptip)
 
 CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight)
 {
-    int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
-
     //if a mn count is inserted into the function we are looking for a specific result for a masternode count
     if (nMasternodeCount < 1) {
         nMasternodeCount = mnodeman.size();
     }
 
-    int64_t mNodeCoins = nMasternodeCount * 5000 * COIN;
+    int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
+    int64_t mNodeCoins = nMasternodeCount * Params().MNCollateralAmt();
 
     // Use this log to compare the masternode count for different clients
-    LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight,
-        nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
+    LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight,nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
 
     if (fDebug)
-        LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),
-            FormatMoney(mNodeCoins).c_str());
+        LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(), FormatMoney(mNodeCoins).c_str());
 
     CAmount ret = 0;
     if (mNodeCoins == 0) {
         ret = 0;
-    } else {
+    } else if (nHeight <= Params().SoftFork()) {
         if (mNodeCoins <= (nMoneySupply * .05) && mNodeCoins > 0) {
             ret = blockValue * .6;
         } else if (mNodeCoins <= (nMoneySupply * .1) && mNodeCoins > (nMoneySupply * .05)) {
@@ -2269,8 +2197,209 @@ CAmount GetSeeSaw(const CAmount& blockValue, int nMasternodeCount, int nHeight)
         } else {
             ret = blockValue * .40;
         }
+	} else if (nHeight > Params().SoftFork()) {
+		if (mNodeCoins <= (nMoneySupply * .01) && mNodeCoins > 0) {
+            ret = blockValue * .6;
+        } else if (mNodeCoins <= (nMoneySupply * .02) && mNodeCoins > (nMoneySupply * .01)) {
+            ret = blockValue * .598;
+        } else if (mNodeCoins <= (nMoneySupply * .03) && mNodeCoins > (nMoneySupply * .02)) {
+            ret = blockValue * .596;
+        } else if (mNodeCoins <= (nMoneySupply * .04) && mNodeCoins > (nMoneySupply * .03)) {
+            ret = blockValue * .594;
+        } else if (mNodeCoins <= (nMoneySupply * .05) && mNodeCoins > (nMoneySupply * .04)) {
+            ret = blockValue * .592;
+        } else if (mNodeCoins <= (nMoneySupply * .06) && mNodeCoins > (nMoneySupply * .05)) {
+            ret = blockValue * .59;
+        } else if (mNodeCoins <= (nMoneySupply * .07) && mNodeCoins > (nMoneySupply * .06)) {
+            ret = blockValue * .588;
+        } else if (mNodeCoins <= (nMoneySupply * .08) && mNodeCoins > (nMoneySupply * .07)) {
+            ret = blockValue * .586;
+        } else if (mNodeCoins <= (nMoneySupply * .09) && mNodeCoins > (nMoneySupply * .08)) {
+            ret = blockValue * .584;
+        } else if (mNodeCoins <= (nMoneySupply * .1) && mNodeCoins > (nMoneySupply * .09)) {
+            ret = blockValue * .582;
+        } else if (mNodeCoins <= (nMoneySupply * .11) && mNodeCoins > (nMoneySupply * .1)) {
+            ret = blockValue * .58;
+        } else if (mNodeCoins <= (nMoneySupply * .12) && mNodeCoins > (nMoneySupply * .11)) {
+            ret = blockValue * .578;
+        } else if (mNodeCoins <= (nMoneySupply * .13) && mNodeCoins > (nMoneySupply * .12)) {
+            ret = blockValue * .576;
+        } else if (mNodeCoins <= (nMoneySupply * .14) && mNodeCoins > (nMoneySupply * .13)) {
+            ret = blockValue * .574;
+        } else if (mNodeCoins <= (nMoneySupply * .15) && mNodeCoins > (nMoneySupply * .14)) {
+            ret = blockValue * .572;
+        } else if (mNodeCoins <= (nMoneySupply * .16) && mNodeCoins > (nMoneySupply * .15)) {
+            ret = blockValue * .57;
+        } else if (mNodeCoins <= (nMoneySupply * .17) && mNodeCoins > (nMoneySupply * .16)) {
+            ret = blockValue * .568;
+        } else if (mNodeCoins <= (nMoneySupply * .18) && mNodeCoins > (nMoneySupply * .17)) {
+            ret = blockValue * .566;
+        } else if (mNodeCoins <= (nMoneySupply * .19) && mNodeCoins > (nMoneySupply * .18)) {
+            ret = blockValue * .564;
+        } else if (mNodeCoins <= (nMoneySupply * .20) && mNodeCoins > (nMoneySupply * .19)) {
+            ret = blockValue * .562;
+        } else if (mNodeCoins <= (nMoneySupply * .21) && mNodeCoins > (nMoneySupply * .20)) {
+            ret = blockValue * .56;
+        } else if (mNodeCoins <= (nMoneySupply * .22) && mNodeCoins > (nMoneySupply * .21)) {
+            ret = blockValue * .558;
+        } else if (mNodeCoins <= (nMoneySupply * .23) && mNodeCoins > (nMoneySupply * .22)) {
+            ret = blockValue * .556;
+        } else if (mNodeCoins <= (nMoneySupply * .24) && mNodeCoins > (nMoneySupply * .23)) {
+            ret = blockValue * .554;
+        } else if (mNodeCoins <= (nMoneySupply * .25) && mNodeCoins > (nMoneySupply * .24)) {
+            ret = blockValue * .552;
+        } else if (mNodeCoins <= (nMoneySupply * .26) && mNodeCoins > (nMoneySupply * .25)) {
+            ret = blockValue * .55;
+        } else if (mNodeCoins <= (nMoneySupply * .27) && mNodeCoins > (nMoneySupply * .26)) {
+            ret = blockValue * .548;
+        } else if (mNodeCoins <= (nMoneySupply * .28) && mNodeCoins > (nMoneySupply * .27)) {
+            ret = blockValue * .546;
+        } else if (mNodeCoins <= (nMoneySupply * .29) && mNodeCoins > (nMoneySupply * .28)) {
+            ret = blockValue * .544;
+        } else if (mNodeCoins <= (nMoneySupply * .30) && mNodeCoins > (nMoneySupply * .29)) {
+            ret = blockValue * .542;
+        } else if (mNodeCoins <= (nMoneySupply * .31) && mNodeCoins > (nMoneySupply * .30)) {
+            ret = blockValue * .54;
+        } else if (mNodeCoins <= (nMoneySupply * .32) && mNodeCoins > (nMoneySupply * .31)) {
+            ret = blockValue * .538;
+        } else if (mNodeCoins <= (nMoneySupply * .33) && mNodeCoins > (nMoneySupply * .32)) {
+            ret = blockValue * .536;
+        } else if (mNodeCoins <= (nMoneySupply * .34) && mNodeCoins > (nMoneySupply * .33)) {
+            ret = blockValue * .534;
+        } else if (mNodeCoins <= (nMoneySupply * .35) && mNodeCoins > (nMoneySupply * .34)) {
+            ret = blockValue * .532;
+        } else if (mNodeCoins <= (nMoneySupply * .36) && mNodeCoins > (nMoneySupply * .35)) {
+            ret = blockValue * .53;
+        } else if (mNodeCoins <= (nMoneySupply * .37) && mNodeCoins > (nMoneySupply * .36)) {
+            ret = blockValue * .528;
+        } else if (mNodeCoins <= (nMoneySupply * .38) && mNodeCoins > (nMoneySupply * .37)) {
+            ret = blockValue * .526;
+        } else if (mNodeCoins <= (nMoneySupply * .39) && mNodeCoins > (nMoneySupply * .38)) {
+            ret = blockValue * .524;
+        } else if (mNodeCoins <= (nMoneySupply * .40) && mNodeCoins > (nMoneySupply * .39)) {
+            ret = blockValue * .522;
+        } else if (mNodeCoins <= (nMoneySupply * .41) && mNodeCoins > (nMoneySupply * .40)) {
+            ret = blockValue * .52;
+        } else if (mNodeCoins <= (nMoneySupply * .42) && mNodeCoins > (nMoneySupply * .41)) {
+            ret = blockValue * .518;
+        } else if (mNodeCoins <= (nMoneySupply * .43) && mNodeCoins > (nMoneySupply * .42)) {
+            ret = blockValue * .516;
+        } else if (mNodeCoins <= (nMoneySupply * .44) && mNodeCoins > (nMoneySupply * .43)) {
+            ret = blockValue * .514;
+        } else if (mNodeCoins <= (nMoneySupply * .45) && mNodeCoins > (nMoneySupply * .44)) {
+            ret = blockValue * .512;
+        } else if (mNodeCoins <= (nMoneySupply * .46) && mNodeCoins > (nMoneySupply * .45)) {
+            ret = blockValue * .51;
+        } else if (mNodeCoins <= (nMoneySupply * .47) && mNodeCoins > (nMoneySupply * .46)) {
+            ret = blockValue * .508;
+        } else if (mNodeCoins <= (nMoneySupply * .48) && mNodeCoins > (nMoneySupply * .47)) {
+            ret = blockValue * .506;
+        } else if (mNodeCoins <= (nMoneySupply * .49) && mNodeCoins > (nMoneySupply * .48)) {
+            ret = blockValue * .504;
+        } else if (mNodeCoins <= (nMoneySupply * .50) && mNodeCoins > (nMoneySupply * .49)) {
+            ret = blockValue * .502;
+        } else if (mNodeCoins <= (nMoneySupply * .51) && mNodeCoins > (nMoneySupply * .5)) {
+            ret = blockValue * .50;
+        } else if (mNodeCoins <= (nMoneySupply * .52) && mNodeCoins > (nMoneySupply * .51)) {
+            ret = blockValue * .498;
+        } else if (mNodeCoins <= (nMoneySupply * .53) && mNodeCoins > (nMoneySupply * .52)) {
+            ret = blockValue * .496;
+        } else if (mNodeCoins <= (nMoneySupply * .54) && mNodeCoins > (nMoneySupply * .53)) {
+            ret = blockValue * .494;
+        } else if (mNodeCoins <= (nMoneySupply * .55) && mNodeCoins > (nMoneySupply * .54)) {
+            ret = blockValue * .492;
+        } else if (mNodeCoins <= (nMoneySupply * .56) && mNodeCoins > (nMoneySupply * .55)) {
+            ret = blockValue * .49;
+        } else if (mNodeCoins <= (nMoneySupply * .57) && mNodeCoins > (nMoneySupply * .56)) {
+            ret = blockValue * .488;
+        } else if (mNodeCoins <= (nMoneySupply * .58) && mNodeCoins > (nMoneySupply * .57)) {
+            ret = blockValue * .486;
+        } else if (mNodeCoins <= (nMoneySupply * .59) && mNodeCoins > (nMoneySupply * .58)) {
+            ret = blockValue * .484;
+        } else if (mNodeCoins <= (nMoneySupply * .60) && mNodeCoins > (nMoneySupply * .59)) {
+            ret = blockValue * .482;
+        } else if (mNodeCoins <= (nMoneySupply * .61) && mNodeCoins > (nMoneySupply * .60)) {
+            ret = blockValue * .48;
+        } else if (mNodeCoins <= (nMoneySupply * .62) && mNodeCoins > (nMoneySupply * .61)) {
+            ret = blockValue * .478;
+        } else if (mNodeCoins <= (nMoneySupply * .63) && mNodeCoins > (nMoneySupply * .62)) {
+            ret = blockValue * .476;
+        } else if (mNodeCoins <= (nMoneySupply * .64) && mNodeCoins > (nMoneySupply * .63)) {
+            ret = blockValue * .474;
+        } else if (mNodeCoins <= (nMoneySupply * .65) && mNodeCoins > (nMoneySupply * .64)) {
+            ret = blockValue * .472;
+        } else if (mNodeCoins <= (nMoneySupply * .66) && mNodeCoins > (nMoneySupply * .65)) {
+            ret = blockValue * .47;
+        } else if (mNodeCoins <= (nMoneySupply * .67) && mNodeCoins > (nMoneySupply * .66)) {
+            ret = blockValue * .468;
+        } else if (mNodeCoins <= (nMoneySupply * .68) && mNodeCoins > (nMoneySupply * .67)) {
+            ret = blockValue * .466;
+        } else if (mNodeCoins <= (nMoneySupply * .69) && mNodeCoins > (nMoneySupply * .68)) {
+            ret = blockValue * .464;
+        } else if (mNodeCoins <= (nMoneySupply * .70) && mNodeCoins > (nMoneySupply * .69)) {
+            ret = blockValue * .462;
+        } else if (mNodeCoins <= (nMoneySupply * .71) && mNodeCoins > (nMoneySupply * .7)) {
+            ret = blockValue * .46;
+        } else if (mNodeCoins <= (nMoneySupply * .72) && mNodeCoins > (nMoneySupply * .71)) {
+            ret = blockValue * .458;
+        } else if (mNodeCoins <= (nMoneySupply * .73) && mNodeCoins > (nMoneySupply * .72)) {
+            ret = blockValue * .456;
+        } else if (mNodeCoins <= (nMoneySupply * .74) && mNodeCoins > (nMoneySupply * .73)) {
+            ret = blockValue * .454;
+        } else if (mNodeCoins <= (nMoneySupply * .75) && mNodeCoins > (nMoneySupply * .74)) {
+            ret = blockValue * .452;
+        } else if (mNodeCoins <= (nMoneySupply * .76) && mNodeCoins > (nMoneySupply * .75)) {
+            ret = blockValue * .45;
+        } else if (mNodeCoins <= (nMoneySupply * .77) && mNodeCoins > (nMoneySupply * .76)) {
+            ret = blockValue * .448;
+        } else if (mNodeCoins <= (nMoneySupply * .78) && mNodeCoins > (nMoneySupply * .77)) {
+            ret = blockValue * .446;
+        } else if (mNodeCoins <= (nMoneySupply * .79) && mNodeCoins > (nMoneySupply * .78)) {
+            ret = blockValue * .444;
+        } else if (mNodeCoins <= (nMoneySupply * .80) && mNodeCoins > (nMoneySupply * .79)) {
+            ret = blockValue * .442;
+        } else if (mNodeCoins <= (nMoneySupply * .81) && mNodeCoins > (nMoneySupply * .8)) {
+            ret = blockValue * .44;
+        } else if (mNodeCoins <= (nMoneySupply * .82) && mNodeCoins > (nMoneySupply * .81)) {
+            ret = blockValue * .438;
+        } else if (mNodeCoins <= (nMoneySupply * .83) && mNodeCoins > (nMoneySupply * .82)) {
+            ret = blockValue * .436;
+        } else if (mNodeCoins <= (nMoneySupply * .84) && mNodeCoins > (nMoneySupply * .83)) {
+            ret = blockValue * .434;
+        } else if (mNodeCoins <= (nMoneySupply * .85) && mNodeCoins > (nMoneySupply * .84)) {
+            ret = blockValue * .432;
+        } else if (mNodeCoins <= (nMoneySupply * .86) && mNodeCoins > (nMoneySupply * .85)) {
+            ret = blockValue * .43;
+        } else if (mNodeCoins <= (nMoneySupply * .87) && mNodeCoins > (nMoneySupply * .86)) {
+            ret = blockValue * .428;
+        } else if (mNodeCoins <= (nMoneySupply * .88) && mNodeCoins > (nMoneySupply * .87)) {
+            ret = blockValue * .426;
+        } else if (mNodeCoins <= (nMoneySupply * .89) && mNodeCoins > (nMoneySupply * .88)) {
+            ret = blockValue * .424;
+        } else if (mNodeCoins <= (nMoneySupply * .90) && mNodeCoins > (nMoneySupply * .89)) {
+            ret = blockValue * .422;
+        } else if (mNodeCoins <= (nMoneySupply * .91) && mNodeCoins > (nMoneySupply * .90)) {
+            ret = blockValue * .42;
+        } else if (mNodeCoins <= (nMoneySupply * .92) && mNodeCoins > (nMoneySupply * .91)) {
+            ret = blockValue * .418;
+        } else if (mNodeCoins <= (nMoneySupply * .93) && mNodeCoins > (nMoneySupply * .92)) {
+            ret = blockValue * .416;
+        } else if (mNodeCoins <= (nMoneySupply * .94) && mNodeCoins > (nMoneySupply * .93)) {
+            ret = blockValue * .414;
+        } else if (mNodeCoins <= (nMoneySupply * .95) && mNodeCoins > (nMoneySupply * .94)) {
+            ret = blockValue * .412;
+        } else if (mNodeCoins <= (nMoneySupply * .96) && mNodeCoins > (nMoneySupply * .95)) {
+            ret = blockValue * .41;
+        } else if (mNodeCoins <= (nMoneySupply * .97) && mNodeCoins > (nMoneySupply * .96)) {
+            ret = blockValue * .408;
+        } else if (mNodeCoins <= (nMoneySupply * .98) && mNodeCoins > (nMoneySupply * .97)) {
+            ret = blockValue * .404;
+        } else if (mNodeCoins <= (nMoneySupply * .99) && mNodeCoins > (nMoneySupply * .98)) {
+            ret = blockValue * .402;
+        } else {
+            ret = blockValue * .40;
+        }
     }
-
     return ret;
 }
 
@@ -2536,25 +2665,9 @@ CBitcoinAddress addressExp2("DTQYdnNqKuEHXyNeeYhPQGGGdqHbXYwjpj");
 map<COutPoint, COutPoint> mapInvalidOutPoints;
 map<CBigNum, CAmount> mapInvalidSerials;
 
-void AddInvalidSpendsToMap(const CBlock& block)
-{
-    //empty function
-}
-
 // Populate global map (mapInvalidOutPoints) of invalid/fraudulent OutPoints that are banned from being used on the chain.
 CAmount nFilteredThroughBittrex = 0;
 bool fListPopulatedAfterLock = false;
-
-void PopulateInvalidOutPointMap()
-{
-    //empty function
-}
-
-bool ValidOutPoint(const COutPoint out, int nHeight)
-{
-    bool isInvalid = nHeight >= Params().Block_Enforce_Invalid() && mapInvalidOutPoints.count(out);
-    return !isInvalid;
-}
 
 CAmount GetInvalidUTXOValue()
 {
@@ -2869,11 +2982,6 @@ bool RecalculatePRCYSupply(int nHeightStart)
     return true;
 }
 
-bool ReindexAccumulators(list<uint256>& listMissingCheckpoints, string& strError)
-{
-    return true;
-}
-
 static int64_t nTimeVerify = 0;
 static int64_t nTimeConnect = 0;
 static int64_t nTimeIndex = 0;
@@ -2904,22 +3012,33 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (!fVerifyingBlocks && block.IsProofOfAudit()) {
         //Check PoA consensus rules
         if (!CheckPoAContainRecentHash(block)) {
-            return state.DoS(100, error("ConnectBlock(): PoA block should contain only non-audited recent PoS blocks"));
+            return state.DoS(100, error("ConnectBlock(): PoA block should contain only non-audited recent PoS blocks"),
+                REJECT_INVALID, "blocks-already-audited");
         }
 
         if (!CheckNumberOfAuditedPoSBlocks(block, pindex)) {
-            return state.DoS(100, error("ConnectBlock(): A PoA block should audit at least 59 PoS blocks and no more than 120 PoS blocks"));
+            return state.DoS(100, error("ConnectBlock(): A PoA block should audit at least 59 PoS blocks and no more than 120 PoS blocks (65 max after block 169869)"),
+                             REJECT_INVALID, "incorrect-number-audited-blocks");
         }
 
         if (!CheckPoABlockNotContainingPoABlockInfo(block, pindex)) {
-            return state.DoS(100, error("ConnectBlock(): A PoA block should not audit any existing PoA blocks"));
+            return state.DoS(100, error("ConnectBlock(): A PoA block should not audit any existing PoA blocks"),
+                             REJECT_INVALID, "auditing-poa-block");
         }
 
         if (!CheckPoABlockRewardAmount(block, pindex)) {
-            return state.DoS(100, error("ConnectBlock(): This PoA block reward does not match the value it should"));
+            return state.DoS(100, error("ConnectBlock(): This PoA block reward does not match the value it should"),
+                             REJECT_INVALID, "incorrect-reward");
         }
+
+        if (!CheckPoABlockPaddingAmount(block, pindex)) {
+            return state.DoS(100, error("ConnectBlock(): This PoA block does not have the correct padding"),
+                             REJECT_INVALID, "incorrect-padding");
+        }
+
         if (block.GetBlockTime() >= GetAdjustedTime() + 2 * 60) {
-            return state.DoS(100, error("ConnectBlock(): A PoA block should not be in the future"));
+            return state.DoS(100, error("ConnectBlock(): A PoA block should not be in the future"),
+                             REJECT_INVALID, "time-in-future");
         }
     }
 
@@ -2945,6 +3064,12 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             REJECT_INVALID, "PoW-ended");
 
     bool fScriptChecks = pindex->nHeight >= Checkpoints::GetTotalBlocksEstimate();
+
+    // If scripts won't be checked anyways, don't bother seeing if CLTV is activated
+    bool fCLTVIsActivated = false;
+    if (fScriptChecks && pindex->pprev) {
+        fCLTVIsActivated = pindex->pprev->nHeight >= Params().BIP65ActivationHeight();
+    }
 
     // BIP16 didn't become active until Apr 1 2012
     int64_t nBIP16SwitchTime = 1333238400;
@@ -3009,9 +3134,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                     }
                     pwalletMain->pendingKeyImages.remove(keyImage.GetHex());
                 }
-                if (!ValidOutPoint(in.prevout, pindex->nHeight)) {
-                    return state.DoS(100, error("%s : tried to spend invalid input %s in tx %s", __func__, in.prevout.ToString(), tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-inputs");
-                }
             }
 
             if (!tx.IsCoinStake())
@@ -3020,6 +3142,10 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             nValueIn += valTemp;
 
             std::vector<CScriptCheck> vChecks;
+			unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_DERSIG;
+            if (fCLTVIsActivated)
+                flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
+
             if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL))
                 return false;
             control.Add(vChecks);
@@ -3039,33 +3165,17 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (block.IsProofOfStake()) {
         const CTransaction coinstake = block.vtx[1];
         size_t numUTXO = coinstake.vout.size();
-        CAmount posBlockReward = PoSBlockReward();
         if (mapBlockIndex.count(block.hashPrevBlock) < 1) {
             return state.DoS(100, error("ConnectBlock() : Previous block not found, received block %s, previous %s, current tip %s", block.GetHash().GetHex(), block.hashPrevBlock.GetHex(), chainActive.Tip()->GetBlockHash().GetHex()));
         }
-        int thisBlockHeight = mapBlockIndex[block.hashPrevBlock]->nHeight + 1; //avoid potential block disorder during download
-        CAmount blockValue = GetBlockValue(mapBlockIndex[block.hashPrevBlock]);
-        /*if (blockValue > posBlockReward) {
-            //numUTXO - 1 is PoS rewards commitment not correct", numUTXO - 2 is masternode reward
-            const CTxOut& mnOut = coinstake.vout[numUTXO - 2];
-            std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-            if (!VerifyDerivedAddress(mnOut, mnsa))
-                return state.DoS(100, error("ConnectBlock() : Incorrect derived address for masternode rewards"));
+        CAmount blockValue = GetBlockValue(mapBlockIndex[block.hashPrevBlock]->nHeight);
+        const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
+        std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
+        if (!VerifyDerivedAddress(mnOut, mnsa))
+            return state.DoS(100, error("ConnectBlock() : Incorrect derived address for masternode rewards"));
 
-            CAmount teamReward = blockValue - posBlockReward;
-            const CTxOut& foundationOut = coinstake.vout[numUTXO - 1];
-            if (foundationOut.nValue != teamReward)
-                return state.DoS(100, error("ConnectBlock() : Incorrect amount PoS rewards for foundation, reward = %d while the correct reward = %d", foundationOut.nValue, teamReward));
-
-            //if (!VerifyDerivedAddress(foundationOut, FOUNDATION_WALLET))
-                //return state.DoS(100, error("ConnectBlock() : Incorrect derived address PoS rewards for foundation"));
-        } else {*/
-            //there is no team rewards in this block
-            const CTxOut& mnOut = coinstake.vout[numUTXO - 1];
-            std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
-            if (!VerifyDerivedAddress(mnOut, mnsa))
-                return state.DoS(100, error("ConnectBlock() : Incorrect derived address for masternode rewards"));
-        //}
+        if (pindex->nHeight <= Params().HardFork() && nValueIn < Params().MinimumStakeAmount())
+            return state.DoS(100, error("ConnectBlock() : Incorrect Minimum Stake Amount"));
     }
 
     // track money supply and mint amount info
@@ -3082,7 +3192,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         nInputs <= 1 ? 0 : 0.001 * (nTime1 - nTimeStart) / (nInputs - 1), nTimeConnect * 0.000001);
 
     //PoW phase redistributed fees to miner. PoS stage destroys fees.
-    CAmount nExpectedMint = GetBlockValue(pindex->pprev);
+    CAmount nExpectedMint = GetBlockValue(pindex->pprev->nHeight);
     nExpectedMint += nFees;
 
     if (!block.IsPoABlockByVersion() && !IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
@@ -3187,6 +3297,7 @@ bool static FlushStateToDisk(CValidationState& state, FlushStateMode mode)
                     vBlocks.push_back(*it);
                     setDirtyBlockIndex.erase(it++);
                 }
+
                 if (!pblocktree->WriteBatchSync(vFiles, nLastBlockFile, vBlocks)) {
                     return state.Abort("Files to write to block index database");
                 }
@@ -4286,6 +4397,12 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
             REJECT_OBSOLETE, "bad-version");
     }
 
+    // Reject block.nVersion=4 blocks when 95% (75% on testnet) of the network has upgraded:
+    if (block.nVersion < 5 && CBlockIndex::IsSuperMajority(5, pindexPrev, Params().RejectBlockOutdatedMajority())) {
+        return state.Invalid(error("%s : rejected nVersion=4 block", __func__),
+                             REJECT_OBSOLETE, "bad-version");
+    }
+
     return true;
 }
 
@@ -4615,7 +4732,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             pwalletMain->MultiSend();*/
 
         // If turned on Auto Combine will scan wallet for dust to combine
-        if (pwalletMain->fCombineDust)
+        if (pwalletMain->fCombineDust && chainActive.Height() % 15 == 0)
             pwalletMain->AutoCombineDust();
 
         if (chainActive.Height() % 15 == 0) {
@@ -4704,7 +4821,6 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             LogPrintf("%s: Coinbase decoys = %d, user decoys = %d\n", __func__, pwalletMain->coinbaseDecoysPool.size(), pwalletMain->userDecoysPool.size());
         }
     }
-
 
     LogPrintf("%s: ACCEPTED in %ld milliseconds with size=%d, height=%d\n", __func__, GetTimeMillis() - nStartTime,
         pblock->GetSerializeSize(SER_DISK, CLIENT_VERSION), chainActive.Height());
@@ -5714,7 +5830,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             vRecv >> LIMITED_STRING(pfrom->strSubVer, MAX_SUBVERSION_LENGTH);
             pfrom->cleanSubVer = SanitizeString(pfrom->strSubVer);
         }
-        if (IsUnsupportedVersion(pfrom->strSubVer)) {
+        if (IsUnsupportedVersion(pfrom->strSubVer, chainActive.Height())) {
                 // disconnect from peers other than these sub versions
                 LogPrintf("peer %s using unsupported version %s; disconnecting and banning\n", pfrom->addr.ToString().c_str(), pfrom->strSubVer.c_str());
                 state->fShouldBan = true;
