@@ -894,7 +894,7 @@ UniValue getcurrentseesawreward (const UniValue& params, bool fHelp)
     int ipv4 = 0, ipv6 = 0, onion = 0;
     mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
     int nblockHeight = chainActive.Tip()->nHeight;
-    CAmount nReward = GetBlockValue(chainActive.Tip());
+    CAmount nReward = GetBlockValue(nblockHeight);
 
     CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
     CAmount stakingnodeReward = nReward - masternodeReward;
@@ -929,7 +929,7 @@ UniValue getseesawrewardwithheight (const UniValue& params, bool fHelp)
     UniValue obj(UniValue::VOBJ);
     int ipv4 = 0, ipv6 = 0, onion = 0;
     mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
-    CAmount nReward = GetBlockValue(chainActive[nblockHeight]);
+    CAmount nReward = GetBlockValue(nblockHeight);
 
     CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
     CAmount stakingnodeReward = nReward - masternodeReward;
@@ -961,7 +961,7 @@ UniValue getseesawrewardratio (const UniValue& params, bool fHelp)
     UniValue obj(UniValue::VOBJ);
     int ipv4 = 0, ipv6 = 0, onion = 0;
     mnodeman.CountNetworks(ActiveProtocol(), ipv4, ipv6, onion);
-    CAmount nReward = GetBlockValue(chainActive[nblockHeight]);
+    CAmount nReward = GetBlockValue(nblockHeight);
 
     CAmount masternodeReward = GetSeeSaw(nReward, 0, nblockHeight);
     int masternodeRatio = (masternodeReward * 100)/nReward;
