@@ -336,7 +336,7 @@ static const CRPCCommand vRPCCommands[] =
         /* Utility functions */
         //{"util", "createmultisig", &createmultisig, true, true, false},
         // {"util", "validateaddress", &validateaddress, true, false, false}, /* uses wallet if enabled */
-        // {"util", "verifymessage", &verifymessage, true, false, false},
+        {"util", "verifymessage", &verifymessage, true, false, false},
         //{"util", "estimatefee", &estimatefee, true, true, false},
         // {"util", "estimatepriority", &estimatepriority, true, true, false},
 
@@ -397,7 +397,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "getbalances", &getbalances, false, false, true},
         {"wallet", "generateintegratedaddress", &generateintegratedaddress, true, false, false},
         {"wallet", "readmasteraccount", &readmasteraccount, true, false, false},
-        // {"wallet", "getnewaddress", &getnewaddress, true, false, true},
+        {"wallet", "getnewaddress", &generateintegratedaddress, true, false, true},
         // {"wallet", "getrawchangeaddress", &getrawchangeaddress, true, false, true},
         // {"wallet", "getreceivedbyaccount", &getreceivedbyaccount, false, false, true},
         // {"wallet", "getreceivedbyaddress", &getreceivedbyaddress, false, false, true},
@@ -429,7 +429,7 @@ static const CRPCCommand vRPCCommands[] =
         // {"wallet", "setaccount", &setaccount, true, false, true},
         // {"wallet", "setstakesplitthreshold", &setstakesplitthreshold, false, false, true},
         // {"wallet", "settxfee", &settxfee, true, false, true},
-        // {"wallet", "signmessage", &signmessage, true, false, true},
+        {"wallet", "signmessage", &signmessage, true, false, true},
         {"wallet", "walletlock", &walletlock, true, false, true},
         {"wallet", "walletpassphrasechange", &walletpassphrasechange, true, false, true},
         {"wallet", "unlockwallet", &unlockwallet, true, false, true},
