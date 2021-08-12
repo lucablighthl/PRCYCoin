@@ -3173,9 +3173,11 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         std::string mnsa(mnOut.masternodeStealthAddress.begin(), mnOut.masternodeStealthAddress.end());
         if (!VerifyDerivedAddress(mnOut, mnsa))
             return state.DoS(100, error("ConnectBlock() : Incorrect derived address for masternode rewards"));
-
-        if (pindex->nHeight <= Params().HardFork() && nValueIn < Params().MinimumStakeAmount())
+        LogPrintf("%s: HEIGHT: %d", __func__, pindex->nHeight);
+        if (pindex->nHeight <= Params().HardFork() && nValueIn < Params().MinimumStakeAmount()) {
+            LogPrintf("%s: HEIGHT: %d", __func__, pindex->nHeight);
             return state.DoS(100, error("ConnectBlock() : Incorrect Minimum Stake Amount"));
+        }
     }
 
     // track money supply and mint amount info
