@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 // Copyright (c) 2014 The Bitcoin developers
+=======
+// Copyright (c) 2014-2018 The Bitcoin Core developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_CRYPTO_COMMON_H
 #define BITCOIN_CRYPTO_COMMON_H
 
+<<<<<<< HEAD
 #include <stdint.h>
 
 #if defined(HAVE_ENDIAN_H)
@@ -20,10 +25,34 @@ uint32_t static inline ReadLE32(const unsigned char* ptr)
 #else
     return ((uint32_t)ptr[3] << 24 | (uint32_t)ptr[2] << 16 | (uint32_t)ptr[1] << 8 | (uint32_t)ptr[0]);
 #endif
+=======
+#if defined(HAVE_CONFIG_H)
+#include <config/pivx-config.h>
+#endif
+
+#include <stdint.h>
+#include <string.h>
+
+#include <compat/endian.h>
+
+uint16_t static inline ReadLE16(const unsigned char* ptr)
+{
+    uint16_t x;
+    memcpy((char*)&x, ptr, 2);
+    return le16toh(x);
+}
+
+uint32_t static inline ReadLE32(const unsigned char* ptr)
+{
+    uint32_t x;
+    memcpy((char*)&x, ptr, 4);
+    return le32toh(x);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 uint64_t static inline ReadLE64(const unsigned char* ptr)
 {
+<<<<<<< HEAD
 #if HAVE_DECL_LE64TOH == 1
     return le64toh(*((uint64_t*)ptr));
 #elif !defined(WORDS_BIGENDIAN)
@@ -32,10 +61,22 @@ uint64_t static inline ReadLE64(const unsigned char* ptr)
     return ((uint64_t)ptr[7] << 56 | (uint64_t)ptr[6] << 48 | (uint64_t)ptr[5] << 40 | (uint64_t)ptr[4] << 32 |
             (uint64_t)ptr[3] << 24 | (uint64_t)ptr[2] << 16 | (uint64_t)ptr[1] << 8 | (uint64_t)ptr[0]);
 #endif
+=======
+    uint64_t x;
+    memcpy((char*)&x, ptr, 8);
+    return le64toh(x);
+}
+
+void static inline WriteLE16(unsigned char* ptr, uint16_t x)
+{
+    uint16_t v = htole16(x);
+    memcpy(ptr, (char*)&v, 2);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 void static inline WriteLE32(unsigned char* ptr, uint32_t x)
 {
+<<<<<<< HEAD
 #if HAVE_DECL_HTOLE32 == 1
     *((uint32_t*)ptr) = htole32(x);
 #elif !defined(WORDS_BIGENDIAN)
@@ -46,10 +87,15 @@ void static inline WriteLE32(unsigned char* ptr, uint32_t x)
     ptr[1] = x >> 8;
     ptr[0] = x;
 #endif
+=======
+    uint32_t v = htole32(x);
+    memcpy(ptr, (char*)&v, 4);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 void static inline WriteLE64(unsigned char* ptr, uint64_t x)
 {
+<<<<<<< HEAD
 #if HAVE_DECL_HTOLE64 == 1
     *((uint64_t*)ptr) = htole64(x);
 #elif !defined(WORDS_BIGENDIAN)
@@ -64,29 +110,53 @@ void static inline WriteLE64(unsigned char* ptr, uint64_t x)
     ptr[1] = x >> 8;
     ptr[0] = x;
 #endif
+=======
+    uint64_t v = htole64(x);
+    memcpy(ptr, (char*)&v, 8);
+}
+
+uint16_t static inline ReadBE16(const unsigned char* ptr)
+{
+    uint16_t x;
+    memcpy((char*)&x, ptr, 2);
+    return be16toh(x);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 uint32_t static inline ReadBE32(const unsigned char* ptr)
 {
+<<<<<<< HEAD
 #if HAVE_DECL_BE32TOH == 1
     return be32toh(*((uint32_t*)ptr));
 #else
     return ((uint32_t)ptr[0] << 24 | (uint32_t)ptr[1] << 16 | (uint32_t)ptr[2] << 8 | (uint32_t)ptr[3]);
 #endif
+=======
+    uint32_t x;
+    memcpy((char*)&x, ptr, 4);
+    return be32toh(x);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 uint64_t static inline ReadBE64(const unsigned char* ptr)
 {
+<<<<<<< HEAD
 #if HAVE_DECL_BE64TOH == 1
     return be64toh(*((uint64_t*)ptr));
 #else
     return ((uint64_t)ptr[0] << 56 | (uint64_t)ptr[1] << 48 | (uint64_t)ptr[2] << 40 | (uint64_t)ptr[3] << 32 |
             (uint64_t)ptr[4] << 24 | (uint64_t)ptr[5] << 16 | (uint64_t)ptr[6] << 8 | (uint64_t)ptr[7]);
 #endif
+=======
+    uint64_t x;
+    memcpy((char*)&x, ptr, 8);
+    return be64toh(x);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 void static inline WriteBE32(unsigned char* ptr, uint32_t x)
 {
+<<<<<<< HEAD
 #if HAVE_DECL_HTOBE32 == 1
     *((uint32_t*)ptr) = htobe32(x);
 #else
@@ -95,10 +165,15 @@ void static inline WriteBE32(unsigned char* ptr, uint32_t x)
     ptr[2] = x >> 8;
     ptr[3] = x;
 #endif
+=======
+    uint32_t v = htobe32(x);
+    memcpy(ptr, (char*)&v, 4);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 void static inline WriteBE64(unsigned char* ptr, uint64_t x)
 {
+<<<<<<< HEAD
 #if HAVE_DECL_HTOBE64 == 1
     *((uint64_t*)ptr) = htobe64(x);
 #else
@@ -111,17 +186,29 @@ void static inline WriteBE64(unsigned char* ptr, uint64_t x)
     ptr[6] = x >> 8;
     ptr[7] = x;
 #endif
+=======
+    uint64_t v = htobe64(x);
+    memcpy(ptr, (char*)&v, 8);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 /** Return the smallest number n such that (x >> n) == 0 (or 64 if the highest bit in x is set. */
 uint64_t static inline CountBits(uint64_t x)
 {
+<<<<<<< HEAD
 #ifdef HAVE_DECL___BUILTIN_CLZL
+=======
+#if HAVE_DECL___BUILTIN_CLZL
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if (sizeof(unsigned long) >= sizeof(uint64_t)) {
         return x ? 8 * sizeof(unsigned long) - __builtin_clzl(x) : 0;
     }
 #endif
+<<<<<<< HEAD
 #ifdef HAVE_DECL___BUILTIN_CLZLL
+=======
+#if HAVE_DECL___BUILTIN_CLZLL
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if (sizeof(unsigned long long) >= sizeof(uint64_t)) {
         return x ? 8 * sizeof(unsigned long long) - __builtin_clzll(x) : 0;
     }
@@ -134,4 +221,8 @@ uint64_t static inline CountBits(uint64_t x)
     return ret;
 }
 
+<<<<<<< HEAD
 #endif // BITCOIN_CRYPTO_COMMON_H
+=======
+#endif // BITCOIN_CRYPTO_COMMON_H
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

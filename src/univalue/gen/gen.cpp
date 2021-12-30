@@ -12,8 +12,11 @@
 #include <string.h>
 #include "univalue.h"
 
+<<<<<<< HEAD
 using namespace std;
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 static bool initEscapes;
 static std::string escapes[256];
 

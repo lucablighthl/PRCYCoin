@@ -27,6 +27,7 @@ Files: debian/manpages/*
 Copyright: Micah Anderson <micah@debian.org>
 License: GPL-3+
 
+<<<<<<< HEAD
 Files: src/qt/res/icons/clock*.png, src/qt/res/icons/tx*.png,
        src/qt/res/src/*.svg
 Copyright: Wladimir van der Laan
@@ -65,17 +66,22 @@ Copyright: http://www.everaldo.com
 License: LGPL
 Comment: Icon Pack: Crystal SVG
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 Files: src/qt/res/icons/bitcoin.png, src/qt/res/icons/toolbar.png
 Copyright: Bitboy (optimized for 16x16 by Wladimir van der Laan)
 License: PUB-DOM
 Comment: Site: https://bitcointalk.org/?topic=1756.0
 
+<<<<<<< HEAD
 Files:  scripts/img/reload.xcf, src/qt/res/movies/*.png
 Copyright: Everaldo (Everaldo Coelho)
 License: GPL-3+
 Comment: Icon Pack: Kids
          Site: http://findicons.com/icon/17102/reload?id=17102
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 Files: src/qt/res/images/splash2.jpg
 License: PUB-DOM
 Copyright: Crobbo (forum)

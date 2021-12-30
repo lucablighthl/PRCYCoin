@@ -8,7 +8,11 @@
 namespace leveldb {
 namespace crc32c {
 
+<<<<<<< HEAD
 class CRC { };
+=======
+class CRC {};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(CRC, StandardResults) {
   // From rfc3720 section B.4.
@@ -30,6 +34,7 @@ TEST(CRC, StandardResults) {
   }
   ASSERT_EQ(0x113fdb5c, Value(buf, sizeof(buf)));
 
+<<<<<<< HEAD
   unsigned char data[48] = {
     0x01, 0xc0, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
@@ -43,10 +48,18 @@ TEST(CRC, StandardResults) {
     0x00, 0x00, 0x00, 0x00,
     0x02, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00,
+=======
+  uint8_t data[48] = {
+      0x01, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00,
+      0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00, 0x18, 0x28, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   };
   ASSERT_EQ(0xd9963a56, Value(reinterpret_cast<char*>(data), sizeof(data)));
 }
 
+<<<<<<< HEAD
 TEST(CRC, Values) {
   ASSERT_NE(Value("a", 1), Value("foo", 3));
 }
@@ -54,6 +67,12 @@ TEST(CRC, Values) {
 TEST(CRC, Extend) {
   ASSERT_EQ(Value("hello world", 11),
             Extend(Value("hello ", 6), "world", 5));
+=======
+TEST(CRC, Values) { ASSERT_NE(Value("a", 1), Value("foo", 3)); }
+
+TEST(CRC, Extend) {
+  ASSERT_EQ(Value("hello world", 11), Extend(Value("hello ", 6), "world", 5));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 TEST(CRC, Mask) {
@@ -67,6 +86,10 @@ TEST(CRC, Mask) {
 }  // namespace crc32c
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

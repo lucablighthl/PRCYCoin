@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,7 +24,11 @@ void CoinControlTreeWidget::keyPressEvent(QKeyEvent* event)
     } else if (event->key() == Qt::Key_Escape) // press esc -> close dialog
     {
         event->ignore();
+<<<<<<< HEAD
         auto* coinControlDialog = (CoinControlDialog*) this->parentWidget()->parentWidget();
+=======
+        auto* coinControlDialog = static_cast<CoinControlDialog*>(this->parentWidget()->parentWidget());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         coinControlDialog->done(QDialog::Accepted);
     } else {
         this->QTreeWidget::keyPressEvent(event);

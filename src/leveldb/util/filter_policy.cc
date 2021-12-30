@@ -6,6 +6,10 @@
 
 namespace leveldb {
 
+<<<<<<< HEAD
 FilterPolicy::~FilterPolicy() { }
+=======
+FilterPolicy::~FilterPolicy() {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace leveldb

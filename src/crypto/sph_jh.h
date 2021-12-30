@@ -75,6 +75,7 @@ extern "C"{
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[64];    /* first field, for alignment */
     size_t ptr;
     union {
@@ -87,6 +88,20 @@ typedef struct {
     sph_u64 block_count;
 #else
     sph_u32 block_count_high, block_count_low;
+=======
+	unsigned char buf[64];    /* first field, for alignment */
+	size_t ptr;
+	union {
+#if SPH_64
+		sph_u64 wide[16];
+#endif
+		sph_u32 narrow[32];
+	} H;
+#if SPH_64
+	sph_u64 block_count;
+#else
+	sph_u32 block_count_high, block_count_low;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 #endif
 } sph_jh_context;
@@ -154,7 +169,11 @@ void sph_jh224_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_jh224_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a JH-256 context. This process performs no memory allocation.
@@ -199,7 +218,11 @@ void sph_jh256_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_jh256_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a JH-384 context. This process performs no memory allocation.
@@ -244,7 +267,11 @@ void sph_jh384_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_jh384_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a JH-512 context. This process performs no memory allocation.
@@ -289,7 +316,11 @@ void sph_jh512_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_jh512_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #ifdef __cplusplus
 }

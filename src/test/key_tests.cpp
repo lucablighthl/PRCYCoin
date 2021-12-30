@@ -1,20 +1,33 @@
 // Copyright (c) 2012-2013 The Bitcoin Core developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "key.h"
 
 #include "base58.h"
+<<<<<<< HEAD
 #include "script/script.h"
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
+=======
+#include "key_io.h"
+#include "uint256.h"
+#include "util/system.h"
+#include "utilstrencodings.h"
+#include "test_pivx.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <string>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
+<<<<<<< HEAD
 using namespace std;
 
 static const string strSecret1     ("87vK7Vayi3QLsuiva5yWSuVwSMhMcRM9dBsaD6JXMD1P5vnjRFn");
@@ -78,6 +91,36 @@ BOOST_AUTO_TEST_CASE(key_test1)
     BOOST_CHECK(key1C.IsCompressed() == true);
     CKey key2C = bsecret2C.GetKey();
     BOOST_CHECK(key2C.IsCompressed() == true);
+=======
+
+static const std::string strSecret1  = "87vK7Vayi3QLsuiva5yWSuVwSMhMcRM9dBsaD6JXMD1P5vnjRFn";
+static const std::string strSecret2  = "87FGYGFDg5SYfdD4XL593hr7do6f52czPecVsYSAXi8N4RGeS9i";
+static const std::string strSecret1C = "YRYJwfAyJ9c2jhi3T2xQyLijGvM7yLTw4izDaNQLxBzgUYrQiPmJ";
+static const std::string strSecret2C = "YNZyazHkwUbkmUpEYsBGWwHnHQTy2n9rJy1gS5k54YXVx3pE8n6N";
+static const std::string addr1 = "DBFi8XAE1rcdCQfkv9w22n8Y9RxgaJnrDD";
+static const std::string addr2 = "DPvKfv1FVp69yZMDzeuugvfZ9pzYiMv1bs";
+static const std::string addr1C = "DNPrHK9ezAAUVExFDpZ7EE1xWpPskgp1gP";
+static const std::string addr2C = "DNBVSAoc2whPFjZVAZ1pQbXPJk1LRrDC8Q";
+
+
+static const std::string strAddressBad ="Xta1praZQjyELweyMByXyiREw1ZRsjXzVP";
+
+
+BOOST_FIXTURE_TEST_SUITE(key_tests, TestingSetup)
+
+BOOST_AUTO_TEST_CASE(key_test1)
+{
+    CKey key1  = KeyIO::DecodeSecret(strSecret1);
+    BOOST_CHECK(key1.IsValid() && !key1.IsCompressed());
+    CKey key2  = KeyIO::DecodeSecret(strSecret2);
+    BOOST_CHECK(key2.IsValid() && !key2.IsCompressed());
+    CKey key1C = KeyIO::DecodeSecret(strSecret1C);
+    BOOST_CHECK(key1C.IsValid() && key1C.IsCompressed());
+    CKey key2C = KeyIO::DecodeSecret(strSecret2C);
+    BOOST_CHECK(key2C.IsValid() && key2C.IsCompressed());
+    CKey bad_key = KeyIO::DecodeSecret(strAddressBad);
+    BOOST_CHECK(!bad_key.IsValid());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     CPubKey pubkey1  = key1. GetPubKey();
     CPubKey pubkey2  = key2. GetPubKey();
@@ -104,6 +147,7 @@ BOOST_AUTO_TEST_CASE(key_test1)
     BOOST_CHECK(!key2C.VerifyPubKey(pubkey2));
     BOOST_CHECK(key2C.VerifyPubKey(pubkey2C));
 
+<<<<<<< HEAD
     BOOST_CHECK(addr1.Get()  == CTxDestination(pubkey1.GetID()));
     BOOST_CHECK(addr2.Get()  == CTxDestination(pubkey2.GetID()));
     BOOST_CHECK(addr1C.Get() == CTxDestination(pubkey1C.GetID()));
@@ -112,11 +156,25 @@ BOOST_AUTO_TEST_CASE(key_test1)
     for (int n=0; n<16; n++)
     {
         string strMsg = strprintf("Very secret message %i: 11", n);
+=======
+    BOOST_CHECK(DecodeDestination(addr1)  == CTxDestination(pubkey1.GetID()));
+    BOOST_CHECK(DecodeDestination(addr2)  == CTxDestination(pubkey2.GetID()));
+    BOOST_CHECK(DecodeDestination(addr1C) == CTxDestination(pubkey1C.GetID()));
+    BOOST_CHECK(DecodeDestination(addr2C) == CTxDestination(pubkey2C.GetID()));
+
+    for (int n=0; n<16; n++)
+    {
+        std::string strMsg = strprintf("Very secret message %i: 11", n);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         uint256 hashMsg = Hash(strMsg.begin(), strMsg.end());
 
         // normal signatures
 
+<<<<<<< HEAD
         vector<unsigned char> sign1, sign2, sign1C, sign2C;
+=======
+        std::vector<unsigned char> sign1, sign2, sign1C, sign2C;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
         BOOST_CHECK(key1.Sign (hashMsg, sign1));
         BOOST_CHECK(key2.Sign (hashMsg, sign2));
@@ -145,7 +203,11 @@ BOOST_AUTO_TEST_CASE(key_test1)
 
         // compact signatures (with key recovery)
 
+<<<<<<< HEAD
         vector<unsigned char> csign1, csign2, csign1C, csign2C;
+=======
+        std::vector<unsigned char> csign1, csign2, csign1C, csign2C;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
         BOOST_CHECK(key1.SignCompact (hashMsg, csign1));
         BOOST_CHECK(key2.SignCompact (hashMsg, csign2));
@@ -168,7 +230,11 @@ BOOST_AUTO_TEST_CASE(key_test1)
     // test deterministic signing
 
     std::vector<unsigned char> detsig, detsigc;
+<<<<<<< HEAD
     string strMsg = "Very deterministic message";
+=======
+    std::string strMsg = "Very deterministic message";
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     uint256 hashMsg = Hash(strMsg.begin(), strMsg.end());
     BOOST_CHECK(key1.Sign(hashMsg, detsig));
     BOOST_CHECK(key1C.Sign(hashMsg, detsigc));
@@ -189,4 +255,7 @@ BOOST_AUTO_TEST_CASE(key_test1)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

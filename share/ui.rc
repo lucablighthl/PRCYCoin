@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 bitcoin               ICON    "pixmaps/bitcoin.ico"
 
 #include "wx/msw/wx.rc"
@@ -13,3 +14,10 @@ addressbook16mask     BITMAP  "pixmaps/addressbook16mask.bmp"
 addressbook20         BITMAP  "pixmaps/addressbook20.bmp"
 addressbook20mask     BITMAP  "pixmaps/addressbook20mask.bmp"
 favicon               ICON    "pixmaps/favicon.ico"
+=======
+bitcoin               ICON    "pixmaps/pivx.ico"
+
+#include "wx/msw/wx.rc"
+
+favicon               ICON    "pixmaps/favicon.ico"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

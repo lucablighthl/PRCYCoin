@@ -10,6 +10,11 @@
 #ifndef STORAGE_LEVELDB_PORT_PORT_EXAMPLE_H_
 #define STORAGE_LEVELDB_PORT_PORT_EXAMPLE_H_
 
+<<<<<<< HEAD
+=======
+#include "port/thread_annotations.h"
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 namespace leveldb {
 namespace port {
 
@@ -23,23 +28,39 @@ static const bool kLittleEndian = true /* or some other expression */;
 // ------------------ Threading -------------------
 
 // A Mutex represents an exclusive lock.
+<<<<<<< HEAD
 class Mutex {
+=======
+class LOCKABLE Mutex {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  public:
   Mutex();
   ~Mutex();
 
   // Lock the mutex.  Waits until other lockers have exited.
   // Will deadlock if the mutex is already locked by this thread.
+<<<<<<< HEAD
   void Lock();
 
   // Unlock the mutex.
   // REQUIRES: This mutex was locked by this thread.
   void Unlock();
+=======
+  void Lock() EXCLUSIVE_LOCK_FUNCTION();
+
+  // Unlock the mutex.
+  // REQUIRES: This mutex was locked by this thread.
+  void Unlock() UNLOCK_FUNCTION();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Optionally crash if this thread does not hold this mutex.
   // The implementation must be fast, especially if NDEBUG is
   // defined.  The implementation is allowed to skip all checks.
+<<<<<<< HEAD
   void AssertHeld();
+=======
+  void AssertHeld() ASSERT_EXCLUSIVE_LOCK();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 class CondVar {
@@ -60,6 +81,7 @@ class CondVar {
   void SignallAll();
 };
 
+<<<<<<< HEAD
 // Thread-safe initialization.
 // Used as follows:
 //      static port::OnceType init_control = LEVELDB_ONCE_INIT;
@@ -99,18 +121,30 @@ class AtomicPointer {
   void NoBarrier_Store(void* v);
 };
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // ------------------ Compression -------------------
 
 // Store the snappy compression of "input[0,input_length-1]" in *output.
 // Returns false if snappy is not supported by this port.
+<<<<<<< HEAD
 extern bool Snappy_Compress(const char* input, size_t input_length,
                             std::string* output);
+=======
+bool Snappy_Compress(const char* input, size_t input_length,
+                     std::string* output);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // If input[0,input_length-1] looks like a valid snappy compressed
 // buffer, store the size of the uncompressed data in *result and
 // return true.  Else return false.
+<<<<<<< HEAD
 extern bool Snappy_GetUncompressedLength(const char* input, size_t length,
                                          size_t* result);
+=======
+bool Snappy_GetUncompressedLength(const char* input, size_t length,
+                                  size_t* result);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Attempt to snappy uncompress input[0,input_length-1] into *output.
 // Returns true if successful, false if the input is invalid lightweight
@@ -119,19 +153,28 @@ extern bool Snappy_GetUncompressedLength(const char* input, size_t length,
 // REQUIRES: at least the first "n" bytes of output[] must be writable
 // where "n" is the result of a successful call to
 // Snappy_GetUncompressedLength.
+<<<<<<< HEAD
 extern bool Snappy_Uncompress(const char* input_data, size_t input_length,
                               char* output);
+=======
+bool Snappy_Uncompress(const char* input_data, size_t input_length,
+                       char* output);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // ------------------ Miscellaneous -------------------
 
 // If heap profiling is not supported, returns false.
 // Else repeatedly calls (*func)(arg, data, n) and then returns true.
 // The concatenation of all "data[0,n-1]" fragments is the heap profile.
+<<<<<<< HEAD
 extern bool GetHeapProfile(void (*func)(void*, const char*, int), void* arg);
 
 // Determine whether a working accelerated crc32 implementation exists
 // Returns true if AcceleratedCRC32C is safe to call
 bool HasAcceleratedCRC32C();
+=======
+bool GetHeapProfile(void (*func)(void*, const char*, int), void* arg);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Extend the CRC to include the first n bytes of buf.
 //

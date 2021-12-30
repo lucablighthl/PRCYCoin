@@ -11,8 +11,15 @@
 
 #include <stddef.h>
 #include <stdint.h>
+<<<<<<< HEAD
 #include <string>
 #include <vector>
+=======
+
+#include <string>
+#include <vector>
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/slice.h"
 #include "util/hash.h"
 
@@ -30,6 +37,12 @@ class FilterBlockBuilder {
  public:
   explicit FilterBlockBuilder(const FilterPolicy*);
 
+<<<<<<< HEAD
+=======
+  FilterBlockBuilder(const FilterBlockBuilder&) = delete;
+  FilterBlockBuilder& operator=(const FilterBlockBuilder&) = delete;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   void StartBlock(uint64_t block_offset);
   void AddKey(const Slice& key);
   Slice Finish();
@@ -38,6 +51,7 @@ class FilterBlockBuilder {
   void GenerateFilter();
 
   const FilterPolicy* policy_;
+<<<<<<< HEAD
   std::string keys_;              // Flattened key contents
   std::vector<size_t> start_;     // Starting index in keys_ of each key
   std::string result_;            // Filter data computed so far
@@ -47,11 +61,22 @@ class FilterBlockBuilder {
   // No copying allowed
   FilterBlockBuilder(const FilterBlockBuilder&);
   void operator=(const FilterBlockBuilder&);
+=======
+  std::string keys_;             // Flattened key contents
+  std::vector<size_t> start_;    // Starting index in keys_ of each key
+  std::string result_;           // Filter data computed so far
+  std::vector<Slice> tmp_keys_;  // policy_->CreateFilter() argument
+  std::vector<uint32_t> filter_offsets_;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 class FilterBlockReader {
  public:
+<<<<<<< HEAD
  // REQUIRES: "contents" and *policy must stay live while *this is live.
+=======
+  // REQUIRES: "contents" and *policy must stay live while *this is live.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   FilterBlockReader(const FilterPolicy* policy, const Slice& contents);
   bool KeyMayMatch(uint64_t block_offset, const Slice& key);
 
@@ -63,6 +88,10 @@ class FilterBlockReader {
   size_t base_lg_;      // Encoding parameter (see kFilterBaseLg in .cc file)
 };
 
+<<<<<<< HEAD
 }
+=======
+}  // namespace leveldb
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #endif  // STORAGE_LEVELDB_TABLE_FILTER_BLOCK_H_

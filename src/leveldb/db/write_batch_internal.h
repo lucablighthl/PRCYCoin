@@ -29,6 +29,7 @@ class WriteBatchInternal {
   // this batch.
   static void SetSequence(WriteBatch* batch, SequenceNumber seq);
 
+<<<<<<< HEAD
   static Slice Contents(const WriteBatch* batch) {
     return Slice(batch->rep_);
   }
@@ -36,6 +37,11 @@ class WriteBatchInternal {
   static size_t ByteSize(const WriteBatch* batch) {
     return batch->rep_.size();
   }
+=======
+  static Slice Contents(const WriteBatch* batch) { return Slice(batch->rep_); }
+
+  static size_t ByteSize(const WriteBatch* batch) { return batch->rep_.size(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   static void SetContents(WriteBatch* batch, const Slice& contents);
 
@@ -46,5 +52,8 @@ class WriteBatchInternal {
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif  // STORAGE_LEVELDB_DB_WRITE_BATCH_INTERNAL_H_

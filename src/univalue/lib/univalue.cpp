@@ -4,6 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <stdint.h>
+<<<<<<< HEAD
 #include <errno.h>
 #include <iomanip>
 #include <limits>
@@ -75,6 +76,14 @@ bool ParseDouble(const std::string& str, double *out)
 
 using namespace std;
 
+=======
+#include <iomanip>
+#include <sstream>
+#include <stdlib.h>
+
+#include "univalue.h"
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 const UniValue NullUniValue;
 
 void UniValue::clear()
@@ -100,15 +109,25 @@ bool UniValue::setBool(bool val_)
     return true;
 }
 
+<<<<<<< HEAD
 static bool validNumStr(const string& s)
 {
     string tokenVal;
+=======
+static bool validNumStr(const std::string& s)
+{
+    std::string tokenVal;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     unsigned int consumed;
     enum jtokentype tt = getJsonToken(tokenVal, consumed, s.data(), s.data() + s.size());
     return (tt == JTOK_NUMBER);
 }
 
+<<<<<<< HEAD
 bool UniValue::setNumStr(const string& val_)
+=======
+bool UniValue::setNumStr(const std::string& val_)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     if (!validNumStr(val_))
         return false;
@@ -121,7 +140,11 @@ bool UniValue::setNumStr(const string& val_)
 
 bool UniValue::setInt(uint64_t val_)
 {
+<<<<<<< HEAD
     ostringstream oss;
+=======
+    std::ostringstream oss;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     oss << val_;
 
@@ -130,7 +153,11 @@ bool UniValue::setInt(uint64_t val_)
 
 bool UniValue::setInt(int64_t val_)
 {
+<<<<<<< HEAD
     ostringstream oss;
+=======
+    std::ostringstream oss;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     oss << val_;
 
@@ -139,7 +166,11 @@ bool UniValue::setInt(int64_t val_)
 
 bool UniValue::setFloat(double val_)
 {
+<<<<<<< HEAD
     ostringstream oss;
+=======
+    std::ostringstream oss;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     oss << std::setprecision(16) << val_;
 
@@ -148,7 +179,11 @@ bool UniValue::setFloat(double val_)
     return ret;
 }
 
+<<<<<<< HEAD
 bool UniValue::setStr(const string& val_)
+=======
+bool UniValue::setStr(const std::string& val_)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     clear();
     typ = VSTR;
@@ -189,13 +224,30 @@ bool UniValue::push_backV(const std::vector<UniValue>& vec)
     return true;
 }
 
+<<<<<<< HEAD
+=======
+void UniValue::__pushKV(const std::string& key, const UniValue& val_)
+{
+    keys.push_back(key);
+    values.push_back(val_);
+}
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 bool UniValue::pushKV(const std::string& key, const UniValue& val_)
 {
     if (typ != VOBJ)
         return false;
 
+<<<<<<< HEAD
     keys.push_back(key);
     values.push_back(val_);
+=======
+    size_t idx;
+    if (findKey(key, idx))
+        values[idx] = val_;
+    else
+        __pushKV(key, val_);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return true;
 }
 
@@ -204,14 +256,32 @@ bool UniValue::pushKVs(const UniValue& obj)
     if (typ != VOBJ || obj.typ != VOBJ)
         return false;
 
+<<<<<<< HEAD
     for (unsigned int i = 0; i < obj.keys.size(); i++) {
         keys.push_back(obj.keys[i]);
         values.push_back(obj.values.at(i));
     }
+=======
+    for (size_t i = 0; i < obj.keys.size(); i++)
+        __pushKV(obj.keys[i], obj.values.at(i));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     return true;
 }
 
+<<<<<<< HEAD
+=======
+void UniValue::getObjMap(std::map<std::string,UniValue>& kv) const
+{
+    if (typ != VOBJ)
+        return;
+
+    kv.clear();
+    for (size_t i = 0; i < keys.size(); i++)
+        kv[keys[i]] = values[i];
+}
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 bool UniValue::findKey(const std::string& key, size_t& retIdx) const
 {
     for (size_t i = 0; i < keys.size(); i++) {
@@ -224,8 +294,16 @@ bool UniValue::findKey(const std::string& key, size_t& retIdx) const
     return false;
 }
 
+<<<<<<< HEAD
 bool UniValue::checkObject(const std::map<std::string,UniValue::VType>& t)
 {
+=======
+bool UniValue::checkObject(const std::map<std::string,UniValue::VType>& t) const
+{
+    if (typ != VOBJ)
+        return false;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     for (std::map<std::string,UniValue::VType>::const_iterator it = t.begin();
          it != t.end(); ++it) {
         size_t idx = 0;
@@ -285,6 +363,7 @@ const UniValue& find_value(const UniValue& obj, const std::string& name)
     return NullUniValue;
 }
 
+<<<<<<< HEAD
 const std::vector<std::string>& UniValue::getKeys() const
 {
     if (typ != VOBJ)
@@ -357,3 +436,5 @@ const UniValue& UniValue::get_array() const
     return *this;
 }
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

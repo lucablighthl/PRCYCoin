@@ -18,6 +18,7 @@
 #include <assert.h>
 #include <stddef.h>
 #include <string.h>
+<<<<<<< HEAD
 #include <string>
 
 namespace leveldb {
@@ -35,6 +36,32 @@ class Slice {
 
   // Create a slice that refers to s[0,strlen(s)-1]
   Slice(const char* s) : data_(s), size_(strlen(s)) { }
+=======
+
+#include <string>
+
+#include "leveldb/export.h"
+
+namespace leveldb {
+
+class LEVELDB_EXPORT Slice {
+ public:
+  // Create an empty slice.
+  Slice() : data_(""), size_(0) {}
+
+  // Create a slice that refers to d[0,n-1].
+  Slice(const char* d, size_t n) : data_(d), size_(n) {}
+
+  // Create a slice that refers to the contents of "s"
+  Slice(const std::string& s) : data_(s.data()), size_(s.size()) {}
+
+  // Create a slice that refers to s[0,strlen(s)-1]
+  Slice(const char* s) : data_(s), size_(strlen(s)) {}
+
+  // Intentionally copyable.
+  Slice(const Slice&) = default;
+  Slice& operator=(const Slice&) = default;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Return a pointer to the beginning of the referenced data
   const char* data() const { return data_; }
@@ -53,7 +80,14 @@ class Slice {
   }
 
   // Change this slice to refer to an empty array
+<<<<<<< HEAD
   void clear() { data_ = ""; size_ = 0; }
+=======
+  void clear() {
+    data_ = "";
+    size_ = 0;
+  }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Drop the first "n" bytes from this slice.
   void remove_prefix(size_t n) {
@@ -73,15 +107,22 @@ class Slice {
 
   // Return true iff "x" is a prefix of "*this"
   bool starts_with(const Slice& x) const {
+<<<<<<< HEAD
     return ((size_ >= x.size_) &&
             (memcmp(data_, x.data_, x.size_) == 0));
+=======
+    return ((size_ >= x.size_) && (memcmp(data_, x.data_, x.size_) == 0));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
 
  private:
   const char* data_;
   size_t size_;
+<<<<<<< HEAD
 
   // Intentionally copyable
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 inline bool operator==(const Slice& x, const Slice& y) {
@@ -89,21 +130,35 @@ inline bool operator==(const Slice& x, const Slice& y) {
           (memcmp(x.data(), y.data(), x.size()) == 0));
 }
 
+<<<<<<< HEAD
 inline bool operator!=(const Slice& x, const Slice& y) {
   return !(x == y);
 }
+=======
+inline bool operator!=(const Slice& x, const Slice& y) { return !(x == y); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 inline int Slice::compare(const Slice& b) const {
   const size_t min_len = (size_ < b.size_) ? size_ : b.size_;
   int r = memcmp(data_, b.data_, min_len);
   if (r == 0) {
+<<<<<<< HEAD
     if (size_ < b.size_) r = -1;
     else if (size_ > b.size_) r = +1;
+=======
+    if (size_ < b.size_)
+      r = -1;
+    else if (size_ > b.size_)
+      r = +1;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
   return r;
 }
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif  // STORAGE_LEVELDB_INCLUDE_SLICE_H_

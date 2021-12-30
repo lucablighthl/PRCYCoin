@@ -1,4 +1,8 @@
 // Copyright (c) 2012-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -42,7 +46,11 @@ public:
                 map.erase(rmap.begin()->second);
                 rmap.erase(rmap.begin());
             }
+<<<<<<< HEAD
             rmap.insert(make_pair(x.second, ret.first));
+=======
+            rmap.insert(std::make_pair(x.second, ret.first));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
         return;
     }
@@ -72,7 +80,11 @@ public:
             if (it->second == itTarget) {
                 rmap.erase(it);
                 itTarget->second = v;
+<<<<<<< HEAD
                 rmap.insert(make_pair(v, itTarget));
+=======
+                rmap.insert(std::make_pair(v, itTarget));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 return;
             }
         // Shouldn't ever get here

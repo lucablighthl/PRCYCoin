@@ -1,12 +1,20 @@
 ---
+<<<<<<< HEAD
 name: "prcycoin-dmg-signer"
 suites:
 - "trusty"
+=======
+name: "pivx-dmg-signer"
+distro: "ubuntu"
+suites:
+- "bionic"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 architectures:
 - "amd64"
 packages:
 - "faketime"
 remotes:
+<<<<<<< HEAD
 - "url": "https://github.com/prcycoin-project/prcycoin-detached-sigs.git"
   "dir": "signature"
 files:
@@ -15,10 +23,23 @@ script: |
   WRAP_DIR=$HOME/wrapped
   mkdir -p ${WRAP_DIR}
   export PATH=`pwd`:$PATH
+=======
+- "url": "https://github.com/pivx-project/pivx-detached-sigs.git"
+  "dir": "signature"
+files:
+- "pivx-osx-unsigned.tar.gz"
+script: |
+  set -e -o pipefail
+
+  WRAP_DIR=$HOME/wrapped
+  mkdir -p ${WRAP_DIR}
+  export PATH="$PWD":$PATH
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   FAKETIME_PROGS="dmg genisoimage"
 
   # Create global faketime wrappers
   for prog in ${FAKETIME_PROGS}; do
+<<<<<<< HEAD
     echo '#!/bin/bash' > ${WRAP_DIR}/${prog}
     echo "REAL=\`which -a ${prog} | grep -v ${WRAP_DIR}/${prog} | head -1\`" >> ${WRAP_DIR}/${prog}
     echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1' >> ${WRAP_DIR}/${prog}
@@ -29,9 +50,25 @@ script: |
 
   UNSIGNED=prcycoin-osx-unsigned.tar.gz
   SIGNED=prcycoin-osx-signed.dmg
+=======
+    echo '#!/usr/bin/env bash' > ${WRAP_DIR}/${prog}
+    echo "REAL=\`which -a ${prog} | grep -v ${WRAP_DIR}/${prog} | head -1\`" >> ${WRAP_DIR}/${prog}
+    echo 'export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1' >> ${WRAP_DIR}/${prog}
+    echo "export FAKETIME=\"${REFERENCE_DATETIME}\"" >> ${WRAP_DIR}/${prog}
+    echo "\$REAL \"\$@\"" >> $WRAP_DIR/${prog}
+    chmod +x ${WRAP_DIR}/${prog}
+  done
+
+  UNSIGNED=pivx-osx-unsigned.tar.gz
+  SIGNED=pivx-osx-signed.dmg
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"
   ./detached-sig-apply.sh ${UNSIGNED} signature/osx
+<<<<<<< HEAD
   ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "Prcycoin-Qt" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
+=======
+  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "${OSX_VOLNAME}" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   ${WRAP_DIR}/dmg dmg uncompressed.dmg ${OUTDIR}/${SIGNED}

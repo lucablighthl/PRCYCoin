@@ -10,7 +10,11 @@ import operator
 import os
 import sys
 
+<<<<<<< HEAD
 OUT_CPP="qt/prcycoinstrings.cpp"
+=======
+OUT_CPP="qt/pivxstrings.cpp"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 EMPTY=['""']
 
 def parse_po(text):
@@ -62,7 +66,11 @@ child = Popen([XGETTEXT,'--output=-','-n','--keyword=_'] + files, stdout=PIPE)
 
 messages = parse_po(out.decode('utf-8'))
 
+<<<<<<< HEAD
 f = open(OUT_CPP, 'w')
+=======
+f = open(OUT_CPP, 'w', encoding="utf8")
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 f.write("""
 
 #include <QtGlobal>
@@ -74,10 +82,18 @@ f.write("""
 #define UNUSED
 #endif
 """)
+<<<<<<< HEAD
 f.write('static const char UNUSED *prcycoin_strings[] = {\n')
 messages.sort(key=operator.itemgetter(0))
 for (msgid, msgstr) in messages:
     if msgid != EMPTY:
         f.write('QT_TRANSLATE_NOOP("prcycoin-core", %s),\n' % ('\n'.join(msgid)))
+=======
+f.write('static const char UNUSED *pivx_strings[] = {\n')
+messages.sort(key=operator.itemgetter(0))
+for (msgid, msgstr) in messages:
+    if msgid != EMPTY:
+        f.write('QT_TRANSLATE_NOOP("pivx-core", %s),\n' % ('\n'.join(msgid)))
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 f.write('};\n')
 f.close()

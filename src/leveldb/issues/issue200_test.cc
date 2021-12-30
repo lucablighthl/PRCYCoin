@@ -11,14 +11,22 @@
 
 namespace leveldb {
 
+<<<<<<< HEAD
 class Issue200 { };
+=======
+class Issue200 {};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(Issue200, Test) {
   // Get rid of any state from an old run.
   std::string dbpath = test::TmpDir() + "/leveldb_issue200_test";
   DestroyDB(dbpath, Options());
 
+<<<<<<< HEAD
   DB *db;
+=======
+  DB* db;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Options options;
   options.create_if_missing = true;
   ASSERT_OK(DB::Open(options, dbpath, &db));
@@ -31,7 +39,11 @@ TEST(Issue200, Test) {
   ASSERT_OK(db->Put(write_options, "5", "f"));
 
   ReadOptions read_options;
+<<<<<<< HEAD
   Iterator *iter = db->NewIterator(read_options);
+=======
+  Iterator* iter = db->NewIterator(read_options);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Add an element that should not be reflected in the iterator.
   ASSERT_OK(db->Put(write_options, "25", "cd"));
@@ -54,6 +66,10 @@ TEST(Issue200, Test) {
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

@@ -1,5 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
+<<<<<<< HEAD
 // Copyright (c) 2009-2014 The Bitcoin developers
+=======
+// Copyright (c) 2009-2021 The Bitcoin developers
+// Copyright (c) 2017-2021 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,6 +12,7 @@
 
 #include "utilstrencodings.h"
 
+<<<<<<< HEAD
 #include <stdio.h>
 #include <string.h>
 
@@ -163,6 +169,31 @@ template <unsigned int BITS>
 void base_uint<BITS>::SetHex(const char* psz)
 {
     memset(pn, 0, sizeof(pn));
+=======
+#include <string.h>
+
+template <unsigned int BITS>
+base_blob<BITS>::base_blob(const std::vector<unsigned char>& vch)
+{
+    assert(vch.size() == sizeof(m_data));
+    memcpy(m_data, vch.data(), sizeof(m_data));
+}
+
+template <unsigned int BITS>
+std::string base_blob<BITS>::GetHex() const
+{
+    uint8_t m_data_rev[WIDTH];
+    for (int i = 0; i < WIDTH; ++i) {
+        m_data_rev[i] = m_data[WIDTH - 1 - i];
+    }
+    return HexStr(m_data_rev);
+}
+
+template <unsigned int BITS>
+void base_blob<BITS>::SetHex(const char* psz)
+{
+    memset(m_data, 0, sizeof(m_data));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     // skip leading spaces
     while (isspace(*psz))
@@ -173,6 +204,7 @@ void base_uint<BITS>::SetHex(const char* psz)
         psz += 2;
 
     // hex string to uint
+<<<<<<< HEAD
     const char* pbegin = psz;
     while (::HexDigit(*psz) != -1)
         psz++;
@@ -183,18 +215,34 @@ void base_uint<BITS>::SetHex(const char* psz)
         *p1 = ::HexDigit(*psz--);
         if (psz >= pbegin) {
             *p1 |= ((unsigned char)::HexDigit(*psz--) << 4);
+=======
+    size_t digits = 0;
+    while (::HexDigit(psz[digits]) != -1)
+        digits++;
+    unsigned char* p1 = (unsigned char*)m_data;
+    unsigned char* pend = p1 + WIDTH;
+    while (digits > 0 && p1 < pend) {
+        *p1 = ::HexDigit(psz[--digits]);
+        if (digits > 0) {
+            *p1 |= ((unsigned char)::HexDigit(psz[--digits]) << 4);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             p1++;
         }
     }
 }
 
 template <unsigned int BITS>
+<<<<<<< HEAD
 void base_uint<BITS>::SetHex(const std::string& str)
+=======
+void base_blob<BITS>::SetHex(const std::string& str)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     SetHex(str.c_str());
 }
 
 template <unsigned int BITS>
+<<<<<<< HEAD
 std::string base_uint<BITS>::ToString() const
 {
     return (GetHex());
@@ -373,3 +421,31 @@ uint64_t uint256::GetHash(const uint256& salt) const
 
     return ((((uint64_t)b) << 32) | c);
 }
+=======
+std::string base_blob<BITS>::ToString() const
+{
+    return GetHex();
+}
+
+// Explicit instantiations for base_blob<160>
+template base_blob<160>::base_blob(const std::vector<unsigned char>&);
+template std::string base_blob<160>::GetHex() const;
+template std::string base_blob<160>::ToString() const;
+template void base_blob<160>::SetHex(const char*);
+template void base_blob<160>::SetHex(const std::string&);
+
+// Explicit instantiations for base_blob<256>
+template base_blob<256>::base_blob(const std::vector<unsigned char>&);
+template std::string base_blob<256>::GetHex() const;
+template std::string base_blob<256>::ToString() const;
+template void base_blob<256>::SetHex(const char*);
+template void base_blob<256>::SetHex(const std::string&);
+
+// Explicit instantiations for base_blob<512>
+template base_blob<512>::base_blob(const std::vector<unsigned char>&);
+template std::string base_blob<512>::GetHex() const;
+template std::string base_blob<512>::ToString() const;
+template void base_blob<512>::SetHex(const char*);
+template void base_blob<512>::SetHex(const std::string&);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

@@ -6,7 +6,13 @@
 #define STORAGE_LEVELDB_INCLUDE_DUMPFILE_H_
 
 #include <string>
+<<<<<<< HEAD
 #include "leveldb/env.h"
+=======
+
+#include "leveldb/env.h"
+#include "leveldb/export.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/status.h"
 
 namespace leveldb {
@@ -18,7 +24,12 @@ namespace leveldb {
 //
 // Returns a non-OK result if fname does not name a leveldb storage
 // file, or if the file cannot be read.
+<<<<<<< HEAD
 Status DumpFile(Env* env, const std::string& fname, WritableFile* dst);
+=======
+LEVELDB_EXPORT Status DumpFile(Env* env, const std::string& fname,
+                               WritableFile* dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace leveldb
 

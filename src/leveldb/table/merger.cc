@@ -17,13 +17,18 @@ class MergingIterator : public Iterator {
       : comparator_(comparator),
         children_(new IteratorWrapper[n]),
         n_(n),
+<<<<<<< HEAD
         current_(NULL),
+=======
+        current_(nullptr),
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         direction_(kForward) {
     for (int i = 0; i < n; i++) {
       children_[i].Set(children[i]);
     }
   }
 
+<<<<<<< HEAD
   virtual ~MergingIterator() {
     delete[] children_;
   }
@@ -33,6 +38,13 @@ class MergingIterator : public Iterator {
   }
 
   virtual void SeekToFirst() {
+=======
+  ~MergingIterator() override { delete[] children_; }
+
+  bool Valid() const override { return (current_ != nullptr); }
+
+  void SeekToFirst() override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     for (int i = 0; i < n_; i++) {
       children_[i].SeekToFirst();
     }
@@ -40,7 +52,11 @@ class MergingIterator : public Iterator {
     direction_ = kForward;
   }
 
+<<<<<<< HEAD
   virtual void SeekToLast() {
+=======
+  void SeekToLast() override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     for (int i = 0; i < n_; i++) {
       children_[i].SeekToLast();
     }
@@ -48,7 +64,11 @@ class MergingIterator : public Iterator {
     direction_ = kReverse;
   }
 
+<<<<<<< HEAD
   virtual void Seek(const Slice& target) {
+=======
+  void Seek(const Slice& target) override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     for (int i = 0; i < n_; i++) {
       children_[i].Seek(target);
     }
@@ -56,7 +76,11 @@ class MergingIterator : public Iterator {
     direction_ = kForward;
   }
 
+<<<<<<< HEAD
   virtual void Next() {
+=======
+  void Next() override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     assert(Valid());
 
     // Ensure that all children are positioned after key().
@@ -82,7 +106,11 @@ class MergingIterator : public Iterator {
     FindSmallest();
   }
 
+<<<<<<< HEAD
   virtual void Prev() {
+=======
+  void Prev() override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     assert(Valid());
 
     // Ensure that all children are positioned before key().
@@ -111,17 +139,29 @@ class MergingIterator : public Iterator {
     FindLargest();
   }
 
+<<<<<<< HEAD
   virtual Slice key() const {
+=======
+  Slice key() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     assert(Valid());
     return current_->key();
   }
 
+<<<<<<< HEAD
   virtual Slice value() const {
+=======
+  Slice value() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     assert(Valid());
     return current_->value();
   }
 
+<<<<<<< HEAD
   virtual Status status() const {
+=======
+  Status status() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     Status status;
     for (int i = 0; i < n_; i++) {
       status = children_[i].status();
@@ -133,6 +173,12 @@ class MergingIterator : public Iterator {
   }
 
  private:
+<<<<<<< HEAD
+=======
+  // Which direction is the iterator moving?
+  enum Direction { kForward, kReverse };
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   void FindSmallest();
   void FindLargest();
 
@@ -143,21 +189,32 @@ class MergingIterator : public Iterator {
   IteratorWrapper* children_;
   int n_;
   IteratorWrapper* current_;
+<<<<<<< HEAD
 
   // Which direction is the iterator moving?
   enum Direction {
     kForward,
     kReverse
   };
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Direction direction_;
 };
 
 void MergingIterator::FindSmallest() {
+<<<<<<< HEAD
   IteratorWrapper* smallest = NULL;
   for (int i = 0; i < n_; i++) {
     IteratorWrapper* child = &children_[i];
     if (child->Valid()) {
       if (smallest == NULL) {
+=======
+  IteratorWrapper* smallest = nullptr;
+  for (int i = 0; i < n_; i++) {
+    IteratorWrapper* child = &children_[i];
+    if (child->Valid()) {
+      if (smallest == nullptr) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         smallest = child;
       } else if (comparator_->Compare(child->key(), smallest->key()) < 0) {
         smallest = child;
@@ -168,11 +225,19 @@ void MergingIterator::FindSmallest() {
 }
 
 void MergingIterator::FindLargest() {
+<<<<<<< HEAD
   IteratorWrapper* largest = NULL;
   for (int i = n_-1; i >= 0; i--) {
     IteratorWrapper* child = &children_[i];
     if (child->Valid()) {
       if (largest == NULL) {
+=======
+  IteratorWrapper* largest = nullptr;
+  for (int i = n_ - 1; i >= 0; i--) {
+    IteratorWrapper* child = &children_[i];
+    if (child->Valid()) {
+      if (largest == nullptr) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         largest = child;
       } else if (comparator_->Compare(child->key(), largest->key()) > 0) {
         largest = child;
@@ -183,14 +248,25 @@ void MergingIterator::FindLargest() {
 }
 }  // namespace
 
+<<<<<<< HEAD
 Iterator* NewMergingIterator(const Comparator* cmp, Iterator** list, int n) {
+=======
+Iterator* NewMergingIterator(const Comparator* comparator, Iterator** children,
+                             int n) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   assert(n >= 0);
   if (n == 0) {
     return NewEmptyIterator();
   } else if (n == 1) {
+<<<<<<< HEAD
     return list[0];
   } else {
     return new MergingIterator(cmp, list, n);
+=======
+    return children[0];
+  } else {
+    return new MergingIterator(comparator, children, n);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
 }
 

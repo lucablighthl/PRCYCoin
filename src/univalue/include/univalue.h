@@ -7,6 +7,10 @@
 #define __UNIVALUE_H__
 
 #include <stdint.h>
+<<<<<<< HEAD
+=======
+#include <string.h>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <string>
 #include <vector>
@@ -14,7 +18,10 @@
 #include <cassert>
 
 #include <sstream>        // .get_int64()
+<<<<<<< HEAD
 #include <utility>        // std::pair
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 class UniValue {
 public:
@@ -47,7 +54,10 @@ public:
         std::string s(val_);
         setStr(s);
     }
+<<<<<<< HEAD
     ~UniValue() {}
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     void clear();
 
@@ -69,7 +79,12 @@ public:
     size_t size() const { return values.size(); }
 
     bool getBool() const { return isTrue(); }
+<<<<<<< HEAD
     bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes);
+=======
+    void getObjMap(std::map<std::string,UniValue>& kv) const;
+    bool checkObject(const std::map<std::string,UniValue::VType>& memberTypes) const;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     const UniValue& operator[](const std::string& key) const;
     const UniValue& operator[](size_t index) const;
     bool exists(const std::string& key) const { size_t i; return findKey(key, i); }
@@ -104,8 +119,18 @@ public:
         UniValue tmpVal(val_);
         return push_back(tmpVal);
     }
+<<<<<<< HEAD
     bool push_backV(const std::vector<UniValue>& vec);
 
+=======
+    bool push_back(double val_) {
+        UniValue tmpVal(val_);
+        return push_back(tmpVal);
+    }
+    bool push_backV(const std::vector<UniValue>& vec);
+
+    void __pushKV(const std::string& key, const UniValue& val);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     bool pushKV(const std::string& key, const UniValue& val);
     bool pushKV(const std::string& key, const std::string& val_) {
         UniValue tmpVal(VSTR, val_);
@@ -123,6 +148,13 @@ public:
         UniValue tmpVal(val_);
         return pushKV(key, tmpVal);
     }
+<<<<<<< HEAD
+=======
+    bool pushKV(const std::string& key, bool val_) {
+        UniValue tmpVal((bool)val_);
+        return pushKV(key, tmpVal);
+    }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     bool pushKV(const std::string& key, int val_) {
         UniValue tmpVal((int64_t)val_);
         return pushKV(key, tmpVal);
@@ -137,7 +169,11 @@ public:
                       unsigned int indentLevel = 0) const;
 
     bool read(const char *raw, size_t len);
+<<<<<<< HEAD
     bool read(const char *raw);
+=======
+    bool read(const char *raw) { return read(raw, strlen(raw)); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     bool read(const std::string& rawStr) {
         return read(rawStr.data(), rawStr.size());
     }
@@ -166,6 +202,7 @@ public:
     const UniValue& get_array() const;
 
     enum VType type() const { return getType(); }
+<<<<<<< HEAD
     bool push_back(std::pair<std::string,UniValue> pear) {
         return pushKV(pear.first, pear.second);
     }
@@ -236,6 +273,11 @@ static inline std::pair<std::string,UniValue> Pair(std::string key, const UniVal
     return std::make_pair(key, uVal);
 }
 
+=======
+    friend const UniValue& find_value( const UniValue& obj, const std::string& name);
+};
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 enum jtokentype {
     JTOK_ERR        = -1,
     JTOK_NONE       = 0,                           // eof

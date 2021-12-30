@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -26,11 +30,21 @@ public:
 
     enum ColumnIndex {
         Label = 0,  /**< User specified label */
+<<<<<<< HEAD
         Address = 1 /**< Bitcoin address */
     };
 
     enum RoleIndex {
         TypeRole = Qt::UserRole /**< Type of address (#Send or #Receive) */
+=======
+        Address = 1, /**< Bitcoin address */
+        Date = 2, /**< Address creation date */
+        Type = 3 /**< Address Type */
+    };
+
+    enum RoleIndex {
+        TypeRole = Qt::UserRole /**< Type of address (#Send, #Receive, #ColdStaking, #ColdStakingSend, #Delegator, #Delegable) */
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     };
 
     /** Return status of edit/insert operation */
@@ -45,11 +59,31 @@ public:
 
     static const QString Send;    /**< Specifies send address */
     static const QString Receive; /**< Specifies receive address */
+<<<<<<< HEAD
+=======
+    static const QString Zerocoin; /**< Specifies stealth address */
+    static const QString Delegator; /**< Specifies cold staking addresses which delegated tokens to this wallet and ARE being staked */
+    static const QString Delegable; /**< Specifies cold staking addresses which delegated tokens to this wallet*/
+    static const QString ColdStaking; /**< Specifies cold staking own addresses */
+    static const QString ColdStakingSend; /**< Specifies send cold staking addresses (simil 'contacts')*/
+    static const QString ShieldedReceive; /**< Specifies shielded send address */
+    static const QString ShieldedSend; /**< Specifies shielded receive address */
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     /** @name Methods overridden from QAbstractTableModel
         @{*/
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
+<<<<<<< HEAD
+=======
+    int sizeSend() const;
+    int sizeRecv() const;
+    int sizeDell() const;
+    int sizeColdSend() const;
+    int sizeShieldedSend() const;
+    int sizeSendAll() const;
+    void notifyChange(const QModelIndex &index);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     QVariant data(const QModelIndex& index, int role) const;
     bool setData(const QModelIndex& index, const QVariant& value, int role);
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
@@ -72,6 +106,7 @@ public:
      */
     int lookupAddress(const QString& address) const;
 
+<<<<<<< HEAD
     EditStatus getEditStatus() const { return editStatus; }
 
 private:
@@ -80,6 +115,31 @@ private:
     AddressTablePriv* priv;
     QStringList columns;
     EditStatus editStatus;
+=======
+    /*
+     * Look up purpose for address in address book, if not found return empty string
+     */
+    std::string purposeForAddress(const std::string& address) const;
+
+    /**
+     * Checks if the address is whitelisted
+     */
+    bool isWhitelisted(const std::string& address) const;
+
+    /**
+     * Return last unused address
+     */
+    QString getAddressToShow(bool shielded = false) const;
+
+    EditStatus getEditStatus() const { return editStatus; }
+
+private:
+    WalletModel* walletModel{nullptr};
+    CWallet* wallet{nullptr};
+    AddressTablePriv* priv{nullptr};
+    QStringList columns{};
+    EditStatus editStatus{OK};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     /** Notify listeners that data changed. */
     void emitDataChanged(int index);

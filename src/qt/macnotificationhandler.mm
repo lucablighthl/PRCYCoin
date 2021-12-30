@@ -1,6 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin Core developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,7 +19,11 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
+<<<<<<< HEAD
         return @"io.prcycoin.Prcycoin-Qt";
+=======
+        return @"io.pivx.Pivx-Qt";
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     } else {
         return [self __bundleIdentifier];
     }
@@ -26,6 +34,7 @@ void MacNotificationHandler::showNotification(const QString &title, const QStrin
 {
     // check if users OS has support for NSUserNotification
     if(this->hasUserNotificationCenterSupport()) {
+<<<<<<< HEAD
         // okay, seems like 10.8+
         QByteArray utf8 = title.toUtf8();
         char* cString = (char *)utf8.constData();
@@ -45,6 +54,12 @@ void MacNotificationHandler::showNotification(const QString &title, const QStrin
 
         [titleMac release];
         [textMac release];
+=======
+        NSUserNotification* userNotification = [[NSUserNotification alloc] init];
+        userNotification.title = title.toNSString();
+        userNotification.informativeText = text.toNSString();
+        [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification: userNotification];
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         [userNotification release];
     }
 }

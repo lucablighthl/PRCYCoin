@@ -1,13 +1,21 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "bitcoinaddressvalidator.h"
 
+<<<<<<< HEAD
 #include "base58.h"
+=======
+#include "key_io.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /* Base58 characters are:
      "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -83,9 +91,15 @@ BitcoinAddressCheckValidator::BitcoinAddressCheckValidator(QObject* parent) : QV
 QValidator::State BitcoinAddressCheckValidator::validate(QString& input, int& pos) const
 {
     Q_UNUSED(pos);
+<<<<<<< HEAD
     // Validate the passed PRCY address
     CBitcoinAddress addr(input.toStdString());
     if (addr.IsValid())
+=======
+    // Validate the passed PIVX address
+    CTxDestination addr = DecodeDestination(input.toStdString());
+    if (IsValidDestination(addr))
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         return QValidator::Acceptable;
 
     return QValidator::Invalid;

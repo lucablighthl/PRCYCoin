@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Copyright (c) 2014 The Bitcoin developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -11,6 +12,26 @@
 #include "utilstrencodings.h"
 
 using namespace std;
+=======
+// Copyright (c) 2014-2017 The Bitcoin developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#if defined(HAVE_CONFIG_H)
+#include "config/pivx-config.h"
+#endif
+
+#include "timedata.h"
+
+#include "chainparams.h"
+#include "guiinterface.h"
+#include "netaddress.h"
+#include "sync.h"
+#include "util/system.h"
+#include "warnings.h"
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 static RecursiveMutex cs_nTimeOffset;
 static int64_t nTimeOffset = 0;
@@ -33,6 +54,7 @@ int64_t GetAdjustedTime()
     return GetTime() + GetTimeOffset();
 }
 
+<<<<<<< HEAD
 static int64_t abs64(int64_t n)
 {
     return (n >= 0 ? n : -n);
@@ -48,6 +70,22 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
 
     // Add data
     static CMedianFilter<int64_t> vTimeOffsets(200, 0);
+=======
+#define BITCOIN_TIMEDATA_MAX_SAMPLES 200
+
+void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample, int nOffsetLimit)
+{
+    LOCK(cs_nTimeOffset);
+    // Ignore duplicates (Except on regtest where all nodes have the same ip)
+    static std::set<CNetAddr> setKnown;
+    if (setKnown.size() == BITCOIN_TIMEDATA_MAX_SAMPLES)
+        return;
+    if (!Params().IsRegTestNet() && !setKnown.insert(ip).second)
+        return;
+
+    // Add data
+    static CMedianFilter<int64_t> vTimeOffsets(BITCOIN_TIMEDATA_MAX_SAMPLES, 0);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     vTimeOffsets.input(nOffsetSample);
     LogPrintf("Added time data, samples %d, offset %+d (%+d minutes)\n", vTimeOffsets.size(), nOffsetSample, nOffsetSample / 60);
 
@@ -72,6 +110,7 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
         int64_t nMedian = vTimeOffsets.median();
         std::vector<int64_t> vSorted = vTimeOffsets.sorted();
         // Only let other nodes change our time by so much
+<<<<<<< HEAD
         if (abs64(nMedian) < 70 * 60) {
             nTimeOffset = nMedian;
         } else {
@@ -95,10 +134,42 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
             }
         }
         if (fDebug) {
+=======
+        if (abs64(nMedian) < nOffsetLimit) {
+            nTimeOffset = nMedian;
+            SetMiscWarning("");
+        } else {
+            nTimeOffset = (nMedian > 0 ? 1 : -1) * nOffsetLimit;
+            std::string strMessage = strprintf(_("Warning: Please check that your computer's date and time are correct! If your clock is wrong %s will not work properly."), PACKAGE_NAME);
+            SetMiscWarning(strMessage);
+            LogPrintf("*** %s\n", strMessage);
+            uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_ERROR);
+        }
+        if (!gArgs.GetBoolArg("-shrinkdebugfile", g_logger->DefaultShrinkDebugFile())) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             for (int64_t n : vSorted)
                 LogPrintf("%+d  ", n);
             LogPrintf("|  ");
         }
+<<<<<<< HEAD
         LogPrintf("nTimeOffset = %+d  (%+d minutes)\n", nTimeOffset, nTimeOffset / 60);
     }
 }
+=======
+        LogPrintf("nTimeOffset = %+d\n", nTimeOffset);
+    }
+}
+
+// Time Protocol V2
+// Timestamp for time protocol V2: slot duration 15 seconds
+int64_t GetTimeSlot(const int64_t nTime)
+{
+    const int slotLen = Params().GetConsensus().nTimeSlotLength;
+    return (nTime / slotLen) * slotLen;
+}
+
+int64_t GetCurrentTimeSlot()
+{
+    return GetTimeSlot(GetAdjustedTime());
+}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

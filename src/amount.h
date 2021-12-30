@@ -1,4 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
+<<<<<<< HEAD
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -11,10 +12,24 @@
 #include <stdlib.h>
 #include <string>
 
+=======
+// Copyright (c) 2009-2017 The Bitcoin developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PIVX_AMOUNT_H
+#define PIVX_AMOUNT_H
+
+#include <stdint.h>
+
+/** Amount in PIV (Can be negative) */
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 typedef int64_t CAmount;
 
 static const CAmount COIN = 100000000;
 static const CAmount CENT = 1000000;
+<<<<<<< HEAD
 static const CAmount DUST = COIN / 100000;
 static const CAmount MIN_FEE = COIN / 10000;
 static const CAmount MAX_FEE = COIN / 100;
@@ -52,3 +67,7 @@ public:
 };
 
 #endif //  BITCOIN_AMOUNT_H
+=======
+
+#endif //  PIVX_AMOUNT_H
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

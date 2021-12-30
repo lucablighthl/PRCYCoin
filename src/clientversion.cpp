@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 // Copyright (c) 2012-2014 The Bitcoin developers
+=======
+// Copyright (c) 2012-2017 The Bitcoin Core developers
+// Copyright (c) 2016-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,10 +14,17 @@
 
 /**
  * Name of client reported in the 'version' message. Report the same name
+<<<<<<< HEAD
  * for both prcycoind and prcycoin-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
 const std::string CLIENT_NAME("PRCY");
+=======
+ * for both pivxd and pivx-qt, to make it harder for attackers to
+ * target servers or GUI users specifically.
+ */
+const std::string CLIENT_NAME(PACKAGE_NAME);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Client version number
@@ -38,6 +50,7 @@ const std::string CLIENT_NAME("PRCY");
 
 //! First, include build.h if requested
 #ifdef HAVE_BUILD_INFO
+<<<<<<< HEAD
 #include "build.h"
 #endif
 
@@ -46,6 +59,15 @@ const std::string CLIENT_NAME("PRCY");
 #ifdef GIT_ARCHIVE
 #define GIT_COMMIT_ID "f817001ef362065ac77cab1e39a8657ee4f6174e"
 #define GIT_COMMIT_DATE "Tue, 10 Dec 2019 01:12:37 +0700"
+=======
+#include "obj/build.h"
+#endif
+
+//! git will put "#define GIT_ARCHIVE 1" on the next line inside archives. $Format:%n#define GIT_ARCHIVE 1$
+#ifdef GIT_ARCHIVE
+#define GIT_COMMIT_ID "$Format:%H$"
+#define GIT_COMMIT_DATE "$Format:%cD$"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 
 #define BUILD_DESC_WITH_SUFFIX(maj, min, rev, build, suffix) \
@@ -55,7 +77,11 @@ const std::string CLIENT_NAME("PRCY");
     "v" DO_STRINGIZE(maj) "." DO_STRINGIZE(min) "." DO_STRINGIZE(rev) "." DO_STRINGIZE(build) "-g" commit
 
 #define BUILD_DESC_FROM_UNKNOWN(maj, min, rev, build) \
+<<<<<<< HEAD
     "v" DO_STRINGIZE(maj) "." DO_STRINGIZE(min) "." DO_STRINGIZE(rev)
+=======
+    "v" DO_STRINGIZE(maj) "." DO_STRINGIZE(min) "." DO_STRINGIZE(rev) "." DO_STRINGIZE(build) "-unk"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #ifndef BUILD_DESC
 #ifdef BUILD_SUFFIX
@@ -67,6 +93,7 @@ const std::string CLIENT_NAME("PRCY");
 #endif
 #endif
 
+<<<<<<< HEAD
 #ifndef BUILD_DATE
 #ifdef GIT_COMMIT_DATE
 #define BUILD_DATE GIT_COMMIT_DATE
@@ -77,6 +104,9 @@ const std::string CLIENT_NAME("PRCY");
 
 const std::string CLIENT_BUILD(BUILD_DESC CLIENT_VERSION_SUFFIX);
 const std::string CLIENT_DATE(BUILD_DATE);
+=======
+const std::string CLIENT_BUILD(BUILD_DESC CLIENT_VERSION_SUFFIX);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 static std::string FormatVersion(int nVersion)
 {
@@ -91,6 +121,14 @@ std::string FormatFullVersion()
     return CLIENT_BUILD;
 }
 
+<<<<<<< HEAD
+=======
+std::string FormatVersionFriendly()
+{
+    return FormatVersion(CLIENT_VERSION);
+}
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 /** 
  * Format the subversion field according to BIP 14 spec (https://github.com/bitcoin/bips/blob/master/bip-0014.mediawiki) 
  */

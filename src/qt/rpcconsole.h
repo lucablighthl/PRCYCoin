@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,6 +19,10 @@
 
 class ClientModel;
 class RPCTimerInterface;
+<<<<<<< HEAD
+=======
+class WalletModel;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 namespace Ui
 {
@@ -22,8 +30,13 @@ class RPCConsole;
 }
 
 QT_BEGIN_NAMESPACE
+<<<<<<< HEAD
 class QItemSelection;
 class QMenu;
+=======
+class QMenu;
+class QItemSelection;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 QT_END_NAMESPACE
 
 /** Local Bitcoin RPC console. */
@@ -36,6 +49,7 @@ public:
     ~RPCConsole();
 
     void setClientModel(ClientModel* model);
+<<<<<<< HEAD
 
     enum MessageClass {
         MC_ERROR,
@@ -44,6 +58,9 @@ public:
         CMD_REPLY,
         CMD_ERROR
     };
+=======
+    void setWalletModel(WalletModel* model);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 protected:
     virtual bool eventFilter(QObject* obj, QEvent* event);
@@ -82,9 +99,18 @@ public Q_SLOTS:
     void walletResync();
 
     void reject();
+<<<<<<< HEAD
     void message(int category, const QString& message, bool html = false);
     /** Set number of connections shown in the UI */
     void setNumConnections(int count);
+=======
+    void message(int category, const QString &msg) { message(category, msg, false); }
+    void message(int category, const QString &message, bool html);
+    /** Set number of connections shown in the UI */
+    void setNumConnections(int count);
+    /** Set network state shown in the UI */
+    void setNetworkActive(bool networkActive);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     /** Set number of blocks shown in the UI */
     void setNumBlocks(int count);
     /** Set number of masternodes shown in the UI */
@@ -103,7 +129,11 @@ public Q_SLOTS:
     void showPeers();
     /** Switch to wallet-repair tab and show */
     void showRepair();
+<<<<<<< HEAD
     /** Open external (default) editor with prcycoin.conf */
+=======
+    /** Open external (default) editor with pivx.conf */
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     void showConfEditor();
     /** Open external (default) editor with masternode.conf */
     void showMNConfEditor();
@@ -117,8 +147,11 @@ public Q_SLOTS:
     void banSelectedNode(int bantime);
     /** Unban a selected node on the Bans tab */
     void unbanSelectedNode();
+<<<<<<< HEAD
     /** Show DataDir folder in default browser */
     void showDataDir();
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     /** Show folder with wallet backups in default browser */
     void showBackups();
 
@@ -130,6 +163,10 @@ Q_SIGNALS:
     void handleRestart(QStringList args);
 
 private:
+<<<<<<< HEAD
+=======
+    static QString FormatBytes(quint64 bytes);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     void startExecutor();
     void setTrafficGraphRange(int mins);
     /** Build parameter list for restart */
@@ -147,6 +184,10 @@ private:
 
     Ui::RPCConsole* ui;
     ClientModel* clientModel;
+<<<<<<< HEAD
+=======
+    WalletModel* walletModel;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     QStringList history;
     int historyPtr;
     NodeId cachedNodeid;
@@ -154,6 +195,12 @@ private:
     QMenu *peersTableContextMenu;
     QMenu *banTableContextMenu;
     RPCTimerInterface *rpcTimerInterface;
+<<<<<<< HEAD
+=======
+
+    /** Update UI with latest network info from model. */
+    void updateNetworkState(int num_connections);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 #endif // BITCOIN_QT_RPCCONSOLE_H

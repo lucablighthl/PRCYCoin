@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,8 +10,14 @@
 #define BITCOIN_QT_GUIUTIL_H
 
 #include "amount.h"
+<<<<<<< HEAD
 
 #include <QCalendarWidget>
+=======
+#include "askpassphrasedialog.h"
+#include "fs.h"
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include <QEvent>
 #include <QHeaderView>
 #include <QMessageBox>
@@ -17,7 +27,10 @@
 #include <QTableView>
 #include <QTableWidget>
 
+<<<<<<< HEAD
 #include <boost/filesystem.hpp>
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 class QValidatedLineEdit;
 class SendCoinsRecipient;
@@ -31,25 +44,62 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
+<<<<<<< HEAD
 /** Utility functions used by the PRCY Qt UI.
+=======
+/*
+ * General GUI exception
+ */
+class GUIException : public std::exception
+{
+public:
+    std::string message;
+    GUIException(const std::string &message) : message(message) {}
+};
+
+/** Utility functions used by the PIVX Qt UI.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  */
 namespace GUIUtil
 {
 // Create human-readable string from date
 QString dateTimeStr(const QDateTime& datetime);
+<<<<<<< HEAD
 QString dateTimeStr(qint64 nTime);
 
 // Render PRCY addresses in monospace font
 QFont bitcoinAddressFont();
 
 void HideDisabledWidgets(QVector<QWidget*> widgets  );
+=======
+QString dateTimeStrWithSeconds(const QDateTime& date);
+QString dateTimeStr(qint64 nTime);
+
+// Render PIVX addresses in monospace font
+QFont bitcoinAddressFont();
+
+// Parse string into a CAmount value.
+// Return 0 if the value is invalid
+CAmount parseValue(const QString& amount, int displayUnit = 0);
+
+// Format an amount
+QString formatBalance(CAmount amount, int nDisplayUnit = 0, bool isZpiv = false);
+QString formatBalanceWithoutHtml(CAmount amount, int nDisplayUnit = 0, bool isZpiv = false);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 
 // Set up widgets for address and amounts
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent);
 void setupAmountWidget(QLineEdit* widget, QWidget* parent);
 
+<<<<<<< HEAD
 // Parse "prcycoin:" URI into recipient object, return true on successful parsing
+=======
+// Update the cursor of the widget after a text change
+void updateWidgetTextAndCursorPosition(QLineEdit* widget, const QString& str);
+
+// Parse "pivx:" URI into recipient object, return true on successful parsing
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out);
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out);
 QString formatBitcoinURI(const SendCoinsRecipient& info);
@@ -109,10 +159,17 @@ QString getOpenFileName(QWidget* parent, const QString& caption, const QString& 
     */
 Qt::ConnectionType blockingGUIThreadConnection();
 
+<<<<<<< HEAD
+=======
+// Activate, show and raise the widget
+void bringToFront(QWidget* w);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Determine whether a widget is hidden behind other windows
 bool isObscured(QWidget* w);
 
 // Open debug.log
+<<<<<<< HEAD
 void openDebugLogfile();
 
 // Open prcycoin.conf
@@ -129,11 +186,24 @@ void showBackups();
 
 // Replace invalid default fonts with known good ones
 void SubstituteFonts(const QString& language);
+=======
+bool openDebugLogfile();
+
+// Open pivx.conf
+bool openConfigfile();
+
+// Open masternode.conf
+bool openMNConfigfile();
+
+// Browse backup folder
+bool showBackups();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /** Qt event filter that intercepts ToolTipChange events, and replaces the tooltip with a rich text
       representation if needed. This assures that Qt can word-wrap long tooltip messages.
       Tooltips longer than the provided size threshold (in characters) are wrapped.
      */
+<<<<<<< HEAD
 class ToolTipEventFilter : public QObject
 {
     Q_OBJECT
@@ -149,6 +219,8 @@ protected:
     }
 };
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 class ToolTipToRichTextFilter : public QObject
 {
     Q_OBJECT
@@ -163,6 +235,7 @@ private:
     int size_threshold;
 };
 
+<<<<<<< HEAD
 /**
      * Makes a QTableView last column feel as if it was being resized from its left border.
      * Also makes sure the column widths are never larger than the table's viewport.
@@ -217,6 +290,8 @@ private:
     int64_t value;
 };
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 bool GetStartOnSystemStartup();
 bool SetStartOnSystemStartup(bool fAutoStart);
 
@@ -227,6 +302,7 @@ void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSizeIn
 
 /** Load global CSS theme */
 QString loadStyleSheet();
+<<<<<<< HEAD
 /** Refresh App theme */
 void refreshStyleSheet();
 /** Change the color of weekends on calendar widget *Defaults to Red **/
@@ -235,10 +311,13 @@ void colorCalendarWidgetWeekends(QCalendarWidget* widget, QColor color);
 void setWindowless(QWidget* widget);
 /** Disable tooltips **/
 void disableTooltips(QWidget* widget);
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /** Check whether a theme is not build-in */
 bool isExternal(QString theme);
 
+<<<<<<< HEAD
 //display a windowless prompt
 void prompt(QString message);
 
@@ -247,6 +326,13 @@ boost::filesystem::path qstringToBoostPath(const QString& path);
 
 /* Convert OS specific boost path to QString through UTF-8 */
 QString boostPathToQString(const boost::filesystem::path& path);
+=======
+/* Convert QString to OS specific boost path through UTF-8 */
+fs::path qstringToBoostPath(const QString& path);
+
+/* Convert OS specific boost path to QString through UTF-8 */
+QString boostPathToQString(const fs::path& path);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /* Convert seconds into a QString with days, hours, mins, secs */
 QString formatDurationStr(int secs);
@@ -260,6 +346,7 @@ QString formatPingTime(double dPingTime);
 /* Format a CNodeCombinedStats.nTimeOffset into a user-readable string. */
 QString formatTimeOffset(int64_t nTimeOffset);
 
+<<<<<<< HEAD
 QString formatBytes(uint64_t bytes);
 
 #if defined(Q_OS_MAC)
@@ -275,6 +362,29 @@ QString formatBytes(uint64_t bytes);
 #else
     typedef QProgressBar ProgressBar;
 #endif
+=======
+typedef QProgressBar ProgressBar;
+
+/**
+* Splits the string into substrings wherever separator occurs, and returns
+* the list of those strings. Empty strings do not appear in the result.
+*
+* QString::split() signature differs in different Qt versions:
+*  - QString::SplitBehavior is deprecated since Qt 5.15
+*  - Qt::SplitBehavior was introduced in Qt 5.14
+* If {QString|Qt}::SkipEmptyParts behavior is required, use this
+* function instead of QString::split().
+*/
+template <typename SeparatorType>
+QStringList SplitSkipEmptyParts(const QString& string, const SeparatorType& separator)
+{
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    return string.split(separator, Qt::SkipEmptyParts);
+#else
+    return string.split(separator, QString::SkipEmptyParts);
+#endif
+}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 } // namespace GUIUtil
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 bitcoin (0.9.3-precise1) precise; urgency=medium
 
   * New upstream releases.
@@ -415,3 +416,10 @@ bitcoin (0.3.19~dfsg-1) unstable; urgency=low
     Closes: bug#578157.
 
  -- Jonas Smedegaard <dr@jones.dk>  Tue, 28 Dec 2010 15:49:22 +0100
+=======
+pivx (3.2.0-trusty1) trusty; urgency=medium
+
+  * PIVX Core v3.2.0 (trusty).
+
+ -- Fuzzbawls  Fri, 12 Apr 2019 12:01:00 -0700
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

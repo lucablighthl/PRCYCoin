@@ -8,7 +8,11 @@ and remove old versions as necessary.
 
 The seeds compiled into the release are created from fuzzbawls' DNS seed data, like this:
 
+<<<<<<< HEAD
     curl -s http://seeder.fuzzbawls.pw/prcycoin-mainnet.txt > seeds_main.txt
+=======
+    curl -s http://seeder.fuzzbawls.pw/pivx-mainnet.txt > seeds_main.txt
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     python3 makeseeds.py < seeds_main.txt > nodes_main.txt
     python3 generate-seeds.py . > ../../src/chainparamsseeds.h
 

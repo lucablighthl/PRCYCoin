@@ -1,4 +1,8 @@
 // Copyright (c) 2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2019-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +16,11 @@
 
 class CNetAddr;
 
+<<<<<<< HEAD
 /** 
+=======
+/**
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  * Median filter over a stream of values.
  * Returns the median of the last N numbers
  */
@@ -69,8 +77,19 @@ public:
 };
 
 /** Functions to keep track of adjusted P2P time */
+<<<<<<< HEAD
 int64_t GetTimeOffset();
 int64_t GetAdjustedTime();
 void AddTimeData(const CNetAddr& ip, int64_t nTime);
+=======
+inline int64_t abs64(int64_t n) { return (n >= 0 ? n : -n); }
+int64_t GetTimeOffset();
+int64_t GetAdjustedTime();
+void AddTimeData(const CNetAddr& ip, int64_t nTime, int nOffsetLimit);
+
+// Time Protocol V2
+int64_t GetTimeSlot(const int64_t nTime);
+int64_t GetCurrentTimeSlot();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #endif // BITCOIN_TIMEDATA_H

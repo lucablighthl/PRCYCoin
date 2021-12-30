@@ -8,4 +8,8 @@
 #define PASTE(x, y) x ## y
 #define PASTE2(x, y) PASTE(x, y)
 
+<<<<<<< HEAD
 #endif // BITCOIN_UTIL_MACROS_H
+=======
+#endif // BITCOIN_UTIL_MACROS_H
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

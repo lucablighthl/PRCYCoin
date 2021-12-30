@@ -2,15 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+<<<<<<< HEAD
 #include <string.h>
 #include "util/coding.h"
 #include "util/hash.h"
+=======
+#include "util/hash.h"
+
+#include <string.h>
+
+#include "util/coding.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // The FALLTHROUGH_INTENDED macro can be used to annotate implicit fall-through
 // between switch labels. The real definition should be provided externally.
 // This one is a fallback version for unsupported compilers.
 #ifndef FALLTHROUGH_INTENDED
+<<<<<<< HEAD
 #define FALLTHROUGH_INTENDED do { } while (0)
+=======
+#define FALLTHROUGH_INTENDED \
+  do {                       \
+  } while (0)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 
 namespace leveldb {
@@ -34,6 +48,7 @@ uint32_t Hash(const char* data, size_t n, uint32_t seed) {
   // Pick up remaining bytes
   switch (limit - data) {
     case 3:
+<<<<<<< HEAD
       h += static_cast<unsigned char>(data[2]) << 16;
       FALLTHROUGH_INTENDED;
     case 2:
@@ -41,6 +56,15 @@ uint32_t Hash(const char* data, size_t n, uint32_t seed) {
       FALLTHROUGH_INTENDED;
     case 1:
       h += static_cast<unsigned char>(data[0]);
+=======
+      h += static_cast<uint8_t>(data[2]) << 16;
+      FALLTHROUGH_INTENDED;
+    case 2:
+      h += static_cast<uint8_t>(data[1]) << 8;
+      FALLTHROUGH_INTENDED;
+    case 1:
+      h += static_cast<uint8_t>(data[0]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       h *= m;
       h ^= (h >> r);
       break;
@@ -48,5 +72,8 @@ uint32_t Hash(const char* data, size_t n, uint32_t seed) {
   return h;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }  // namespace leveldb

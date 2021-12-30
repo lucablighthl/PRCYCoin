@@ -7,10 +7,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+<<<<<<< HEAD
 #include <sstream>
 #include "leveldb/env.h"
 #include "leveldb/slice.h"
 #include "util/random.h"
+=======
+
+#include <sstream>
+
+#include "leveldb/status.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 namespace leveldb {
 namespace test {
@@ -27,15 +34,26 @@ namespace test {
 //
 // Returns 0 if all tests pass.
 // Dies or returns a non-zero value if some test fails.
+<<<<<<< HEAD
 extern int RunAllTests();
 
 // Return the directory to use for temporary storage.
 extern std::string TmpDir();
+=======
+int RunAllTests();
+
+// Return the directory to use for temporary storage.
+std::string TmpDir();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Return a randomization seed for this run.  Typically returns the
 // same number on repeated invocations of this binary, but automated
 // runs may be able to vary the seed.
+<<<<<<< HEAD
 extern int RandomSeed();
+=======
+int RandomSeed();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // An instance of Tester is allocated to hold temporary state during
 // the execution of an assertion.
@@ -47,9 +65,13 @@ class Tester {
   std::stringstream ss_;
 
  public:
+<<<<<<< HEAD
   Tester(const char* f, int l)
       : ok_(true), fname_(f), line_(l) {
   }
+=======
+  Tester(const char* f, int l) : ok_(true), fname_(f), line_(l) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   ~Tester() {
     if (!ok_) {
@@ -74,6 +96,7 @@ class Tester {
     return *this;
   }
 
+<<<<<<< HEAD
 #define BINARY_OP(name,op)                              \
   template <class X, class Y>                           \
   Tester& name(const X& x, const Y& y) {                \
@@ -82,6 +105,16 @@ class Tester {
       ok_ = false;                                      \
     }                                                   \
     return *this;                                       \
+=======
+#define BINARY_OP(name, op)                          \
+  template <class X, class Y>                        \
+  Tester& name(const X& x, const Y& y) {             \
+    if (!(x op y)) {                                 \
+      ss_ << " failed: " << x << (" " #op " ") << y; \
+      ok_ = false;                                   \
+    }                                                \
+    return *this;                                    \
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
 
   BINARY_OP(IsEq, ==)
@@ -104,6 +137,7 @@ class Tester {
 
 #define ASSERT_TRUE(c) ::leveldb::test::Tester(__FILE__, __LINE__).Is((c), #c)
 #define ASSERT_OK(s) ::leveldb::test::Tester(__FILE__, __LINE__).IsOk((s))
+<<<<<<< HEAD
 #define ASSERT_EQ(a,b) ::leveldb::test::Tester(__FILE__, __LINE__).IsEq((a),(b))
 #define ASSERT_NE(a,b) ::leveldb::test::Tester(__FILE__, __LINE__).IsNe((a),(b))
 #define ASSERT_GE(a,b) ::leveldb::test::Tester(__FILE__, __LINE__).IsGe((a),(b))
@@ -131,6 +165,40 @@ void TCONCAT(_Test_,name)::_Run()
 // invoked via the macro expansion of TEST.
 extern bool RegisterTest(const char* base, const char* name, void (*func)());
 
+=======
+#define ASSERT_EQ(a, b) \
+  ::leveldb::test::Tester(__FILE__, __LINE__).IsEq((a), (b))
+#define ASSERT_NE(a, b) \
+  ::leveldb::test::Tester(__FILE__, __LINE__).IsNe((a), (b))
+#define ASSERT_GE(a, b) \
+  ::leveldb::test::Tester(__FILE__, __LINE__).IsGe((a), (b))
+#define ASSERT_GT(a, b) \
+  ::leveldb::test::Tester(__FILE__, __LINE__).IsGt((a), (b))
+#define ASSERT_LE(a, b) \
+  ::leveldb::test::Tester(__FILE__, __LINE__).IsLe((a), (b))
+#define ASSERT_LT(a, b) \
+  ::leveldb::test::Tester(__FILE__, __LINE__).IsLt((a), (b))
+
+#define TCONCAT(a, b) TCONCAT1(a, b)
+#define TCONCAT1(a, b) a##b
+
+#define TEST(base, name)                                              \
+  class TCONCAT(_Test_, name) : public base {                         \
+   public:                                                            \
+    void _Run();                                                      \
+    static void _RunIt() {                                            \
+      TCONCAT(_Test_, name) t;                                        \
+      t._Run();                                                       \
+    }                                                                 \
+  };                                                                  \
+  bool TCONCAT(_Test_ignored_, name) = ::leveldb::test::RegisterTest( \
+      #base, #name, &TCONCAT(_Test_, name)::_RunIt);                  \
+  void TCONCAT(_Test_, name)::_Run()
+
+// Register the specified test.  Typically not used directly, but
+// invoked via the macro expansion of TEST.
+bool RegisterTest(const char* base, const char* name, void (*func)());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace test
 }  // namespace leveldb

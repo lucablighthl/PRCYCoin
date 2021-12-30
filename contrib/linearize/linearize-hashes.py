@@ -79,7 +79,11 @@ if __name__ == '__main__':
 		print("Usage: linearize-hashes.py CONFIG-FILE")
 		sys.exit(1)
 
+<<<<<<< HEAD
 	f = open(sys.argv[1])
+=======
+	f = open(sys.argv[1], encoding="utf8")
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 	for line in f:
 		# skip comment lines
 		m = re.search('^\s*#', line)
@@ -96,7 +100,11 @@ if __name__ == '__main__':
 	if 'host' not in settings:
 		settings['host'] = '127.0.0.1'
 	if 'port' not in settings:
+<<<<<<< HEAD
 		settings['port'] = 59683
+=======
+		settings['port'] = 51473
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 	if 'min_height' not in settings:
 		settings['min_height'] = 0
 	if 'max_height' not in settings:

@@ -7,7 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>769</width>
+<<<<<<< HEAD
     <height>516</height>
+=======
+    <height>498</height>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,6 +31,7 @@
        <property name="horizontalSpacing">
         <number>12</number>
        </property>
+<<<<<<< HEAD
        <item row="7" column="1">
         <widget class="QLabel" name="dataDir">
          <property name="text">
@@ -37,6 +42,8 @@
          </property>
         </widget>
        </item>
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
        <item row="0" column="0">
         <widget class="QLabel" name="generalHeader">
          <property name="font">
@@ -63,7 +70,11 @@
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -86,7 +97,11 @@
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -97,9 +112,15 @@
         </widget>
        </item>
        <item row="3" column="0">
+<<<<<<< HEAD
         <widget class="QLabel" name="openSSLVersionLabel">
          <property name="text">
           <string>Using OpenSSL version</string>
+=======
+        <widget class="QLabel" name="berkeleyDBVersionLabel">
+         <property name="text">
+          <string>Using BerkeleyDB version</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="indent">
           <number>10</number>
@@ -107,12 +128,20 @@
         </widget>
        </item>
        <item row="3" column="1">
+<<<<<<< HEAD
         <widget class="QLabel" name="openSSLVersion">
+=======
+        <widget class="QLabel" name="berkeleyDBVersion">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -123,22 +152,36 @@
         </widget>
        </item>
        <item row="4" column="0">
+<<<<<<< HEAD
         <widget class="QLabel" name="berkeleyDBVersionLabel">
          <property name="text">
           <string>Using BerkeleyDB version</string>
          </property>
          <property name="indent">
           <number>10</number>
+=======
+        <widget class="QLabel" name="startupTimeLabel">
+         <property name="text">
+          <string>Startup time</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
         </widget>
        </item>
        <item row="4" column="1">
+<<<<<<< HEAD
         <widget class="QLabel" name="berkeleyDBVersion">
+=======
+        <widget class="QLabel" name="startupTime">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -149,13 +192,20 @@
         </widget>
        </item>
        <item row="5" column="0">
+<<<<<<< HEAD
         <widget class="QLabel" name="buildDateLabel">
          <property name="text">
           <string>Build date</string>
+=======
+        <widget class="QLabel" name="dataDirLabel">
+         <property name="text">
+          <string>Data Directory</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
         </widget>
        </item>
        <item row="5" column="1">
+<<<<<<< HEAD
         <widget class="QLabel" name="buildDate">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
@@ -168,10 +218,16 @@
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+=======
+        <widget class="QLabel" name="dataDir">
+         <property name="text">
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
         </widget>
        </item>
        <item row="6" column="0">
+<<<<<<< HEAD
         <widget class="QLabel" name="startupTimeLabel">
          <property name="text">
           <string>Startup time</string>
@@ -195,6 +251,8 @@
         </widget>
        </item>
        <item row="8" column="0">
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="networkHeader">
          <property name="font">
           <font>
@@ -207,20 +265,32 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="9" column="0">
+=======
+       <item row="7" column="0">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="networkNameLabel">
          <property name="text">
           <string>Name</string>
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="9" column="1">
+=======
+       <item row="7" column="1">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="networkName">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -230,20 +300,32 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="10" column="0">
+=======
+       <item row="8" column="0">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="numberOfConnectionsLabel">
          <property name="text">
           <string>Number of connections</string>
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="10" column="1">
+=======
+       <item row="8" column="1">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="numberOfConnections">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -253,20 +335,32 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="11" column="0">
+=======
+       <item row="9" column="0">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="masternodeCountLabel">
          <property name="text">
           <string>Number of Masternodes</string>
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="11" column="1">
+=======
+       <item row="9" column="1">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="masternodeCount">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -276,7 +370,11 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="12" column="0">
+=======
+       <item row="10" column="0">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="blockchainHeader">
          <property name="font">
           <font>
@@ -289,20 +387,32 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="13" column="0">
+=======
+       <item row="11" column="0">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="numberOfBlocksLabel">
          <property name="text">
           <string>Current number of blocks</string>
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="13" column="1">
+=======
+       <item row="11" column="1">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="numberOfBlocks">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -312,20 +422,32 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="14" column="0">
+=======
+       <item row="12" column="0">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="lastBlockTimeLabel">
          <property name="text">
           <string>Last block time</string>
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="14" column="1">
+=======
+       <item row="12" column="1">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="lastBlockTime">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>N/A</string>
+=======
+          <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -335,7 +457,25 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="16" column="0">
+=======
+       <item row="13" column="0">
+        <widget class="QLabel" name="lastBlockHashLabel">
+         <property name="text">
+          <string>Last block hash</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <widget class="QLabel" name="lastBlockHash">
+         <property name="text">
+          <string notr="true">N/A</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="0">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -348,7 +488,11 @@
          </property>
         </spacer>
        </item>
+<<<<<<< HEAD
        <item row="17" column="0">
+=======
+       <item row="15" column="0">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         <widget class="QLabel" name="debugLogFileHeader">
          <property name="font">
           <font>
@@ -361,10 +505,17 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="18" column="0">
         <widget class="QPushButton" name="openDebugLogfileButton">
          <property name="toolTip">
           <string>Open the PRCY debug log file from the current data directory. This can take a few seconds for large log files.</string>
+=======
+       <item row="16" column="0">
+        <widget class="QPushButton" name="openDebugLogfileButton">
+         <property name="toolTip">
+          <string>Open the PIVX debug log file from the current data directory. This can take a few seconds for large log files.</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="text">
           <string>&amp;Open</string>
@@ -374,6 +525,7 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="7" column="0">
         <widget class="QLabel" name="dataDirLabel">
          <property name="text">
@@ -398,6 +550,8 @@
          </property>
         </widget>
        </item>
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       </layout>
      </widget>
      <widget class="QWidget" name="tab_console">
@@ -457,7 +611,11 @@
             <string/>
            </property>
            <property name="icon">
+<<<<<<< HEAD
             <iconset resource="../prcycoin.qrc">
+=======
+            <iconset>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="shortcut">
@@ -546,6 +704,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
+<<<<<<< HEAD
              <widget class="Line" name="line">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -555,6 +714,66 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
+=======
+             <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="Line" name="line">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>10</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="palette">
+                 <palette>
+                  <active>
+                   <colorrole role="Light">
+                    <brush brushstyle="SolidPattern">
+                     <color alpha="255">
+                      <red>0</red>
+                      <green>255</green>
+                      <blue>0</blue>
+                     </color>
+                    </brush>
+                   </colorrole>
+                  </active>
+                  <inactive>
+                   <colorrole role="Light">
+                    <brush brushstyle="SolidPattern">
+                     <color alpha="255">
+                      <red>0</red>
+                      <green>255</green>
+                      <blue>0</blue>
+                     </color>
+                    </brush>
+                   </colorrole>
+                  </inactive>
+                  <disabled>
+                   <colorrole role="Light">
+                    <brush brushstyle="SolidPattern">
+                     <color alpha="255">
+                      <red>0</red>
+                      <green>255</green>
+                      <blue>0</blue>
+                     </color>
+                    </brush>
+                   </colorrole>
+                  </disabled>
+                 </palette>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                <widget class="QLabel" name="label_16">
                 <property name="text">
                  <string>Received</string>
@@ -579,6 +798,65 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
+<<<<<<< HEAD
+=======
+               <widget class="Line" name="line_2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>10</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="palette">
+                 <palette>
+                  <active>
+                   <colorrole role="Light">
+                    <brush brushstyle="SolidPattern">
+                     <color alpha="255">
+                      <red>255</red>
+                      <green>0</green>
+                      <blue>0</blue>
+                     </color>
+                    </brush>
+                   </colorrole>
+                  </active>
+                  <inactive>
+                   <colorrole role="Light">
+                    <brush brushstyle="SolidPattern">
+                     <color alpha="255">
+                      <red>255</red>
+                      <green>0</green>
+                      <blue>0</blue>
+                     </color>
+                    </brush>
+                   </colorrole>
+                  </inactive>
+                  <disabled>
+                   <colorrole role="Light">
+                    <brush brushstyle="SolidPattern">
+                     <color alpha="255">
+                      <red>255</red>
+                      <green>0</green>
+                      <blue>0</blue>
+                     </color>
+                    </brush>
+                   </colorrole>
+                  </disabled>
+                 </palette>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                <widget class="QLabel" name="label_17">
                 <property name="text">
                  <string>Sent</string>
@@ -766,7 +1044,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -789,7 +1071,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -812,7 +1098,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -835,7 +1125,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -858,7 +1152,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -881,7 +1179,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -904,7 +1206,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -927,7 +1233,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -950,7 +1260,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -973,7 +1287,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -996,7 +1314,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -1019,7 +1341,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -1042,7 +1368,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -1065,7 +1395,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -1088,7 +1422,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -1114,7 +1452,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -1137,7 +1479,11 @@
              <cursorShape>IBeamCursor</cursorShape>
             </property>
             <property name="text">
+<<<<<<< HEAD
              <string>N/A</string>
+=======
+             <string notr="true">N/A</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             </property>
             <property name="textFormat">
              <enum>Qt::PlainText</enum>
@@ -1173,6 +1519,7 @@
        <property name="horizontalSpacing">
         <number>12</number>
        </property>
+<<<<<<< HEAD
        <item row="9" column="2">
         <widget class="QLabel" name="label_repair_reindex_command">
          <property name="text">
@@ -1182,6 +1529,75 @@
        </item>
        <item row="5" column="0" colspan="2">
         <widget class="QPushButton" name="btn_rescan">
+=======
+       <item row="0" column="0" colspan="4">
+        <widget class="QLabel" name="label_repair_header">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Wallet repair options.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="4">
+        <widget class="QLabel" name="label_repair_helptext">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockhain files or missing/obsolete transactions.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="wallet_path_label">
+         <property name="text">
+          <string>Wallet In Use:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="3">
+        <widget class="QLabel" name="wallet_path">
+         <property name="cursor">
+          <cursorShape>IBeamCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string notr="true">N/A</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::PlainText</enum>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <spacer name="verticalSpacer_repair1">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>10</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_salvagewallet">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -1189,6 +1605,7 @@
           </size>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>Rescan blockchain files</string>
          </property>
         </widget>
@@ -1197,14 +1614,36 @@
         <widget class="QLabel" name="label_repair_reindex">
          <property name="text">
           <string>Rebuild block chain index from current blk000??.dat files.</string>
+=======
+          <string>Salvage wallet</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QLabel" name="label_repair_salvage_command">
+         <property name="text">
+          <string notr="true">-salvagewallet:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3">
+        <widget class="QLabel" name="label_repair_salvage">
+         <property name="text">
+          <string>Attempt to recover private keys from a corrupt wallet.dat.</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
          <property name="wordWrap">
           <bool>true</bool>
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="8" column="0" colspan="2">
         <widget class="QPushButton" name="btn_upgradewallet">
+=======
+       <item row="5" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_rescan">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -1212,6 +1651,7 @@
           </size>
          </property>
          <property name="text">
+<<<<<<< HEAD
           <string>Upgrade wallet format</string>
          </property>
         </widget>
@@ -1225,64 +1665,15 @@
        </item>
        <item row="7" column="0" colspan="2">
         <widget class="QPushButton" name="btn_zapwallettxes2">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Recover transactions 2</string>
+=======
+          <string>Rescan blockchain files</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="2">
-        <widget class="QLabel" name="label_repair_zap1_command">
+       <item row="5" column="2">
+        <widget class="QLabel" name="label_repair_rescan_command">
          <property name="text">
-          <string notr="true">-zapwallettxes=1:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="4">
-        <widget class="QLabel" name="label_repair_helptext">
-         <property name="font">
-          <font>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockchain files or missing/obsolete transactions.</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QPushButton" name="btn_salvagewallet">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>23</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Salvage wallet</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="2">
-        <widget class="QLabel" name="label_repair_zap2_command">
-         <property name="text">
-          <string notr="true">-zapwallettxes=2:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="wallet_path_label">
-         <property name="text">
-          <string>Wallet In Use:</string>
+          <string notr="true">-rescan:</string>
          </property>
         </widget>
        </item>
@@ -1296,6 +1687,108 @@
          </property>
         </widget>
        </item>
+       <item row="6" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_zapwallettxes1">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="text">
+<<<<<<< HEAD
+          <string>Recover transactions 2</string>
+=======
+          <string>Recover transactions 1</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="QLabel" name="label_repair_zap1_command">
+         <property name="text">
+          <string notr="true">-zapwallettxes=1:</string>
+         </property>
+        </widget>
+       </item>
+<<<<<<< HEAD
+       <item row="1" column="0" colspan="4">
+        <widget class="QLabel" name="label_repair_helptext">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>The buttons below will restart the wallet with command-line options to repair the wallet, fix issues with corrupt blockchain files or missing/obsolete transactions.</string>
+=======
+       <item row="6" column="3">
+        <widget class="QLabel" name="label_repair_zap1">
+         <property name="text">
+          <string>Recover transactions from blockchain (keep meta-data, e.g. account owner).</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+<<<<<<< HEAD
+       <item row="4" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_salvagewallet">
+=======
+       <item row="7" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_zapwallettxes2">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="text">
+<<<<<<< HEAD
+          <string>Salvage wallet</string>
+=======
+          <string>Recover transactions 2</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QLabel" name="label_repair_zap2_command">
+         <property name="text">
+          <string notr="true">-zapwallettxes=2:</string>
+         </property>
+        </widget>
+       </item>
+<<<<<<< HEAD
+       <item row="2" column="0">
+        <widget class="QLabel" name="wallet_path_label">
+         <property name="text">
+          <string>Wallet In Use:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="3">
+        <widget class="QLabel" name="label_repair_rescan">
+         <property name="text">
+          <string>Rescan the block chain for missing wallet transactions.</string>
+=======
+       <item row="7" column="3">
+        <widget class="QLabel" name="label_repair_zap2">
+         <property name="text">
+          <string>Recover transactions from blockchain (drop meta-data).</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+<<<<<<< HEAD
        <item row="4" column="3">
         <widget class="QLabel" name="label_repair_salvage">
          <property name="text">
@@ -1320,14 +1813,9 @@
         <widget class="QLabel" name="label_repair_zap1">
          <property name="text">
           <string>Recover transactions from blockchain (keep meta-data, e.g. account owner).</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0" colspan="2">
-        <widget class="QPushButton" name="btn_zapwallettxes1">
+=======
+       <item row="8" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_upgradewallet">
          <property name="minimumSize">
           <size>
            <width>100</width>
@@ -1335,6 +1823,43 @@
           </size>
          </property>
          <property name="text">
+          <string>Upgrade wallet format</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="2">
+        <widget class="QLabel" name="label_repair_upgrade_command">
+         <property name="text">
+          <string notr="true">-upgradewallet:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="3">
+        <widget class="QLabel" name="label_repair_upgrade">
+         <property name="text">
+          <string>Upgrade wallet to latest format on startup. (Note: this is NOT an update of the wallet itself!)</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+<<<<<<< HEAD
+       <item row="6" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_zapwallettxes1">
+=======
+       <item row="9" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_reindex">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="text">
+<<<<<<< HEAD
           <string>Recover transactions 1</string>
          </property>
         </widget>
@@ -1359,6 +1884,26 @@
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+=======
+          <string>Rebuild index</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2">
+        <widget class="QLabel" name="label_repair_reindex_command">
+         <property name="text">
+          <string notr="true">-reindex:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="3">
+        <widget class="QLabel" name="label_repair_reindex">
+         <property name="text">
+          <string>Rebuild block chain index from current blk000??.dat files.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
         </widget>
        </item>
@@ -1375,10 +1920,17 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="4" column="2">
         <widget class="QLabel" name="label_repair_salvage_command">
          <property name="text">
           <string notr="true">-salvagewallet:</string>
+=======
+       <item row="10" column="2">
+        <widget class="QLabel" name="label_repair_resync_command">
+         <property name="text">
+          <string notr="true">-resync:</string>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          </property>
         </widget>
        </item>
@@ -1392,6 +1944,7 @@
          </property>
         </widget>
        </item>
+<<<<<<< HEAD
        <item row="3" column="0">
         <spacer name="verticalSpacer_repair1">
          <property name="orientation">
@@ -1405,6 +1958,8 @@
          </property>
         </spacer>
        </item>
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
        <item row="11" column="0">
         <spacer name="verticalSpacer_repair2">
          <property name="orientation">
@@ -1418,6 +1973,7 @@
          </property>
         </spacer>
        </item>
+<<<<<<< HEAD
        <item row="0" column="0" colspan="4">
         <widget class="QLabel" name="label_repair_header">
          <property name="font">
@@ -1461,6 +2017,8 @@
          </property>
         </widget>
        </item>
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       </layout>
      </widget>
     </widget>
@@ -1479,7 +2037,11 @@
   </customwidget>
  </customwidgets>
  <resources>
+<<<<<<< HEAD
   <include location="../prcycoin.qrc"/>
+=======
+  <include location="../pivx.qrc"/>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  </resources>
  <connections/>
 </ui>

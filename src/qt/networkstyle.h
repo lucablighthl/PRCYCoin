@@ -13,7 +13,11 @@
 class NetworkStyle
 {
 public:
+<<<<<<< HEAD
     /** Get style associated with provided BIP70 network id, or 0 if not known */
+=======
+    /** Get style associated with provided network id, or 0 if not known */
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     static const NetworkStyle* instantiate(const QString& networkId);
 
     const QString& getAppName() const { return appName; }

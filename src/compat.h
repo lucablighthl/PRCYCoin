@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,7 +11,11 @@
 #define BITCOIN_COMPAT_H
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< HEAD
 #include "config/prcycoin-config.h"
+=======
+#include "config/pivx-config.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 
 #ifdef WIN32
@@ -92,6 +100,15 @@ typedef u_int SOCKET;
 size_t strnlen( const char *start, size_t max_len);
 #endif // HAVE_DECL_STRNLEN
 
+<<<<<<< HEAD
+=======
+#ifndef WIN32
+typedef void* sockopt_arg_type;
+#else
+typedef char* sockopt_arg_type;
+#endif
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 bool static inline IsSelectableSocket(SOCKET s)
 {
 #ifdef WIN32

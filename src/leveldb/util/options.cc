@@ -9,6 +9,7 @@
 
 namespace leveldb {
 
+<<<<<<< HEAD
 Options::Options()
     : comparator(BytewiseComparator()),
       create_if_missing(false),
@@ -26,5 +27,8 @@ Options::Options()
       reuse_logs(false),
       filter_policy(NULL) {
 }
+=======
+Options::Options() : comparator(BytewiseComparator()), env(Env::Default()) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace leveldb

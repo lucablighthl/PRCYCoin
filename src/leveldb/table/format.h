@@ -5,8 +5,15 @@
 #ifndef STORAGE_LEVELDB_TABLE_FORMAT_H_
 #define STORAGE_LEVELDB_TABLE_FORMAT_H_
 
+<<<<<<< HEAD
 #include <string>
 #include <stdint.h>
+=======
+#include <stdint.h>
+
+#include <string>
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/slice.h"
 #include "leveldb/status.h"
 #include "leveldb/table_builder.h"
@@ -21,6 +28,12 @@ struct ReadOptions;
 // block or a meta block.
 class BlockHandle {
  public:
+<<<<<<< HEAD
+=======
+  // Maximum encoding length of a BlockHandle
+  enum { kMaxEncodedLength = 10 + 10 };
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   BlockHandle();
 
   // The offset of the block in the file.
@@ -34,9 +47,12 @@ class BlockHandle {
   void EncodeTo(std::string* dst) const;
   Status DecodeFrom(Slice* input);
 
+<<<<<<< HEAD
   // Maximum encoding length of a BlockHandle
   enum { kMaxEncodedLength = 10 + 10 };
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  private:
   uint64_t offset_;
   uint64_t size_;
@@ -46,23 +62,38 @@ class BlockHandle {
 // end of every table file.
 class Footer {
  public:
+<<<<<<< HEAD
   Footer() { }
+=======
+  // Encoded length of a Footer.  Note that the serialization of a
+  // Footer will always occupy exactly this many bytes.  It consists
+  // of two block handles and a magic number.
+  enum { kEncodedLength = 2 * BlockHandle::kMaxEncodedLength + 8 };
+
+  Footer() = default;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // The block handle for the metaindex block of the table
   const BlockHandle& metaindex_handle() const { return metaindex_handle_; }
   void set_metaindex_handle(const BlockHandle& h) { metaindex_handle_ = h; }
 
   // The block handle for the index block of the table
+<<<<<<< HEAD
   const BlockHandle& index_handle() const {
     return index_handle_;
   }
   void set_index_handle(const BlockHandle& h) {
     index_handle_ = h;
   }
+=======
+  const BlockHandle& index_handle() const { return index_handle_; }
+  void set_index_handle(const BlockHandle& h) { index_handle_ = h; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   void EncodeTo(std::string* dst) const;
   Status DecodeFrom(Slice* input);
 
+<<<<<<< HEAD
   // Encoded length of a Footer.  Note that the serialization of a
   // Footer will always occupy exactly this many bytes.  It consists
   // of two block handles and a magic number.
@@ -70,6 +101,8 @@ class Footer {
     kEncodedLength = 2*BlockHandle::kMaxEncodedLength + 8
   };
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  private:
   BlockHandle metaindex_handle_;
   BlockHandle index_handle_;
@@ -91,17 +124,26 @@ struct BlockContents {
 
 // Read the block identified by "handle" from "file".  On failure
 // return non-OK.  On success fill *result and return OK.
+<<<<<<< HEAD
 extern Status ReadBlock(RandomAccessFile* file,
                         const ReadOptions& options,
                         const BlockHandle& handle,
                         BlockContents* result);
+=======
+Status ReadBlock(RandomAccessFile* file, const ReadOptions& options,
+                 const BlockHandle& handle, BlockContents* result);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Implementation details follow.  Clients should ignore,
 
 inline BlockHandle::BlockHandle()
+<<<<<<< HEAD
     : offset_(~static_cast<uint64_t>(0)),
       size_(~static_cast<uint64_t>(0)) {
 }
+=======
+    : offset_(~static_cast<uint64_t>(0)), size_(~static_cast<uint64_t>(0)) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace leveldb
 

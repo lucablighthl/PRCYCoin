@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2018-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -24,6 +28,10 @@ typedef enum ScriptError_t
     /* Failed verify operations */
     SCRIPT_ERR_VERIFY,
     SCRIPT_ERR_EQUALVERIFY,
+<<<<<<< HEAD
+=======
+    SCRIPT_ERR_CHECKCOLDSTAKEVERIFY,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     SCRIPT_ERR_CHECKMULTISIGVERIFY,
     SCRIPT_ERR_CHECKSIGVERIFY,
     SCRIPT_ERR_NUMEQUALVERIFY,
@@ -34,7 +42,11 @@ typedef enum ScriptError_t
     SCRIPT_ERR_INVALID_STACK_OPERATION,
     SCRIPT_ERR_INVALID_ALTSTACK_OPERATION,
     SCRIPT_ERR_UNBALANCED_CONDITIONAL,
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     /* OP_CHECKLOCKTIMEVERIFY */
     SCRIPT_ERR_NEGATIVE_LOCKTIME,
     SCRIPT_ERR_UNSATISFIED_LOCKTIME,
@@ -47,6 +59,10 @@ typedef enum ScriptError_t
     SCRIPT_ERR_SIG_HIGH_S,
     SCRIPT_ERR_SIG_NULLDUMMY,
     SCRIPT_ERR_PUBKEYTYPE,
+<<<<<<< HEAD
+=======
+    SCRIPT_ERR_CLEANSTACK,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     /* softfork safeness */
     SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS,

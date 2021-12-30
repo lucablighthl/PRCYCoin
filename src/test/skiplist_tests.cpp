@@ -1,10 +1,21 @@
 // Copyright (c) 2014 The Bitcoin Core developers
+<<<<<<< HEAD
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "main.h"
 #include "test_random.h"
 #include "util.h"
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#include "test/test_pivx.h"
+
+#include "util/system.h"
+#include "validation.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <vector>
 
@@ -12,8 +23,12 @@
 
 #define SKIPLIST_LENGTH 300000
 
+<<<<<<< HEAD
 #ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(skiplist_tests)
+=======
+BOOST_FIXTURE_TEST_SUITE(skiplist_tests, BasicTestingSetup)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 BOOST_AUTO_TEST_CASE(skiplist_test)
 {
@@ -21,7 +36,11 @@ BOOST_AUTO_TEST_CASE(skiplist_test)
 
     for (int i=0; i<SKIPLIST_LENGTH; i++) {
         vIndex[i].nHeight = i;
+<<<<<<< HEAD
         vIndex[i].pprev = (i == 0) ? NULL : &vIndex[i - 1];
+=======
+        vIndex[i].pprev = (i == 0) ? nullptr : &vIndex[i - 1];
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         vIndex[i].BuildSkip();
     }
 
@@ -30,17 +49,30 @@ BOOST_AUTO_TEST_CASE(skiplist_test)
             BOOST_CHECK(vIndex[i].pskip == &vIndex[vIndex[i].pskip->nHeight]);
             BOOST_CHECK(vIndex[i].pskip->nHeight < i);
         } else {
+<<<<<<< HEAD
             BOOST_CHECK(vIndex[i].pskip == NULL);
+=======
+            BOOST_CHECK(vIndex[i].pskip == nullptr);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
     }
 
     for (int i=0; i < 1000; i++) {
+<<<<<<< HEAD
         int from = insecure_randrange(SKIPLIST_LENGTH - 1);
         int to = insecure_randrange(from + 1);
 
         BOOST_CHECK(vIndex[SKIPLIST_LENGTH - 1].GetAncestor(from) == &vIndex[from]);
         BOOST_CHECK(vIndex[from].GetAncestor(to) == &vIndex[to]);
         BOOST_CHECK(vIndex[from].GetAncestor(0) == &vIndex[0]);
+=======
+        int from = InsecureRandRange(SKIPLIST_LENGTH - 1);
+        int to = InsecureRandRange(from + 1);
+
+        BOOST_CHECK(vIndex[SKIPLIST_LENGTH - 1].GetAncestor(from) == &vIndex[from]);
+        BOOST_CHECK(vIndex[from].GetAncestor(to) == &vIndex[to]);
+        BOOST_CHECK(vIndex[from].GetAncestor(0) == vIndex.data());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 }
 
@@ -50,6 +82,7 @@ BOOST_AUTO_TEST_CASE(getlocator_test)
     std::vector<uint256> vHashMain(100000);
     std::vector<CBlockIndex> vBlocksMain(100000);
     for (unsigned int i=0; i<vBlocksMain.size(); i++) {
+<<<<<<< HEAD
         vHashMain[i] = i; // Set the hash equal to the height, so we can quickly check the distances.
         vBlocksMain[i].nHeight = i;
         vBlocksMain[i].pprev = i ? &vBlocksMain[i - 1] : NULL;
@@ -57,12 +90,22 @@ BOOST_AUTO_TEST_CASE(getlocator_test)
         vBlocksMain[i].BuildSkip();
         BOOST_CHECK_EQUAL((int)vBlocksMain[i].GetBlockHash().GetLow64(), vBlocksMain[i].nHeight);
         BOOST_CHECK(vBlocksMain[i].pprev == NULL || vBlocksMain[i].nHeight == vBlocksMain[i].pprev->nHeight + 1);
+=======
+        vHashMain[i] = ArithToUint256(i); // Set the hash equal to the height, so we can quickly check the distances.
+        vBlocksMain[i].nHeight = i;
+        vBlocksMain[i].pprev = i ? &vBlocksMain[i - 1] : nullptr;
+        vBlocksMain[i].phashBlock = &vHashMain[i];
+        vBlocksMain[i].BuildSkip();
+        BOOST_CHECK_EQUAL((int)UintToArith256(vBlocksMain[i].GetBlockHash()).GetLow64(), vBlocksMain[i].nHeight);
+        BOOST_CHECK(vBlocksMain[i].pprev == nullptr || vBlocksMain[i].nHeight == vBlocksMain[i].pprev->nHeight + 1);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     // Build a branch that splits off at block 49999, 50000 blocks long.
     std::vector<uint256> vHashSide(50000);
     std::vector<CBlockIndex> vBlocksSide(50000);
     for (unsigned int i=0; i<vBlocksSide.size(); i++) {
+<<<<<<< HEAD
         vHashSide[i] = i + 50000 + (uint256(1) << 128); // Add 1<<128 to the hashes, so GetLow64() still returns the height.
         vBlocksSide[i].nHeight = i + 50000;
         vBlocksSide[i].pprev = i ? &vBlocksSide[i - 1] : &vBlocksMain[49999];
@@ -70,6 +113,15 @@ BOOST_AUTO_TEST_CASE(getlocator_test)
         vBlocksSide[i].BuildSkip();
         BOOST_CHECK_EQUAL((int)vBlocksSide[i].GetBlockHash().GetLow64(), vBlocksSide[i].nHeight);
         BOOST_CHECK(vBlocksSide[i].pprev == NULL || vBlocksSide[i].nHeight == vBlocksSide[i].pprev->nHeight + 1);
+=======
+        vHashSide[i] = ArithToUint256(i + 50000 + (ARITH_UINT256_ONE << 128)); // Add 1<<128 to the hashes, so GetLow64() still returns the height.
+        vBlocksSide[i].nHeight = i + 50000;
+        vBlocksSide[i].pprev = i ? &vBlocksSide[i - 1] : (vBlocksMain.data()+49999);
+        vBlocksSide[i].phashBlock = &vHashSide[i];
+        vBlocksSide[i].BuildSkip();
+        BOOST_CHECK_EQUAL((int)UintToArith256(vBlocksSide[i].GetBlockHash()).GetLow64(), vBlocksSide[i].nHeight);
+        BOOST_CHECK(vBlocksSide[i].pprev == nullptr || vBlocksSide[i].nHeight == vBlocksSide[i].pprev->nHeight + 1);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     // Build a CChain for the main branch.
@@ -78,7 +130,11 @@ BOOST_AUTO_TEST_CASE(getlocator_test)
 
     // Test 100 random starting points for locators.
     for (int n=0; n<100; n++) {
+<<<<<<< HEAD
         int r = insecure_randrange(150000);
+=======
+        int r = InsecureRandRange(150000);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         CBlockIndex* tip = (r < 100000) ? &vBlocksMain[r] : &vBlocksSide[r - 100000];
         CBlockLocator locator = chain.GetLocator(tip);
 
@@ -88,17 +144,72 @@ BOOST_AUTO_TEST_CASE(getlocator_test)
 
         // Entries 1 through 11 (inclusive) go back one step each.
         for (unsigned int i = 1; i < 12 && i < locator.vHave.size() - 1; i++) {
+<<<<<<< HEAD
             BOOST_CHECK_EQUAL(locator.vHave[i].GetLow64(), tip->nHeight - i);
+=======
+            BOOST_CHECK_EQUAL(UintToArith256(locator.vHave[i]).GetLow64(), tip->nHeight - i);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
 
         // The further ones (excluding the last one) go back with exponential steps.
         unsigned int dist = 2;
         for (unsigned int i = 12; i < locator.vHave.size() - 1; i++) {
+<<<<<<< HEAD
             BOOST_CHECK_EQUAL(locator.vHave[i - 1].GetLow64() - locator.vHave[i].GetLow64(), dist);
+=======
+            BOOST_CHECK_EQUAL(UintToArith256(locator.vHave[i - 1]).GetLow64() - UintToArith256(locator.vHave[i]).GetLow64(), dist);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             dist *= 2;
         }
     }
 }
 
+<<<<<<< HEAD
 BOOST_AUTO_TEST_SUITE_END()
 #endif
+=======
+BOOST_AUTO_TEST_CASE(findearliestatleast_test)
+{
+    std::vector<uint256> vHashMain(100000);
+    std::vector<CBlockIndex> vBlocksMain(100000);
+    for (unsigned int i=0; i<vBlocksMain.size(); i++) {
+        vHashMain[i] = ArithToUint256(i); // Set the hash equal to the height
+        vBlocksMain[i].nHeight = i;
+        vBlocksMain[i].pprev = i ? &vBlocksMain[i - 1] : nullptr;
+        vBlocksMain[i].phashBlock = &vHashMain[i];
+        vBlocksMain[i].BuildSkip();
+        if (i < 10) {
+            vBlocksMain[i].nTime = i;
+            vBlocksMain[i].nTimeMax = i;
+        } else {
+            // randomly choose something in the range [MTP, MTP*2]
+            int64_t medianTimePast = vBlocksMain[i].GetMedianTimePast();
+            int r = InsecureRandRange(medianTimePast);
+            vBlocksMain[i].nTime = r + medianTimePast;
+            vBlocksMain[i].nTimeMax = std::max(vBlocksMain[i].nTime, vBlocksMain[i-1].nTimeMax);
+        }
+    }
+    // Check that we set nTimeMax up correctly.
+    unsigned int curTimeMax = 0;
+    for (unsigned int i=0; i<vBlocksMain.size(); ++i) {
+        curTimeMax = std::max(curTimeMax, vBlocksMain[i].nTime);
+        BOOST_CHECK(curTimeMax == vBlocksMain[i].nTimeMax);
+    }
+
+    // Build a CChain for the main branch.
+    CChain chain;
+    chain.SetTip(&vBlocksMain.back());
+
+    // Verify that FindEarliestAtLeast is correct.
+    for (unsigned int i=0; i<10000; ++i) {
+        // Pick a random element in vBlocksMain.
+        int r = InsecureRandRange(vBlocksMain.size());
+        int64_t test_time = vBlocksMain[r].nTime;
+        CBlockIndex *ret = chain.FindEarliestAtLeast(test_time);
+        BOOST_CHECK(ret->nTimeMax >= test_time);
+        BOOST_CHECK((ret->pprev==nullptr) || ret->pprev->nTimeMax < test_time);
+        BOOST_CHECK(vBlocksMain[r].GetAncestor(ret->nHeight) == ret);
+    }
+}
+BOOST_AUTO_TEST_SUITE_END()
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

@@ -17,7 +17,11 @@ static void TestEncodeDecode(const VersionEdit& edit) {
   ASSERT_EQ(encoded, encoded2);
 }
 
+<<<<<<< HEAD
 class VersionEditTest { };
+=======
+class VersionEditTest {};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(VersionEditTest, EncodeDecode) {
   static const uint64_t kBig = 1ull << 50;
@@ -41,6 +45,10 @@ TEST(VersionEditTest, EncodeDecode) {
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

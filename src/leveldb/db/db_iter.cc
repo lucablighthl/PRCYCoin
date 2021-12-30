@@ -4,9 +4,15 @@
 
 #include "db/db_iter.h"
 
+<<<<<<< HEAD
 #include "db/filename.h"
 #include "db/db_impl.h"
 #include "db/dbformat.h"
+=======
+#include "db/db_impl.h"
+#include "db/dbformat.h"
+#include "db/filename.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/env.h"
 #include "leveldb/iterator.h"
 #include "port/port.h"
@@ -36,17 +42,25 @@ namespace {
 // combines multiple entries for the same userkey found in the DB
 // representation into a single entry while accounting for sequence
 // numbers, deletion markers, overwrites, etc.
+<<<<<<< HEAD
 class DBIter: public Iterator {
+=======
+class DBIter : public Iterator {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  public:
   // Which direction is the iterator currently moving?
   // (1) When moving forward, the internal iterator is positioned at
   //     the exact entry that yields this->key(), this->value()
   // (2) When moving backwards, the internal iterator is positioned
   //     just before all entries whose user key == this->key().
+<<<<<<< HEAD
   enum Direction {
     kForward,
     kReverse
   };
+=======
+  enum Direction { kForward, kReverse };
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   DBIter(DBImpl* db, const Comparator* cmp, Iterator* iter, SequenceNumber s,
          uint32_t seed)
@@ -57,6 +71,7 @@ class DBIter: public Iterator {
         direction_(kForward),
         valid_(false),
         rnd_(seed),
+<<<<<<< HEAD
         bytes_counter_(RandomPeriod()) {
   }
   virtual ~DBIter() {
@@ -72,6 +87,24 @@ class DBIter: public Iterator {
     return (direction_ == kForward) ? iter_->value() : saved_value_;
   }
   virtual Status status() const {
+=======
+        bytes_until_read_sampling_(RandomCompactionPeriod()) {}
+
+  DBIter(const DBIter&) = delete;
+  DBIter& operator=(const DBIter&) = delete;
+
+  ~DBIter() override { delete iter_; }
+  bool Valid() const override { return valid_; }
+  Slice key() const override {
+    assert(valid_);
+    return (direction_ == kForward) ? ExtractUserKey(iter_->key()) : saved_key_;
+  }
+  Slice value() const override {
+    assert(valid_);
+    return (direction_ == kForward) ? iter_->value() : saved_value_;
+  }
+  Status status() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if (status_.ok()) {
       return iter_->status();
     } else {
@@ -79,11 +112,19 @@ class DBIter: public Iterator {
     }
   }
 
+<<<<<<< HEAD
   virtual void Next();
   virtual void Prev();
   virtual void Seek(const Slice& target);
   virtual void SeekToFirst();
   virtual void SeekToLast();
+=======
+  void Next() override;
+  void Prev() override;
+  void Seek(const Slice& target) override;
+  void SeekToFirst() override;
+  void SeekToLast() override;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
  private:
   void FindNextUserEntry(bool skipping, std::string* skip);
@@ -103,15 +144,22 @@ class DBIter: public Iterator {
     }
   }
 
+<<<<<<< HEAD
   // Pick next gap with average value of config::kReadBytesPeriod.
   ssize_t RandomPeriod() {
     return rnd_.Uniform(2*config::kReadBytesPeriod);
+=======
+  // Picks the number of bytes that can be read until a compaction is scheduled.
+  size_t RandomCompactionPeriod() {
+    return rnd_.Uniform(2 * config::kReadBytesPeriod);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
 
   DBImpl* db_;
   const Comparator* const user_comparator_;
   Iterator* const iter_;
   SequenceNumber const sequence_;
+<<<<<<< HEAD
 
   Status status_;
   std::string saved_key_;     // == current key when direction_==kReverse
@@ -125,16 +173,37 @@ class DBIter: public Iterator {
   // No copying allowed
   DBIter(const DBIter&);
   void operator=(const DBIter&);
+=======
+  Status status_;
+  std::string saved_key_;    // == current key when direction_==kReverse
+  std::string saved_value_;  // == current raw value when direction_==kReverse
+  Direction direction_;
+  bool valid_;
+  Random rnd_;
+  size_t bytes_until_read_sampling_;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 inline bool DBIter::ParseKey(ParsedInternalKey* ikey) {
   Slice k = iter_->key();
+<<<<<<< HEAD
   ssize_t n = k.size() + iter_->value().size();
   bytes_counter_ -= n;
   while (bytes_counter_ < 0) {
     bytes_counter_ += RandomPeriod();
     db_->RecordReadSample(k);
   }
+=======
+
+  size_t bytes_read = k.size() + iter_->value().size();
+  while (bytes_until_read_sampling_ < bytes_read) {
+    bytes_until_read_sampling_ += RandomCompactionPeriod();
+    db_->RecordReadSample(k);
+  }
+  assert(bytes_until_read_sampling_ >= bytes_read);
+  bytes_until_read_sampling_ -= bytes_read;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   if (!ParseInternalKey(k, ikey)) {
     status_ = Status::Corruption("corrupted internal key in DBIter");
     return false;
@@ -165,6 +234,18 @@ void DBIter::Next() {
   } else {
     // Store in saved_key_ the current key so we skip it below.
     SaveKey(ExtractUserKey(iter_->key()), &saved_key_);
+<<<<<<< HEAD
+=======
+
+    // iter_ is pointing to current key. We can now safely move to the next to
+    // avoid checking current key.
+    iter_->Next();
+    if (!iter_->Valid()) {
+      valid_ = false;
+      saved_key_.clear();
+      return;
+    }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
 
   FindNextUserEntry(true, &saved_key_);
@@ -218,8 +299,13 @@ void DBIter::Prev() {
         ClearSavedValue();
         return;
       }
+<<<<<<< HEAD
       if (user_comparator_->Compare(ExtractUserKey(iter_->key()),
                                     saved_key_) < 0) {
+=======
+      if (user_comparator_->Compare(ExtractUserKey(iter_->key()), saved_key_) <
+          0) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         break;
       }
     }
@@ -275,8 +361,13 @@ void DBIter::Seek(const Slice& target) {
   direction_ = kForward;
   ClearSavedValue();
   saved_key_.clear();
+<<<<<<< HEAD
   AppendInternalKey(
       &saved_key_, ParsedInternalKey(target, sequence_, kValueTypeForSeek));
+=======
+  AppendInternalKey(&saved_key_,
+                    ParsedInternalKey(target, sequence_, kValueTypeForSeek));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   iter_->Seek(saved_key_);
   if (iter_->Valid()) {
     FindNextUserEntry(false, &saved_key_ /* temporary storage */);
@@ -305,12 +396,18 @@ void DBIter::SeekToLast() {
 
 }  // anonymous namespace
 
+<<<<<<< HEAD
 Iterator* NewDBIterator(
     DBImpl* db,
     const Comparator* user_key_comparator,
     Iterator* internal_iter,
     SequenceNumber sequence,
     uint32_t seed) {
+=======
+Iterator* NewDBIterator(DBImpl* db, const Comparator* user_key_comparator,
+                        Iterator* internal_iter, SequenceNumber sequence,
+                        uint32_t seed) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   return new DBIter(db, user_key_comparator, internal_iter, sequence, seed);
 }
 

@@ -23,4 +23,12 @@ const std::string& ThreadGetInternalName();
 
 } // namespace util
 
+<<<<<<< HEAD
+=======
+namespace ctpl {
+    class thread_pool;
+}
+void RenameThreadPool(ctpl::thread_pool& tp, const char* baseName);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif // BITCOIN_UTIL_THREADNAMES_H

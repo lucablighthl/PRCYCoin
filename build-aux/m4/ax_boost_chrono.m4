@@ -1,5 +1,9 @@
 # ===========================================================================
+<<<<<<< HEAD
 #      http://www.gnu.org/software/autoconf-archive/ax_boost_chrono.html
+=======
+#     https://www.gnu.org/software/autoconf-archive/ax_boost_chrono.html
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # ===========================================================================
 #
 # SYNOPSIS
@@ -8,7 +12,11 @@
 #
 # DESCRIPTION
 #
+<<<<<<< HEAD
 #   Test for System library from the Boost C++ libraries. The macro requires
+=======
+#   Test for Chrono library from the Boost C++ libraries. The macro requires
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #   a preceding call to AX_BOOST_BASE. Further documentation is available at
 #   <http://randspringer.de/boost/index.html>.
 #
@@ -29,7 +37,11 @@
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
+<<<<<<< HEAD
 #serial 1
+=======
+#serial 4
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 AC_DEFUN([AX_BOOST_CHRONO],
 [
@@ -68,7 +80,11 @@ AC_DEFUN([AX_BOOST_CHRONO],
 			 CXXFLAGS_SAVE=$CXXFLAGS
 
 			 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[@%:@include <boost/chrono.hpp>]],
+<<<<<<< HEAD
                                    [[boost::chrono::system_clock::time_point time;]])],
+=======
+                                   [[boost::chrono::system_clock::time_point* time = new boost::chrono::system_clock::time_point; delete time;]])],
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                    ax_cv_boost_chrono=yes, ax_cv_boost_chrono=no)
 			 CXXFLAGS=$CXXFLAGS_SAVE
              AC_LANG_POP([C++])
@@ -81,7 +97,10 @@ AC_DEFUN([AX_BOOST_CHRONO],
 
 			LDFLAGS_SAVE=$LDFLAGS
             if test "x$ax_boost_user_chrono_lib" = "x"; then
+<<<<<<< HEAD
                 ax_lib=
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 for libextension in `ls $BOOSTLIBDIR/libboost_chrono*.so* $BOOSTLIBDIR/libboost_chrono*.dylib* $BOOSTLIBDIR/libboost_chrono*.a* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_chrono.*\)\.so.*$;\1;' -e 's;^lib\(boost_chrono.*\)\.dylib.*$;\1;' -e 's;^lib\(boost_chrono.*\)\.a.*$;\1;'` ; do
                      ax_lib=${libextension}
 				    AC_CHECK_LIB($ax_lib, exit,
@@ -106,7 +125,11 @@ AC_DEFUN([AX_BOOST_CHRONO],
 
             fi
             if test "x$ax_lib" = "x"; then
+<<<<<<< HEAD
                 AC_MSG_ERROR(Could not find a version of the boost_chrono library!)
+=======
+                AC_MSG_ERROR(Could not find a version of the library!)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             fi
 			if test "x$link_chrono" = "xno"; then
 				AC_MSG_ERROR(Could not link against $ax_lib !)

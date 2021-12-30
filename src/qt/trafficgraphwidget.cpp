@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,6 +11,10 @@
 
 #include <QColor>
 #include <QPainter>
+<<<<<<< HEAD
+=======
+#include <QPainterPath>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include <QTimer>
 
 #include <cmath>
@@ -27,7 +35,11 @@ TrafficGraphWidget::TrafficGraphWidget(QWidget* parent) : QWidget(parent),
                                                           clientModel(0)
 {
     timer = new QTimer(this);
+<<<<<<< HEAD
     connect(timer, SIGNAL(timeout()), SLOT(updateRates()));
+=======
+    connect(timer, &QTimer::timeout, this, &TrafficGraphWidget::updateRates);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 void TrafficGraphWidget::setClientModel(ClientModel* model)
@@ -138,10 +150,17 @@ void TrafficGraphWidget::updateRates()
     }
 
     float tmax = 0.0f;
+<<<<<<< HEAD
    Q_FOREACH (float f, vSamplesIn) {
         if (f > tmax) tmax = f;
     }
    Q_FOREACH (float f, vSamplesOut) {
+=======
+    for (float f : vSamplesIn) {
+        if (f > tmax) tmax = f;
+    }
+    for (float f : vSamplesOut) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         if (f > tmax) tmax = f;
     }
     fMax = tmax;

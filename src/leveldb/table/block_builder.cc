@@ -28,36 +28,61 @@
 
 #include "table/block_builder.h"
 
+<<<<<<< HEAD
 #include <algorithm>
 #include <assert.h>
 #include "leveldb/comparator.h"
 #include "leveldb/table_builder.h"
+=======
+#include <assert.h>
+
+#include <algorithm>
+
+#include "leveldb/comparator.h"
+#include "leveldb/options.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "util/coding.h"
 
 namespace leveldb {
 
 BlockBuilder::BlockBuilder(const Options* options)
+<<<<<<< HEAD
     : options_(options),
       restarts_(),
       counter_(0),
       finished_(false) {
   assert(options->block_restart_interval >= 1);
   restarts_.push_back(0);       // First restart point is at offset 0
+=======
+    : options_(options), restarts_(), counter_(0), finished_(false) {
+  assert(options->block_restart_interval >= 1);
+  restarts_.push_back(0);  // First restart point is at offset 0
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 void BlockBuilder::Reset() {
   buffer_.clear();
   restarts_.clear();
+<<<<<<< HEAD
   restarts_.push_back(0);       // First restart point is at offset 0
+=======
+  restarts_.push_back(0);  // First restart point is at offset 0
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   counter_ = 0;
   finished_ = false;
   last_key_.clear();
 }
 
 size_t BlockBuilder::CurrentSizeEstimate() const {
+<<<<<<< HEAD
   return (buffer_.size() +                        // Raw data buffer
           restarts_.size() * sizeof(uint32_t) +   // Restart array
           sizeof(uint32_t));                      // Restart array length
+=======
+  return (buffer_.size() +                       // Raw data buffer
+          restarts_.size() * sizeof(uint32_t) +  // Restart array
+          sizeof(uint32_t));                     // Restart array length
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 Slice BlockBuilder::Finish() {
@@ -74,7 +99,11 @@ void BlockBuilder::Add(const Slice& key, const Slice& value) {
   Slice last_key_piece(last_key_);
   assert(!finished_);
   assert(counter_ <= options_->block_restart_interval);
+<<<<<<< HEAD
   assert(buffer_.empty() // No values yet?
+=======
+  assert(buffer_.empty()  // No values yet?
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          || options_->comparator->Compare(key, last_key_piece) > 0);
   size_t shared = 0;
   if (counter_ < options_->block_restart_interval) {

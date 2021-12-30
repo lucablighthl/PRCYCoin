@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -50,6 +54,7 @@ public Q_SLOTS:
     void done(int retval);
 
 private:
+<<<<<<< HEAD
     Ui::AddressBookPage* ui;
     AddressTableModel* model;
     Mode mode;
@@ -58,6 +63,16 @@ private:
     QSortFilterProxyModel* proxyModel;
     QMenu* contextMenu;
     QAction* deleteAction; // to be able to explicitly disable it
+=======
+    Ui::AddressBookPage* ui{nullptr};
+    AddressTableModel* model{nullptr};
+    Mode mode;
+    Tabs tab;
+    QString returnValue;
+    QSortFilterProxyModel* proxyModel{nullptr};
+    QMenu* contextMenu{nullptr};
+    QAction* deleteAction{nullptr}; // to be able to explicitly disable it
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     QString newAddressToSelect;
 
 private Q_SLOTS:

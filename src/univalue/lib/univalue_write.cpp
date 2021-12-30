@@ -8,11 +8,17 @@
 #include "univalue.h"
 #include "univalue_escapes.h"
 
+<<<<<<< HEAD
 using namespace std;
 
 static string json_escape(const string& inS)
 {
     string outS;
+=======
+static std::string json_escape(const std::string& inS)
+{
+    std::string outS;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     outS.reserve(inS.size() * 2);
 
     for (unsigned int i = 0; i < inS.size(); i++) {
@@ -28,10 +34,17 @@ static string json_escape(const string& inS)
     return outS;
 }
 
+<<<<<<< HEAD
 string UniValue::write(unsigned int prettyIndent,
                        unsigned int indentLevel) const
 {
     string s;
+=======
+std::string UniValue::write(unsigned int prettyIndent,
+                            unsigned int indentLevel) const
+{
+    std::string s;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     s.reserve(1024);
 
     unsigned int modIndent = indentLevel;
@@ -62,12 +75,20 @@ string UniValue::write(unsigned int prettyIndent,
     return s;
 }
 
+<<<<<<< HEAD
 static void indentStr(unsigned int prettyIndent, unsigned int indentLevel, string& s)
+=======
+static void indentStr(unsigned int prettyIndent, unsigned int indentLevel, std::string& s)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     s.append(prettyIndent * indentLevel, ' ');
 }
 
+<<<<<<< HEAD
 void UniValue::writeArray(unsigned int prettyIndent, unsigned int indentLevel, string& s) const
+=======
+void UniValue::writeArray(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     s += "[";
     if (prettyIndent)
@@ -89,7 +110,11 @@ void UniValue::writeArray(unsigned int prettyIndent, unsigned int indentLevel, s
     s += "]";
 }
 
+<<<<<<< HEAD
 void UniValue::writeObject(unsigned int prettyIndent, unsigned int indentLevel, string& s) const
+=======
+void UniValue::writeObject(unsigned int prettyIndent, unsigned int indentLevel, std::string& s) const
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     s += "{";
     if (prettyIndent)

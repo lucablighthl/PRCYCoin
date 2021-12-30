@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 // Copyright (c) 2011-2013 The Bitcoin Core developers
+=======
+// Copyright (c) 2011-2020 The Bitcoin Core developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "macdockiconhandler.h"
 
+<<<<<<< HEAD
 #include <QImageWriter>
 #include <QMenu>
 #include <QBuffer>
@@ -11,11 +16,14 @@
 
 #undef slots
 #include <Cocoa/Cocoa.h>
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include <AppKit/AppKit.h>
 #include <objc/runtime.h>
 
 static MacDockIconHandler *s_instance = nullptr;
 
+<<<<<<< HEAD
 bool dockClickHandler(id self,SEL _cmd,...) {
     Q_UNUSED(self)
     Q_UNUSED(_cmd)
@@ -23,11 +31,21 @@ bool dockClickHandler(id self,SEL _cmd,...) {
     s_instance->handleDockIconClickEvent();
     
     // Return NO (false) to suppress the default OS X actions
+=======
+bool dockClickHandler(id self, SEL _cmd, ...) {
+    Q_UNUSED(self)
+    Q_UNUSED(_cmd)
+
+    Q_EMIT s_instance->dockIconClicked();
+
+    // Return NO (false) to suppress the default macOS actions
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return false;
 }
 
 void setupDockClickHandler() {
     Class delClass = (Class)[[[NSApplication sharedApplication] delegate] class];
+<<<<<<< HEAD
     
     //if (appInst != NULL) {
         SEL shouldHandle = sel_registerName("applicationShouldHandleReopen:hasVisibleWindows:");
@@ -99,6 +117,15 @@ void MacDockIconHandler::setIcon(const QIcon &icon)
     [NSApp setApplicationIconImage:image];
     [image release];
     [pool release];
+=======
+    SEL shouldHandle = sel_registerName("applicationShouldHandleReopen:hasVisibleWindows:");
+    class_replaceMethod(delClass, shouldHandle, (IMP)dockClickHandler, "B@:");
+}
+
+MacDockIconHandler::MacDockIconHandler() : QObject()
+{
+    setupDockClickHandler();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 MacDockIconHandler *MacDockIconHandler::instance()
@@ -113,6 +140,7 @@ void MacDockIconHandler::cleanup()
     delete s_instance;
 }
 
+<<<<<<< HEAD
 void MacDockIconHandler::handleDockIconClickEvent()
 {
     if (this->mainWindow)
@@ -122,4 +150,14 @@ void MacDockIconHandler::handleDockIconClickEvent()
     }
 
     Q_EMIT this->dockIconClicked();
+=======
+/**
+* Force application activation on macOS. With Qt 5.5.1 this is required when
+* an action in the Dock menu is triggered.
+* TODO: Define a Qt version where it's no-longer necessary.
+*/
+void ForceActivation()
+{
+    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }

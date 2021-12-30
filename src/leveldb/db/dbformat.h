@@ -5,7 +5,14 @@
 #ifndef STORAGE_LEVELDB_DB_DBFORMAT_H_
 #define STORAGE_LEVELDB_DB_DBFORMAT_H_
 
+<<<<<<< HEAD
 #include <stdio.h>
+=======
+#include <cstddef>
+#include <cstdint>
+#include <string>
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/comparator.h"
 #include "leveldb/db.h"
 #include "leveldb/filter_policy.h"
@@ -48,10 +55,14 @@ class InternalKey;
 // Value types encoded as the last component of internal keys.
 // DO NOT CHANGE THESE ENUM VALUES: they are embedded in the on-disk
 // data structures.
+<<<<<<< HEAD
 enum ValueType {
   kTypeDeletion = 0x0,
   kTypeValue = 0x1
 };
+=======
+enum ValueType { kTypeDeletion = 0x0, kTypeValue = 0x1 };
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // kValueTypeForSeek defines the ValueType that should be passed when
 // constructing a ParsedInternalKey object for seeking to a particular
 // sequence number (since we sort sequence numbers in decreasing order
@@ -64,17 +75,27 @@ typedef uint64_t SequenceNumber;
 
 // We leave eight bits empty at the bottom so a type and sequence#
 // can be packed together into 64-bits.
+<<<<<<< HEAD
 static const SequenceNumber kMaxSequenceNumber =
     ((0x1ull << 56) - 1);
+=======
+static const SequenceNumber kMaxSequenceNumber = ((0x1ull << 56) - 1);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 struct ParsedInternalKey {
   Slice user_key;
   SequenceNumber sequence;
   ValueType type;
 
+<<<<<<< HEAD
   ParsedInternalKey() { }  // Intentionally left uninitialized (for speed)
   ParsedInternalKey(const Slice& u, const SequenceNumber& seq, ValueType t)
       : user_key(u), sequence(seq), type(t) { }
+=======
+  ParsedInternalKey() {}  // Intentionally left uninitialized (for speed)
+  ParsedInternalKey(const Slice& u, const SequenceNumber& seq, ValueType t)
+      : user_key(u), sequence(seq), type(t) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   std::string DebugString() const;
 };
 
@@ -84,15 +105,23 @@ inline size_t InternalKeyEncodingLength(const ParsedInternalKey& key) {
 }
 
 // Append the serialization of "key" to *result.
+<<<<<<< HEAD
 extern void AppendInternalKey(std::string* result,
                               const ParsedInternalKey& key);
+=======
+void AppendInternalKey(std::string* result, const ParsedInternalKey& key);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Attempt to parse an internal key from "internal_key".  On success,
 // stores the parsed data in "*result", and returns true.
 //
 // On error, returns false, leaves "*result" in an undefined state.
+<<<<<<< HEAD
 extern bool ParseInternalKey(const Slice& internal_key,
                              ParsedInternalKey* result);
+=======
+bool ParseInternalKey(const Slice& internal_key, ParsedInternalKey* result);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Returns the user key portion of an internal key.
 inline Slice ExtractUserKey(const Slice& internal_key) {
@@ -100,6 +129,7 @@ inline Slice ExtractUserKey(const Slice& internal_key) {
   return Slice(internal_key.data(), internal_key.size() - 8);
 }
 
+<<<<<<< HEAD
 inline ValueType ExtractValueType(const Slice& internal_key) {
   assert(internal_key.size() >= 8);
   const size_t n = internal_key.size();
@@ -108,11 +138,14 @@ inline ValueType ExtractValueType(const Slice& internal_key) {
   return static_cast<ValueType>(c);
 }
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // A comparator for internal keys that uses a specified comparator for
 // the user key portion and breaks ties by decreasing sequence number.
 class InternalKeyComparator : public Comparator {
  private:
   const Comparator* user_comparator_;
+<<<<<<< HEAD
  public:
   explicit InternalKeyComparator(const Comparator* c) : user_comparator_(c) { }
   virtual const char* Name() const;
@@ -121,6 +154,16 @@ class InternalKeyComparator : public Comparator {
       std::string* start,
       const Slice& limit) const;
   virtual void FindShortSuccessor(std::string* key) const;
+=======
+
+ public:
+  explicit InternalKeyComparator(const Comparator* c) : user_comparator_(c) {}
+  const char* Name() const override;
+  int Compare(const Slice& a, const Slice& b) const override;
+  void FindShortestSeparator(std::string* start,
+                             const Slice& limit) const override;
+  void FindShortSuccessor(std::string* key) const override;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   const Comparator* user_comparator() const { return user_comparator_; }
 
@@ -131,11 +174,20 @@ class InternalKeyComparator : public Comparator {
 class InternalFilterPolicy : public FilterPolicy {
  private:
   const FilterPolicy* const user_policy_;
+<<<<<<< HEAD
  public:
   explicit InternalFilterPolicy(const FilterPolicy* p) : user_policy_(p) { }
   virtual const char* Name() const;
   virtual void CreateFilter(const Slice* keys, int n, std::string* dst) const;
   virtual bool KeyMayMatch(const Slice& key, const Slice& filter) const;
+=======
+
+ public:
+  explicit InternalFilterPolicy(const FilterPolicy* p) : user_policy_(p) {}
+  const char* Name() const override;
+  void CreateFilter(const Slice* keys, int n, std::string* dst) const override;
+  bool KeyMayMatch(const Slice& key, const Slice& filter) const override;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 // Modules in this directory should keep internal keys wrapped inside
@@ -144,13 +196,27 @@ class InternalFilterPolicy : public FilterPolicy {
 class InternalKey {
  private:
   std::string rep_;
+<<<<<<< HEAD
  public:
   InternalKey() { }   // Leave rep_ as empty to indicate it is invalid
+=======
+
+ public:
+  InternalKey() {}  // Leave rep_ as empty to indicate it is invalid
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   InternalKey(const Slice& user_key, SequenceNumber s, ValueType t) {
     AppendInternalKey(&rep_, ParsedInternalKey(user_key, s, t));
   }
 
+<<<<<<< HEAD
   void DecodeFrom(const Slice& s) { rep_.assign(s.data(), s.size()); }
+=======
+  bool DecodeFrom(const Slice& s) {
+    rep_.assign(s.data(), s.size());
+    return !rep_.empty();
+  }
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Slice Encode() const {
     assert(!rep_.empty());
     return rep_;
@@ -168,8 +234,13 @@ class InternalKey {
   std::string DebugString() const;
 };
 
+<<<<<<< HEAD
 inline int InternalKeyComparator::Compare(
     const InternalKey& a, const InternalKey& b) const {
+=======
+inline int InternalKeyComparator::Compare(const InternalKey& a,
+                                          const InternalKey& b) const {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   return Compare(a.Encode(), b.Encode());
 }
 
@@ -178,11 +249,19 @@ inline bool ParseInternalKey(const Slice& internal_key,
   const size_t n = internal_key.size();
   if (n < 8) return false;
   uint64_t num = DecodeFixed64(internal_key.data() + n - 8);
+<<<<<<< HEAD
   unsigned char c = num & 0xff;
   result->sequence = num >> 8;
   result->type = static_cast<ValueType>(c);
   result->user_key = Slice(internal_key.data(), n - 8);
   return (c <= static_cast<unsigned char>(kTypeValue));
+=======
+  uint8_t c = num & 0xff;
+  result->sequence = num >> 8;
+  result->type = static_cast<ValueType>(c);
+  result->user_key = Slice(internal_key.data(), n - 8);
+  return (c <= static_cast<uint8_t>(kTypeValue));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 // A helper class useful for DBImpl::Get()
@@ -192,6 +271,12 @@ class LookupKey {
   // the specified sequence number.
   LookupKey(const Slice& user_key, SequenceNumber sequence);
 
+<<<<<<< HEAD
+=======
+  LookupKey(const LookupKey&) = delete;
+  LookupKey& operator=(const LookupKey&) = delete;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   ~LookupKey();
 
   // Return a key suitable for lookup in a MemTable.
@@ -214,11 +299,15 @@ class LookupKey {
   const char* start_;
   const char* kstart_;
   const char* end_;
+<<<<<<< HEAD
   char space_[200];      // Avoid allocation for short keys
 
   // No copying allowed
   LookupKey(const LookupKey&);
   void operator=(const LookupKey&);
+=======
+  char space_[200];  // Avoid allocation for short keys
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 inline LookupKey::~LookupKey() {

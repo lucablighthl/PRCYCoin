@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,16 +13,25 @@
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 
+<<<<<<< HEAD
 using namespace std;
 
 string FormatMoney(const CAmount& n, bool fPlus)
+=======
+
+std::string FormatMoney(const CAmount& n, bool fPlus)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     // Note: not using straight sprintf here because we do NOT want
     // localized number formatting.
     int64_t n_abs = (n > 0 ? n : -n);
     int64_t quotient = n_abs / COIN;
     int64_t remainder = n_abs % COIN;
+<<<<<<< HEAD
     string str = strprintf("%d.%08d", quotient, remainder);
+=======
+    std::string str = strprintf("%d.%08d", quotient, remainder);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     // Right-trim excess zeros before the decimal point:
     int nTrim = 0;
@@ -35,14 +48,22 @@ string FormatMoney(const CAmount& n, bool fPlus)
 }
 
 
+<<<<<<< HEAD
 bool ParseMoney(const string& str, CAmount& nRet)
+=======
+bool ParseMoney(const std::string& str, CAmount& nRet)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     return ParseMoney(str.c_str(), nRet);
 }
 
 bool ParseMoney(const char* pszIn, CAmount& nRet)
 {
+<<<<<<< HEAD
     string strWhole;
+=======
+    std::string strWhole;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     int64_t nUnits = 0;
     const char* p = pszIn;
     while (isspace(*p))

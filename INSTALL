@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 Building PRCYcoin
+=======
+Building PIVX
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 Use the autogen script to prepare the build environment.
 
@@ -8,6 +12,12 @@ Use the autogen script to prepare the build environment.
 
 Always verify the signatures and checksums.
 
+<<<<<<< HEAD
 See doc/build-*.md for instructions on building prcycoind,
 the intended-for-services, no-graphical-interface, reference
 implementation of PRCYcoin.
+=======
+See doc/build-*.md for instructions on building pivxd,
+the intended-for-services, no-graphical-interface, reference
+implementation of PIVX.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

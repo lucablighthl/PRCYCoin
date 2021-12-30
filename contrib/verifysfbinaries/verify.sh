@@ -8,7 +8,11 @@
 ###   signature check or the hash check doesn't pass. If an error occurs the return value is 2
 
 function clean_up {
+<<<<<<< HEAD
    for file in $*
+=======
+   for file in "$@"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
    do
       rm "$file" 2> /dev/null
    done
@@ -30,7 +34,11 @@ if [ ! -d "$WORKINGDIR" ]; then
    mkdir "$WORKINGDIR"
 fi
 
+<<<<<<< HEAD
 cd "$WORKINGDIR"
+=======
+cd "$WORKINGDIR" || exit 1
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #test if a version number has been passed as an argument
 if [ -n "$1" ]; then
@@ -56,6 +64,7 @@ else
    BASEDIR="${SIGNATUREFILE%/*}/"
 fi
 
+<<<<<<< HEAD
 #first we fetch the file containing the signature
 WGETOUT=$(wget -N "$BASEDIR$SIGNATUREFILENAME" 2>&1)
 
@@ -64,6 +73,13 @@ if [ $? -ne 0 ]; then
    echo "Error: couldn't fetch signature file. Have you specified the version number in the following format?"
    echo "[bitcoin-]<version>-[rc[0-9]] (example: bitcoin-0.9.2-rc1)"
    echo "wget output:"
+=======
+if ! WGETOUT=$(wget -N "$BASEDIR$SIGNATUREFILENAME" 2>&1); then
+   echo "Error: couldn't fetch signature file. Have you specified the version number in the following format?"
+   echo "[bitcoin-]<version>-[rc[0-9]] (example: bitcoin-0.9.2-rc1)"
+   echo "wget output:"
+   # shellcheck disable=SC2001
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
    echo "$WGETOUT"|sed 's/^/\t/g'
    exit 2
 fi
@@ -86,6 +102,10 @@ if [ $RET -ne 0 ]; then
    fi
 
    echo "gpg output:"
+<<<<<<< HEAD
+=======
+   # shellcheck disable=SC2001
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
    echo "$GPGOUT"|sed 's/^/\t/g'
    clean_up $SIGNATUREFILENAME $TMPFILE
    exit "$RET"

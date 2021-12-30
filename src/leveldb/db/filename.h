@@ -8,7 +8,13 @@
 #define STORAGE_LEVELDB_DB_FILENAME_H_
 
 #include <stdint.h>
+<<<<<<< HEAD
 #include <string>
+=======
+
+#include <string>
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/slice.h"
 #include "leveldb/status.h"
 #include "port/port.h"
@@ -30,27 +36,44 @@ enum FileType {
 // Return the name of the log file with the specified number
 // in the db named by "dbname".  The result will be prefixed with
 // "dbname".
+<<<<<<< HEAD
 extern std::string LogFileName(const std::string& dbname, uint64_t number);
+=======
+std::string LogFileName(const std::string& dbname, uint64_t number);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Return the name of the sstable with the specified number
 // in the db named by "dbname".  The result will be prefixed with
 // "dbname".
+<<<<<<< HEAD
 extern std::string TableFileName(const std::string& dbname, uint64_t number);
+=======
+std::string TableFileName(const std::string& dbname, uint64_t number);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Return the legacy file name for an sstable with the specified number
 // in the db named by "dbname". The result will be prefixed with
 // "dbname".
+<<<<<<< HEAD
 extern std::string SSTTableFileName(const std::string& dbname, uint64_t number);
+=======
+std::string SSTTableFileName(const std::string& dbname, uint64_t number);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Return the name of the descriptor file for the db named by
 // "dbname" and the specified incarnation number.  The result will be
 // prefixed with "dbname".
+<<<<<<< HEAD
 extern std::string DescriptorFileName(const std::string& dbname,
                                       uint64_t number);
+=======
+std::string DescriptorFileName(const std::string& dbname, uint64_t number);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // Return the name of the current file.  This file contains the name
 // of the current manifest file.  The result will be prefixed with
 // "dbname".
+<<<<<<< HEAD
 extern std::string CurrentFileName(const std::string& dbname);
 
 // Return the name of the lock file for the db named by
@@ -66,10 +89,28 @@ extern std::string InfoLogFileName(const std::string& dbname);
 
 // Return the name of the old info log file for "dbname".
 extern std::string OldInfoLogFileName(const std::string& dbname);
+=======
+std::string CurrentFileName(const std::string& dbname);
+
+// Return the name of the lock file for the db named by
+// "dbname".  The result will be prefixed with "dbname".
+std::string LockFileName(const std::string& dbname);
+
+// Return the name of a temporary file owned by the db named "dbname".
+// The result will be prefixed with "dbname".
+std::string TempFileName(const std::string& dbname, uint64_t number);
+
+// Return the name of the info log file for "dbname".
+std::string InfoLogFileName(const std::string& dbname);
+
+// Return the name of the old info log file for "dbname".
+std::string OldInfoLogFileName(const std::string& dbname);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 // If filename is a leveldb file, store the type of the file in *type.
 // The number encoded in the filename is stored in *number.  If the
 // filename was successfully parsed, returns true.  Else return false.
+<<<<<<< HEAD
 extern bool ParseFileName(const std::string& filename,
                           uint64_t* number,
                           FileType* type);
@@ -79,6 +120,15 @@ extern bool ParseFileName(const std::string& filename,
 extern Status SetCurrentFile(Env* env, const std::string& dbname,
                              uint64_t descriptor_number);
 
+=======
+bool ParseFileName(const std::string& filename, uint64_t* number,
+                   FileType* type);
+
+// Make the CURRENT file point to the descriptor file with the
+// specified number.
+Status SetCurrentFile(Env* env, const std::string& dbname,
+                      uint64_t descriptor_number);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace leveldb
 

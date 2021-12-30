@@ -75,9 +75,15 @@ extern "C"{
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[32];    /* first field, for alignment */
     size_t ptr;
     sph_u32 V[3][8];
+=======
+	unsigned char buf[32];    /* first field, for alignment */
+	size_t ptr;
+	sph_u32 V[3][8];
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_luffa224_context;
 
@@ -92,9 +98,15 @@ typedef sph_luffa224_context sph_luffa256_context;
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[32];    /* first field, for alignment */
     size_t ptr;
     sph_u32 V[4][8];
+=======
+	unsigned char buf[32];    /* first field, for alignment */
+	size_t ptr;
+	sph_u32 V[4][8];
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_luffa384_context;
 
@@ -103,9 +115,15 @@ typedef struct {
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[32];    /* first field, for alignment */
     size_t ptr;
     sph_u32 V[5][8];
+=======
+	unsigned char buf[32];    /* first field, for alignment */
+	size_t ptr;
+	sph_u32 V[5][8];
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_luffa512_context;
 
@@ -152,7 +170,11 @@ void sph_luffa224_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_luffa224_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a Luffa-256 context. This process performs no memory allocation.
@@ -197,7 +219,11 @@ void sph_luffa256_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_luffa256_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a Luffa-384 context. This process performs no memory allocation.
@@ -242,7 +268,11 @@ void sph_luffa384_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_luffa384_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a Luffa-512 context. This process performs no memory allocation.
@@ -287,10 +317,19 @@ void sph_luffa512_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_luffa512_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
     
 #ifdef __cplusplus
 }
 #endif
     
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+	
+#ifdef __cplusplus
+}
+#endif
+	
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif

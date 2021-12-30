@@ -23,7 +23,10 @@ ContinuationIndentWidth: 4
 Cpp11BracedListStyle: true
 DerivePointerAlignment: false
 DisableFormat:   false
+<<<<<<< HEAD
 ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH, BOOST_REVERSE_FOREACH ]
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 IndentCaseLabels: false
 IndentFunctionDeclarationAfterType: false
 IndentWidth:     4

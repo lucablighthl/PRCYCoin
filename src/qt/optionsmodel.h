@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -6,6 +10,7 @@
 #define BITCOIN_QT_OPTIONSMODEL_H
 
 #include "amount.h"
+<<<<<<< HEAD
 
 #include <QAbstractListModel>
 
@@ -14,6 +19,14 @@ class QNetworkProxy;
 QT_END_NAMESPACE
 
 /** Interface from Qt to configuration data structure for Bitcoin client.
+=======
+#include <cstdint>
+
+#include <QAbstractListModel>
+#include <QSettings>
+
+/** Interface from Qt to configuration data structure for PIVX client.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
    To Qt, the options are presented as a list with the different options
    laid out vertically.
    This can be changed to a tree once the settings become sufficiently
@@ -30,6 +43,10 @@ public:
         StartAtStartup,      // bool
         MinimizeToTray,      // bool
         MapPortUPnP,         // bool
+<<<<<<< HEAD
+=======
+        MapPortNatpmp,       // bool
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         MinimizeOnClose,     // bool
         ProxyUse,            // bool
         ProxyIP,             // QString
@@ -43,10 +60,24 @@ public:
         ThreadsScriptVerif,  // int
         DatabaseCache,       // int
         SpendZeroConfChange, // bool
+<<<<<<< HEAD
         HideOrphans,    // bool
         AnonymizePrcycoinAmount, //int
         ShowMasternodesTab,  // bool
         Listen,              // bool
+=======
+        ZeromintEnable,      // bool
+        ZeromintAddresses,   // bool
+        ZeromintPercentage,  // int
+        ZeromintPrefDenom,   // int
+        HideCharts,          // bool
+        HideZeroBalances,    // bool
+        HideOrphans,    // bool
+        AnonymizePivxAmount, //int
+        ShowMasternodesTab,  // bool
+        Listen,              // bool
+        ShowColdStakingScreen,  // bool
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         OptionIDRowCount,
     };
 
@@ -56,23 +87,57 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+<<<<<<< HEAD
+=======
+    void refreshDataView();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     /** Updates current unit in memory, settings and emits displayUnitChanged(newUnit) signal */
     void setDisplayUnit(const QVariant& value);
 
     /* Explicit getters */
+<<<<<<< HEAD
+=======
+    bool isHideCharts() { return fHideCharts; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     bool getMinimizeToTray() { return fMinimizeToTray; }
     bool getMinimizeOnClose() { return fMinimizeOnClose; }
     int getDisplayUnit() { return nDisplayUnit; }
     QString getThirdPartyTxUrls() { return strThirdPartyTxUrls; }
+<<<<<<< HEAD
     bool getProxySettings(QNetworkProxy& proxy) const;
     bool getCoinControlFeatures() { return fCoinControlFeatures; }
     const QString& getOverriddenByCommandLine() { return strOverriddenByCommandLine; }
+=======
+    bool getCoinControlFeatures() { return fCoinControlFeatures; }
+    const QString& getOverriddenByCommandLine() { return strOverriddenByCommandLine; }
+    const QString& getLang() { return language; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     /* Restart flag helper */
     void setRestartRequired(bool fRequired);
     bool isRestartRequired();
     bool resetSettings;
 
+<<<<<<< HEAD
+=======
+    bool isColdStakingScreenEnabled() { return showColdStakingScreen; }
+    bool invertColdStakingScreenStatus() {
+        setData(
+                createIndex(ShowColdStakingScreen, 0),
+                !isColdStakingScreenEnabled(),
+                Qt::EditRole
+        );
+        return showColdStakingScreen;
+    }
+
+    // Reset
+    void setMainDefaultOptions(QSettings& settings, bool reset = false);
+    void setWalletDefaultOptions(QSettings& settings, bool reset = false);
+    void setNetworkDefaultOptions(QSettings& settings, bool reset = false);
+    void setWindowDefaultOptions(QSettings& settings, bool reset = false);
+    void setDisplayDefaultOptions(QSettings& settings, bool reset = false);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 private:
     /* Qt-only settings */
     bool fMinimizeToTray;
@@ -81,6 +146,12 @@ private:
     int nDisplayUnit;
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
+<<<<<<< HEAD
+=======
+    bool showColdStakingScreen;
+    bool fHideCharts;
+    bool fHideZeroBalances;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     bool fHideOrphans;
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
@@ -90,9 +161,16 @@ private:
 
 Q_SIGNALS:
     void displayUnitChanged(int unit);
+<<<<<<< HEAD
     void zeromintPercentageChanged(int);
     void preferredDenomChanged(int);
     void coinControlFeaturesChanged(bool);
+=======
+    void coinControlFeaturesChanged(bool);
+    void showHideColdStakingScreen(bool);
+    void hideChartsChanged(bool);
+    void hideZeroBalancesChanged(bool);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     void hideOrphansChanged(bool);
 };
 

@@ -16,10 +16,15 @@ namespace leveldb {
 // cache locality.
 class IteratorWrapper {
  public:
+<<<<<<< HEAD
   IteratorWrapper(): iter_(NULL), valid_(false) { }
   explicit IteratorWrapper(Iterator* iter): iter_(NULL) {
     Set(iter);
   }
+=======
+  IteratorWrapper() : iter_(nullptr), valid_(false) {}
+  explicit IteratorWrapper(Iterator* iter) : iter_(nullptr) { Set(iter); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   ~IteratorWrapper() { delete iter_; }
   Iterator* iter() const { return iter_; }
 
@@ -28,13 +33,18 @@ class IteratorWrapper {
   void Set(Iterator* iter) {
     delete iter_;
     iter_ = iter;
+<<<<<<< HEAD
     if (iter_ == NULL) {
+=======
+    if (iter_ == nullptr) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       valid_ = false;
     } else {
       Update();
     }
   }
 
+<<<<<<< HEAD
 
   // Iterator interface methods
   bool Valid() const        { return valid_; }
@@ -47,6 +57,48 @@ class IteratorWrapper {
   void Seek(const Slice& k) { assert(iter_); iter_->Seek(k);       Update(); }
   void SeekToFirst()        { assert(iter_); iter_->SeekToFirst(); Update(); }
   void SeekToLast()         { assert(iter_); iter_->SeekToLast();  Update(); }
+=======
+  // Iterator interface methods
+  bool Valid() const { return valid_; }
+  Slice key() const {
+    assert(Valid());
+    return key_;
+  }
+  Slice value() const {
+    assert(Valid());
+    return iter_->value();
+  }
+  // Methods below require iter() != nullptr
+  Status status() const {
+    assert(iter_);
+    return iter_->status();
+  }
+  void Next() {
+    assert(iter_);
+    iter_->Next();
+    Update();
+  }
+  void Prev() {
+    assert(iter_);
+    iter_->Prev();
+    Update();
+  }
+  void Seek(const Slice& k) {
+    assert(iter_);
+    iter_->Seek(k);
+    Update();
+  }
+  void SeekToFirst() {
+    assert(iter_);
+    iter_->SeekToFirst();
+    Update();
+  }
+  void SeekToLast() {
+    assert(iter_);
+    iter_->SeekToLast();
+    Update();
+  }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
  private:
   void Update() {

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 build_config.mk
 *.a
 *.o
@@ -11,3 +12,13 @@ Release
 Debug
 Benchmark
 vs2010.*
+=======
+# Editors.
+*.sw*
+.vscode
+.DS_Store
+
+# Build directory.
+build/
+out/
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

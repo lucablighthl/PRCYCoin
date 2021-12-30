@@ -22,6 +22,10 @@ public:
     CSHA256();
     CSHA256& Write(const unsigned char* data, size_t len);
     void Finalize(unsigned char hash[OUTPUT_SIZE]);
+<<<<<<< HEAD
+=======
+    void FinalizeNoPadding(unsigned char hash[OUTPUT_SIZE], bool enforce_compression = true);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     CSHA256& Reset();
 };
 

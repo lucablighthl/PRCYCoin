@@ -8,9 +8,15 @@
 #
 # All text after a single hash (#) is considered a comment and will be ignored.
 # The format is:
+<<<<<<< HEAD
 #       TAG = value [value, ...]
 # For lists, items can also be appended using:
 #       TAG += value [value, ...]
+=======
+# TAG = value [value, ...]
+# For lists, items can also be appended using:
+# TAG += value [value, ...]
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # Values that contain spaces should be placed between quotes (\" \").
 
 #---------------------------------------------------------------------------
@@ -32,7 +38,11 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
+<<<<<<< HEAD
 PROJECT_NAME           = "PRCY"
+=======
+PROJECT_NAME           = "PIVX Core"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -103,7 +113,11 @@ BRIEF_MEMBER_DESC      = YES
 # If the REPEAT_BRIEF tag is set to YES, doxygen will prepend the brief
 # description of a member or function before the detailed description
 #
+<<<<<<< HEAD
 # Note: if both HIDE_UNDOC_MEMBERS and BRIEF_MEMBER_DESC are set to NO, the
+=======
+# Note: If both HIDE_UNDOC_MEMBERS and BRIEF_MEMBER_DESC are set to NO, the
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # brief descriptions will be completely suppressed.
 # The default value is: YES.
 
@@ -128,10 +142,17 @@ ABBREVIATE_BRIEF       = "The $name class" \
                          represents \
                          a \
                          an \
+<<<<<<< HEAD
                          the 
 
 # If the ALWAYS_DETAILED_SEC and REPEAT_BRIEF tags are both set to YES then
 # Doxygen will generate a detailed section even if there is only a brief
+=======
+                         the
+
+# If the ALWAYS_DETAILED_SEC and REPEAT_BRIEF tags are both set to YES then
+# doxygen will generate a detailed section even if there is only a brief
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # description.
 # The default value is: NO.
 
@@ -488,7 +509,11 @@ EXTRACT_ANON_NSPACES   = NO
 
 HIDE_UNDOC_MEMBERS     = NO
 
+<<<<<<< HEAD
 # If the HIDE_UNDOC_CLASSES tag is set to YES, Doxygen will hide all
+=======
+# If the HIDE_UNDOC_CLASSES tag is set to YES, doxygen will hide all
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # undocumented classes that are normally visible in the class hierarchy. If set
 # to NO, these classes will be included in the various overviews. This option
 # has no effect if EXTRACT_ALL is enabled.
@@ -503,7 +528,11 @@ HIDE_UNDOC_CLASSES     = NO
 
 HIDE_FRIEND_COMPOUNDS  = NO
 
+<<<<<<< HEAD
 # If the HIDE_IN_BODY_DOCS tag is set to YES, Doxygen will hide any
+=======
+# If the HIDE_IN_BODY_DOCS tag is set to YES, doxygen will hide any
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # documentation blocks found inside the body of a function. If set to NO, these
 # blocks will be appended to the function's detailed documentation block.
 # The default value is: NO.
@@ -556,6 +585,10 @@ SHOW_GROUPED_MEMB_INC  = NO
 # If the FORCE_LOCAL_INCLUDES tag is set to YES then doxygen will list include
 # files with double quotes in the documentation rather than with sharp brackets.
 # The default value is: NO.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 FORCE_LOCAL_INCLUDES   = NO
 
 # If the INLINE_INFO tag is set to YES then a tag [inline] is inserted in the
@@ -860,7 +893,12 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
+<<<<<<< HEAD
 EXCLUDE                = src/leveldb \
+=======
+EXCLUDE                = src/crc32c \
+                         src/leveldb \
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                          src/json \
                          src/test \
                          src/qt/test
@@ -938,10 +976,17 @@ IMAGE_PATH             =
 # need to set EXTENSION_MAPPING for the extension otherwise the files are not
 # properly processed by doxygen.
 
+<<<<<<< HEAD
 INPUT_FILTER           =
 
 # The FILTER_PATTERNS tag can be used to specify filters on a per file pattern
 # basis.  Doxygen will compare the file name with each pattern and apply the
+=======
+INPUT_FILTER           = "sed -r 's/\/\/.*(TODO|FIXME)/\/\/\/ \\todo/i'"
+
+# The FILTER_PATTERNS tag can be used to specify filters on a per file pattern
+# basis. Doxygen will compare the file name with each pattern and apply the
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # filter if there is a match. The filters are a list of the form: pattern=filter
 # (like *.cpp=my_cpp_filter). See INPUT_FILTER for further information on how
 # filters are used. If the FILTER_PATTERNS tag is empty or if none of the
@@ -1062,7 +1107,11 @@ USE_HTAGS              = NO
 VERBATIM_HEADERS       = YES
 
 #---------------------------------------------------------------------------
+<<<<<<< HEAD
 # configuration options related to the alphabetical class index
+=======
+# Configuration options related to the alphabetical class index
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #---------------------------------------------------------------------------
 
 # If the ALPHABETICAL_INDEX tag is set to YES, an alphabetical index of all
@@ -1264,7 +1313,11 @@ DOCSET_FEEDNAME        = "Doxygen generated docs"
 # The default value is: org.doxygen.Project.
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
+<<<<<<< HEAD
 DOCSET_BUNDLE_ID       = io.prcycoin.PRCYcoin
+=======
+DOCSET_BUNDLE_ID       = io.pivx.PIVX
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 # The DOCSET_PUBLISHER_ID tag specifies a string that should uniquely identify
 # the documentation publisher. This should be a reverse domain-name style
@@ -1272,7 +1325,11 @@ DOCSET_BUNDLE_ID       = io.prcycoin.PRCYcoin
 # The default value is: org.doxygen.Publisher.
 # This tag requires that the tag GENERATE_DOCSET is set to YES.
 
+<<<<<<< HEAD
 DOCSET_PUBLISHER_ID    = io.prcycoin.PRCYcoin
+=======
+DOCSET_PUBLISHER_ID    = io.pivx.PIVX
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 # The DOCSET_PUBLISHER_NAME tag identifies the documentation publisher.
 # The default value is: Publisher.
@@ -1416,7 +1473,11 @@ QHG_LOCATION           =
 
 GENERATE_ECLIPSEHELP   = NO
 
+<<<<<<< HEAD
 # A unique identifier for the eclipse help plugin. When installing the plugin
+=======
+# A unique identifier for the Eclipse help plugin. When installing the plugin
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # the directory name containing the HTML and XML files should also have this
 # name. Each documentation set should have its own identifier.
 # The default value is: org.doxygen.Project.
@@ -2099,9 +2160,15 @@ SKIP_FUNCTION_MACROS   = YES
 # The TAGFILES tag can be used to specify one or more tag files. For each tag
 # file the location of the external documentation should be added. The format of
 # a tag file without this location is as follows:
+<<<<<<< HEAD
 #   TAGFILES = file1 file2 ...
 # Adding location for the tag files is done as follows:
 #   TAGFILES = file1=loc1 "file2 = loc2" ...
+=======
+# TAGFILES = file1 file2 ...
+# Adding location for the tag files is done as follows:
+# TAGFILES = file1=loc1 "file2 = loc2" ...
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # where loc1 and loc2 can be relative or absolute paths or URLs. See the
 # section "Linking to external documentation" for more information about the use
 # of tag files.
@@ -2176,6 +2243,10 @@ DIA_PATH               =
 # If set to YES the inheritance and collaboration graphs will hide inheritance
 # and usage relations if the target is undocumented or is not a class.
 # The default value is: YES.
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 HIDE_UNDOC_RELATIONS   = YES
 
 # If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is

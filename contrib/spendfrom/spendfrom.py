@@ -1,13 +1,21 @@
 #!/usr/bin/env python
 #
+<<<<<<< HEAD
 # Use the raw transactions API to spend PRCYs received on particular addresses,
+=======
+# Use the raw transactions API to spend PIVs received on particular addresses,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # and send any change back to that same address.
 #
 # Example usage:
 #  spendfrom.py  # Lists available funds
 #  spendfrom.py --from=ADDRESS --to=ADDRESS --amount=11.00
 #
+<<<<<<< HEAD
 # Assumes it will talk to a prcycoind or prcycoin-Qt running
+=======
+# Assumes it will talk to a pivxd or pivx-Qt running
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 # on localhost.
 #
 # Depends on jsonrpc
@@ -33,6 +41,7 @@ def check_json_precision():
         raise RuntimeError("JSON encode/decode loses precision")
 
 def determine_db_dir():
+<<<<<<< HEAD
     """Return the default location of the prcycoin data directory"""
     if platform.system() == "Darwin":
         return os.path.expanduser("~/Library/Application Support/PRCYcoin/")
@@ -42,6 +51,17 @@ def determine_db_dir():
 
 def read_bitcoin_config(dbdir):
     """Read the prcycoin.conf file from dbdir, returns dictionary of settings"""
+=======
+    """Return the default location of the pivx data directory"""
+    if platform.system() == "Darwin":
+        return os.path.expanduser("~/Library/Application Support/PIVX/")
+    elif platform.system() == "Windows":
+        return os.path.join(os.environ['APPDATA'], "PIVX")
+    return os.path.expanduser("~/.pivx")
+
+def read_bitcoin_config(dbdir):
+    """Read the pivx.conf file from dbdir, returns dictionary of settings"""
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     from ConfigParser import SafeConfigParser
 
     class FakeSecHead(object):
@@ -59,6 +79,7 @@ def read_bitcoin_config(dbdir):
                 return s
 
     config_parser = SafeConfigParser()
+<<<<<<< HEAD
     config_parser.readfp(FakeSecHead(open(os.path.join(dbdir, "prcycoin.conf"))))
     return dict(config_parser.items("all"))
 
@@ -68,11 +89,26 @@ def connect_JSON(config):
     testnet = (int(testnet) > 0)  # 0/1 in config file, convert to True/False
     if not 'rpcport' in config:
         config['rpcport'] = 59685 if testnet else 59683
+=======
+    config_parser.readfp(FakeSecHead(open(os.path.join(dbdir, "pivx.conf"))))
+    return dict(config_parser.items("all"))
+
+def connect_JSON(config):
+    """Connect to a pivx JSON-RPC server"""
+    testnet = config.get('testnet', '0')
+    testnet = (int(testnet) > 0)  # 0/1 in config file, convert to True/False
+    if not 'rpcport' in config:
+        config['rpcport'] = 51475 if testnet else 51473
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     connect = "http://%s:%s@127.0.0.1:%s"%(config['rpcuser'], config['rpcpassword'], config['rpcport'])
     try:
         result = ServiceProxy(connect)
         # ServiceProxy is lazy-connect, so send an RPC command mostly to catch connection errors,
+<<<<<<< HEAD
         # but also make sure the prcycoind we're talking to is/isn't testnet:
+=======
+        # but also make sure the pivxd we're talking to is/isn't testnet:
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         if result.getmininginfo()['testnet'] != testnet:
             sys.stderr.write("RPC server at "+connect+" testnet setting mismatch\n")
             sys.exit(1)
@@ -81,14 +117,20 @@ def connect_JSON(config):
         sys.stderr.write("Error connecting to RPC server at "+connect+"\n")
         sys.exit(1)
 
+<<<<<<< HEAD
 def unlock_wallet(prcycoind):
     info = prcycoind.getinfo()
+=======
+def unlock_wallet(pivxd):
+    info = pivxd.getinfo()
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if 'unlocked_until' not in info:
         return True # wallet is not encrypted
     t = int(info['unlocked_until'])
     if t <= time.time():
         try:
             passphrase = getpass.getpass("Wallet is locked; enter passphrase: ")
+<<<<<<< HEAD
             prcycoind.unlockwallet(passphrase, 5)
         except:
             sys.stderr.write("Wrong passphrase\n")
@@ -111,6 +153,30 @@ def list_available(prcycoind):
         pk = vout["scriptPubKey"]
 
         # This code only deals with ordinary pay-to-prcycoin-address
+=======
+            pivxd.walletpassphrase(passphrase, 5)
+        except:
+            sys.stderr.write("Wrong passphrase\n")
+
+    info = pivxd.getinfo()
+    return int(info['unlocked_until']) > time.time()
+
+def list_available(pivxd):
+    address_summary = dict()
+
+    address_to_account = dict()
+    for info in pivxd.listreceivedbyaddress(0):
+        address_to_account[info["address"]] = info["account"]
+
+    unspent = pivxd.listunspent(0)
+    for output in unspent:
+        # listunspent doesn't give addresses, so:
+        rawtx = pivxd.getrawtransaction(output['txid'], 1)
+        vout = rawtx["vout"][output['vout']]
+        pk = vout["scriptPubKey"]
+
+        # This code only deals with ordinary pay-to-pivx-address
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         # or pay-to-script-hash outputs right now; anything exotic is ignored.
         if pk["type"] != "pubkeyhash" and pk["type"] != "scripthash":
             continue
@@ -139,8 +205,13 @@ def select_coins(needed, inputs):
         n += 1
     return (outputs, have-needed)
 
+<<<<<<< HEAD
 def create_tx(prcycoind, fromaddresses, toaddress, amount, fee):
     all_coins = list_available(prcycoind)
+=======
+def create_tx(pivxd, fromaddresses, toaddress, amount, fee):
+    all_coins = list_available(pivxd)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     total_available = Decimal("0.0")
     needed = amount+fee
@@ -159,7 +230,11 @@ def create_tx(prcycoind, fromaddresses, toaddress, amount, fee):
     # Note:
     # Python's json/jsonrpc modules have inconsistent support for Decimal numbers.
     # Instead of wrestling with getting json.dumps() (used by jsonrpc) to encode
+<<<<<<< HEAD
     # Decimals, I'm casting amounts to float before sending them to prcycoind.
+=======
+    # Decimals, I'm casting amounts to float before sending them to pivxd.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     #
     outputs = { toaddress : float(amount) }
     (inputs, change_amount) = select_coins(needed, potential_inputs)
@@ -170,8 +245,13 @@ def create_tx(prcycoind, fromaddresses, toaddress, amount, fee):
         else:
             outputs[change_address] = float(change_amount)
 
+<<<<<<< HEAD
     rawtx = prcycoind.createrawtransaction(inputs, outputs)
     signed_rawtx = prcycoind.signrawtransaction(rawtx)
+=======
+    rawtx = pivxd.createrawtransaction(inputs, outputs)
+    signed_rawtx = pivxd.signrawtransaction(rawtx)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if not signed_rawtx["complete"]:
         sys.stderr.write("signrawtransaction failed\n")
         sys.exit(1)
@@ -179,10 +259,17 @@ def create_tx(prcycoind, fromaddresses, toaddress, amount, fee):
 
     return txdata
 
+<<<<<<< HEAD
 def compute_amount_in(prcycoind, txinfo):
     result = Decimal("0.0")
     for vin in txinfo['vin']:
         in_info = prcycoind.getrawtransaction(vin['txid'], 1)
+=======
+def compute_amount_in(pivxd, txinfo):
+    result = Decimal("0.0")
+    for vin in txinfo['vin']:
+        in_info = pivxd.getrawtransaction(vin['txid'], 1)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         vout = in_info['vout'][vin['vout']]
         result = result + vout['value']
     return result
@@ -193,12 +280,21 @@ def compute_amount_out(txinfo):
         result = result + vout['value']
     return result
 
+<<<<<<< HEAD
 def sanity_test_fee(prcycoind, txdata_hex, max_fee):
     class FeeError(RuntimeError):
         pass
     try:
         txinfo = prcycoind.decoderawtransaction(txdata_hex)
         total_in = compute_amount_in(prcycoind, txinfo)
+=======
+def sanity_test_fee(pivxd, txdata_hex, max_fee):
+    class FeeError(RuntimeError):
+        pass
+    try:
+        txinfo = pivxd.decoderawtransaction(txdata_hex)
+        total_in = compute_amount_in(pivxd, txinfo)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         total_out = compute_amount_out(txinfo)
         if total_in-total_out > max_fee:
             raise FeeError("Rejecting transaction, unreasonable fee of "+str(total_in-total_out))
@@ -221,15 +317,25 @@ def main():
 
     parser = optparse.OptionParser(usage="%prog [options]")
     parser.add_option("--from", dest="fromaddresses", default=None,
+<<<<<<< HEAD
                       help="addresses to get PRCYs from")
     parser.add_option("--to", dest="to", default=None,
                       help="address to get send PRCYs to")
+=======
+                      help="addresses to get PIVs from")
+    parser.add_option("--to", dest="to", default=None,
+                      help="address to get send PIVs to")
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     parser.add_option("--amount", dest="amount", default=None,
                       help="amount to send")
     parser.add_option("--fee", dest="fee", default="0.0",
                       help="fee to include")
     parser.add_option("--datadir", dest="datadir", default=determine_db_dir(),
+<<<<<<< HEAD
                       help="location of prcycoin.conf file with RPC username/password (default: %default)")
+=======
+                      help="location of pivx.conf file with RPC username/password (default: %default)")
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     parser.add_option("--testnet", dest="testnet", default=False, action="store_true",
                       help="Use the test network")
     parser.add_option("--dry_run", dest="dry_run", default=False, action="store_true",
@@ -240,10 +346,17 @@ def main():
     check_json_precision()
     config = read_bitcoin_config(options.datadir)
     if options.testnet: config['testnet'] = True
+<<<<<<< HEAD
     prcycoind = connect_JSON(config)
 
     if options.amount is None:
         address_summary = list_available(prcycoind)
+=======
+    pivxd = connect_JSON(config)
+
+    if options.amount is None:
+        address_summary = list_available(pivxd)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         for address,info in address_summary.iteritems():
             n_transactions = len(info['outputs'])
             if n_transactions > 1:
@@ -253,6 +366,7 @@ def main():
     else:
         fee = Decimal(options.fee)
         amount = Decimal(options.amount)
+<<<<<<< HEAD
         while unlock_wallet(prcycoind) == False:
             pass # Keep asking for passphrase until they get it right
         txdata = create_tx(prcycoind, options.fromaddresses.split(","), options.to, amount, fee)
@@ -261,6 +375,16 @@ def main():
             print(txdata)
         else:
             txid = prcycoind.sendrawtransaction(txdata)
+=======
+        while unlock_wallet(pivxd) == False:
+            pass # Keep asking for passphrase until they get it right
+        txdata = create_tx(pivxd, options.fromaddresses.split(","), options.to, amount, fee)
+        sanity_test_fee(pivxd, txdata, amount*Decimal("0.01"))
+        if options.dry_run:
+            print(txdata)
+        else:
+            txid = pivxd.sendrawtransaction(txdata)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             print(txid)
 
 if __name__ == '__main__':

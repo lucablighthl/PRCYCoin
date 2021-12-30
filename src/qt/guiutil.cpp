@@ -1,7 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,13 +16,21 @@
 #include "qvalidatedlineedit.h"
 #include "walletmodel.h"
 
+<<<<<<< HEAD
 #include "init.h"
 #include "main.h"
+=======
+#include "policy/policy.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "primitives/transaction.h"
 #include "protocol.h"
 #include "script/script.h"
 #include "script/standard.h"
+<<<<<<< HEAD
 #include "util.h"
+=======
+#include "util/system.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #ifdef WIN32
 #ifdef _WIN32_WINNT
@@ -38,6 +50,7 @@
 #include "shlwapi.h"
 #endif
 
+<<<<<<< HEAD
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #if BOOST_FILESYSTEM_VERSION >= 3
@@ -83,13 +96,51 @@ extern double NSAppKitVersionNumber;
 #endif
 
 #define URI_SCHEME "prcycoin"
+=======
+#include <QAbstractItemView>
+#include <QApplication>
+#include <QClipboard>
+#include <QDateTime>
+#include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QRegExp>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QFileDialog>
+#include <QFont>
+#include <QLineEdit>
+#include <QScreen>
+#include <QSettings>
+#include <QTextDocument> // for Qt::mightBeRichText
+#include <QThread>
+#include <QUrlQuery>
+#include <QMouseEvent>
+
+#define URI_SCHEME "pivx"
+
+#if defined(Q_OS_MAC)
+
+#include <QProcess>
+
+void ForceActivation();
+#endif
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 namespace GUIUtil
 {
 QString dateTimeStr(const QDateTime& date)
 {
+<<<<<<< HEAD
      QString format = "MM/dd/yy HH:mm:ss";
     return date.toString(format);
+=======
+    return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm");
+}
+
+QString dateTimeStrWithSeconds(const QDateTime& date)
+{
+    return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm:ss");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 QString dateTimeStr(qint64 nTime)
@@ -104,27 +155,95 @@ QFont bitcoinAddressFont()
     return font;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * Parse a string into a number of base monetary units and
+ * return validity.
+ * @note Must return 0 if !valid.
+ */
+static CAmount parseValue(const QString& text, int displayUnit, bool* valid_out)
+{
+    CAmount val = 0;
+    bool valid = BitcoinUnits::parse(displayUnit, text, &val);
+    if (valid) {
+        if (val < 0 || val > BitcoinUnits::maxMoney())
+            valid = false;
+    }
+    if (valid_out)
+        *valid_out = valid;
+    return valid ? val : 0;
+}
+
+/**
+ * Returns 0 if the value is invalid
+ */
+CAmount parseValue(const QString& amount, int displayUnit)
+{
+    bool isValid = false;
+    CAmount value = GUIUtil::parseValue(amount, displayUnit, &isValid);
+    return isValid ? value : 0;
+}
+
+QString formatBalance(CAmount amount, int nDisplayUnit, bool isZpiv)
+{
+    return (amount == 0) ? ("0.00 " + BitcoinUnits::name(nDisplayUnit, isZpiv)) : BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, amount, false, BitcoinUnits::separatorAlways, true, isZpiv);
+}
+
+QString formatBalanceWithoutHtml(CAmount amount, int nDisplayUnit, bool isZpiv)
+{
+    return (amount == 0) ? ("0.00 " + BitcoinUnits::name(nDisplayUnit, isZpiv)) : BitcoinUnits::floorWithUnit(nDisplayUnit, amount, false, BitcoinUnits::separatorAlways, true, isZpiv);
+}
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
 {
     parent->setFocusProxy(widget);
 
+<<<<<<< HEAD
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
 
+=======
+    widget->setFont(bitcoinAddressFont());
+    // We don't want translators to use own addresses in translations
+    // and this is the only place, where this address is supplied.
+    widget->setPlaceholderText(QObject::tr("Enter PIVX address (e.g. %1)").arg("D7VFR83SQbiezrW72hjcWJtcfip5krte2Z"));
+    widget->setValidator(new BitcoinAddressEntryValidator(parent));
+    widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 void setupAmountWidget(QLineEdit* widget, QWidget* parent)
 {
+<<<<<<< HEAD
     QDoubleValidator* amountValidator = new QDoubleValidator(parent);
     amountValidator->setDecimals(8);
     amountValidator->setBottom(0.0);
     widget->setValidator(amountValidator);
     widget->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+=======
+    QRegularExpression rx("^(\\d{0,8})((\\.|,)\\d{1,8})?$");
+    QValidator *validator = new QRegularExpressionValidator(rx, widget);
+    widget->setValidator(validator);
+}
+
+void updateWidgetTextAndCursorPosition(QLineEdit* widget, const QString& str)
+{
+    const int cpos = widget->cursorPosition();
+    widget->setText(str);
+    if (cpos > str.size()) return;
+    widget->setCursorPosition(cpos);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
 {
+<<<<<<< HEAD
     // return if URI is not valid or is no PRCYcoin: URI
+=======
+    // return if URI is not valid or is no PIVX: URI
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if (!uri.isValid() || uri.scheme() != QString(URI_SCHEME))
         return false;
 
@@ -138,7 +257,10 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
 
     QUrlQuery uriQuery(uri);
     QList<QPair<QString, QString> > items = uriQuery.queryItems();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     for (QList<QPair<QString, QString> >::iterator i = items.begin(); i != items.end(); i++)
     {
         bool fShouldReturnFalse = false;
@@ -156,7 +278,11 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
             fShouldReturnFalse = false;
         } else if (i->first == "amount") {
             if (!i->second.isEmpty()) {
+<<<<<<< HEAD
                 if (!BitcoinUnits::parse(BitcoinUnits::PRCY, i->second, &rv.amount)) {
+=======
+                if (!BitcoinUnits::parse(BitcoinUnits::PIV, i->second, &rv.amount)) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                     return false;
                 }
             }
@@ -174,9 +300,15 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out)
 {
+<<<<<<< HEAD
     // Convert prcycoin:// to prcycoin:
     //
     //    Cannot handle this later, because prcycoin:// will cause Qt to see the part after // as host,
+=======
+    // Convert pivx:// to pivx:
+    //
+    //    Cannot handle this later, because pivx:// will cause Qt to see the part after // as host,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     //    which will lower-case it (and thus invalidate the address).
     if (uri.startsWith(URI_SCHEME "://", Qt::CaseInsensitive)) {
         uri.replace(0, std::strlen(URI_SCHEME) + 3, URI_SCHEME ":");
@@ -191,7 +323,11 @@ QString formatBitcoinURI(const SendCoinsRecipient& info)
     int paramCount = 0;
 
     if (info.amount) {
+<<<<<<< HEAD
         ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::PRCY, info.amount, false, BitcoinUnits::separatorNever));
+=======
+        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::PIV, info.amount, false, BitcoinUnits::separatorNever));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         paramCount++;
     }
 
@@ -212,10 +348,17 @@ QString formatBitcoinURI(const SendCoinsRecipient& info)
 
 bool isDust(const QString& address, const CAmount& amount)
 {
+<<<<<<< HEAD
     CTxDestination dest = CBitcoinAddress(address.toStdString()).Get();
     CScript script = GetScriptForDestination(dest);
     CTxOut txOut(amount, script);
     return txOut.IsDust(::minRelayTxFee);
+=======
+    CTxDestination dest = DecodeDestination(address.toStdString());
+    CScript script = GetScriptForDestination(dest);
+    CTxOut txOut(amount, script);
+    return IsDust(txOut, dustRelayFee);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 QString HtmlEscape(const QString& str, bool fMultiLine)
@@ -247,10 +390,18 @@ void copyEntryData(QAbstractItemView* view, int column, int role)
 
 QVariant getEntryData(QAbstractItemView *view, int column, int role)
 {
+<<<<<<< HEAD
     if(!view || !view->selectionModel())
         return QVariant();
     QModelIndexList selection = view->selectionModel()->selectedRows(column);
     if(!selection.isEmpty()) {
+=======
+    if (!view || !view->selectionModel())
+        return QVariant();
+    QModelIndexList selection = view->selectionModel()->selectedRows(column);
+
+    if (!selection.isEmpty()) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         // Return first item
         return (selection.at(0).data(role));
     }
@@ -264,7 +415,13 @@ QString getSaveFileName(QWidget* parent, const QString& caption, const QString& 
     if (dir.isEmpty()) // Default to user documents location
     {
         myDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+<<<<<<< HEAD
     } else {
+=======
+    }
+    else
+    {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         myDir = dir;
     }
     /* Directly convert path to native OS path separators */
@@ -335,7 +492,11 @@ bool checkPoint(const QPoint& p, const QWidget* w)
 {
     QWidget* atW = QApplication::widgetAt(w->mapToGlobal(p));
     if (!atW) return false;
+<<<<<<< HEAD
     return atW->topLevelWidget() == w;
+=======
+    return atW->window() == w;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 bool isObscured(QWidget* w)
@@ -343,6 +504,7 @@ bool isObscured(QWidget* w)
     return !(checkPoint(QPoint(0, 0), w) && checkPoint(QPoint(w->width() - 1, 0), w) && checkPoint(QPoint(0, w->height() - 1), w) && checkPoint(QPoint(w->width() - 1, w->height() - 1), w) && checkPoint(QPoint(w->width() / 2, w->height() / 2), w));
 }
 
+<<<<<<< HEAD
 void openDebugLogfile()
 {
     boost::filesystem::path pathDebug = GetDataDir() / "debug.log";
@@ -420,6 +582,60 @@ void SubstituteFonts(const QString& language)
     }
 #endif
 #endif
+=======
+void bringToFront(QWidget* w)
+{
+#ifdef Q_OS_MAC
+    ForceActivation();
+#endif
+
+    if (w) {
+        // activateWindow() (sometimes) helps with keyboard focus on Windows
+        if (w->isMinimized()) {
+            w->showNormal();
+        } else {
+            w->show();
+        }
+        w->activateWindow();
+        w->raise();
+    }
+}
+
+/* Open file with the associated application */
+bool openFile(fs::path path, bool isTextFile)
+{
+    bool ret = false;
+    if (fs::exists(path)) {
+        ret = QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(path)));
+#ifdef Q_OS_MAC
+        // Workaround for macOS-specific behavior; see btc@15409.
+        if (isTextFile && !ret) {
+            ret = QProcess::startDetached("/usr/bin/open", QStringList{"-t", boostPathToQString(path)});
+        }
+#endif
+    }
+    return ret;
+}
+
+bool openDebugLogfile()
+{
+    return openFile(GetDataDir() / "debug.log", true);
+}
+
+bool openConfigfile()
+{
+    return openFile(GetConfigFile(gArgs.GetArg("-conf", PIVX_CONF_FILENAME)), true);
+}
+
+bool openMNConfigfile()
+{
+    return openFile(GetMasternodeConfigFile(), true);
+}
+
+bool showBackups()
+{
+    return openFile(GetDataDir() / "backups", false);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 ToolTipToRichTextFilter::ToolTipToRichTextFilter(int size_threshold, QObject* parent) : QObject(parent),
@@ -446,6 +662,7 @@ bool ToolTipToRichTextFilter::eventFilter(QObject* obj, QEvent* evt)
     return QObject::eventFilter(obj, evt);
 }
 
+<<<<<<< HEAD
 void TableViewLastColumnResizingFixer::connectViewHeadersSignals()
 {
     connect(tableView->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(on_sectionResized(int, int, int)));
@@ -584,30 +801,58 @@ bool DHMSTableWidgetItem::operator<(QTableWidgetItem const& item) const
 boost::filesystem::path static StartupShortcutPath()
 {
     return GetSpecialFolderPath(CSIDL_STARTUP) / "PRCYcoin.lnk";
+=======
+#ifdef WIN32
+fs::path static StartupShortcutPath()
+{
+    std::string chain = gArgs.GetChainName();
+    if (chain == CBaseChainParams::TESTNET)
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "PIVX (testnet).lnk";
+    else if (chain == CBaseChainParams::REGTEST)
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "PIVX (regtest).lnk";
+
+    return GetSpecialFolderPath(CSIDL_STARTUP) / "PIVX.lnk";
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 bool GetStartOnSystemStartup()
 {
+<<<<<<< HEAD
     // check for PRCYcoin.lnk
     return boost::filesystem::exists(StartupShortcutPath());
+=======
+    // check for PIVX*.lnk
+    return fs::exists(StartupShortcutPath());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 bool SetStartOnSystemStartup(bool fAutoStart)
 {
     // If the shortcut exists already, remove it for updating
+<<<<<<< HEAD
     boost::filesystem::remove(StartupShortcutPath());
+=======
+    fs::remove(StartupShortcutPath());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     if (fAutoStart) {
         CoInitialize(nullptr);
 
         // Get a pointer to the IShellLink interface.
+<<<<<<< HEAD
         IShellLink* psl = nullptr;
         HRESULT hres = CoCreateInstance(CLSID_ShellLink, nullptr,
             CLSCTX_INPROC_SERVER, IID_IShellLink,
+=======
+        IShellLinkW* psl = nullptr;
+        HRESULT hres = CoCreateInstance(CLSID_ShellLink, nullptr,
+            CLSCTX_INPROC_SERVER, IID_IShellLinkW,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             reinterpret_cast<void**>(&psl));
 
         if (SUCCEEDED(hres)) {
             // Get the current executable path
+<<<<<<< HEAD
             TCHAR pszExePath[MAX_PATH];
             GetModuleFileName(nullptr, pszExePath, sizeof(pszExePath));
 
@@ -619,10 +864,27 @@ bool SetStartOnSystemStartup(bool fAutoStart)
             psl->SetWorkingDirectory(pszExePath);
             psl->SetShowCmd(SW_SHOWMINNOACTIVE);
             psl->SetArguments(pszArgs);
+=======
+            WCHAR pszExePath[MAX_PATH];
+            GetModuleFileNameW(nullptr, pszExePath, ARRAYSIZE(pszExePath));
+
+            // Start client minimized
+            QString strArgs = "-min";
+            // Set -testnet /-regtest options
+            strArgs += QString::fromStdString(strprintf(" -testnet=%d -regtest=%d", gArgs.GetBoolArg("-testnet", false), gArgs.GetBoolArg("-regtest", false)));
+
+            // Set the path to the shortcut target
+            psl->SetPath(pszExePath);
+            PathRemoveFileSpecW(pszExePath);
+            psl->SetWorkingDirectory(pszExePath);
+            psl->SetShowCmd(SW_SHOWMINNOACTIVE);
+            psl->SetArguments(strArgs.toStdWString().c_str());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
             // Query IShellLink for the IPersistFile interface for
             // saving the shortcut in persistent storage.
             IPersistFile* ppf = nullptr;
+<<<<<<< HEAD
             hres = psl->QueryInterface(IID_IPersistFile,
                 reinterpret_cast<void**>(&ppf));
             if (SUCCEEDED(hres)) {
@@ -631,6 +893,12 @@ bool SetStartOnSystemStartup(bool fAutoStart)
                 MultiByteToWideChar(CP_ACP, 0, StartupShortcutPath().string().c_str(), -1, pwsz, MAX_PATH);
                 // Save the link by calling IPersistFile::Save.
                 hres = ppf->Save(pwsz, TRUE);
+=======
+            hres = psl->QueryInterface(IID_IPersistFile, reinterpret_cast<void**>(&ppf));
+            if (SUCCEEDED(hres)) {
+                // Save the link by calling IPersistFile::Save.
+                hres = ppf->Save(StartupShortcutPath().wstring().c_str(), TRUE);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 ppf->Release();
                 psl->Release();
                 CoUninitialize();
@@ -647,12 +915,19 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 #elif defined(Q_OS_LINUX)
 
 // Follow the Desktop Application Autostart Spec:
+<<<<<<< HEAD
 //  http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html
 
 boost::filesystem::path static GetAutostartDir()
 {
     namespace fs = boost::filesystem;
 
+=======
+// http://standards.freedesktop.org/autostart-spec/autostart-spec-latest.html
+
+fs::path static GetAutostartDir()
+{
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     char* pszConfigHome = getenv("XDG_CONFIG_HOME");
     if (pszConfigHome) return fs::path(pszConfigHome) / "autostart";
     char* pszHome = getenv("HOME");
@@ -660,14 +935,24 @@ boost::filesystem::path static GetAutostartDir()
     return fs::path();
 }
 
+<<<<<<< HEAD
 boost::filesystem::path static GetAutostartFilePath()
 {
     return GetAutostartDir() / "prcycoin.desktop";
+=======
+fs::path static GetAutostartFilePath()
+{
+    return GetAutostartDir() / "pivx.desktop";
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 bool GetStartOnSystemStartup()
 {
+<<<<<<< HEAD
     boost::filesystem::ifstream optionFile(GetAutostartFilePath());
+=======
+    fsbridge::ifstream optionFile(GetAutostartFilePath());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if (!optionFile.good())
         return false;
     // Scan through file for "Hidden=true":
@@ -685,6 +970,7 @@ bool GetStartOnSystemStartup()
 
 bool SetStartOnSystemStartup(bool fAutoStart)
 {
+<<<<<<< HEAD
     if (!fAutoStart)
         boost::filesystem::remove(GetAutostartFilePath());
     else {
@@ -703,6 +989,32 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         optionFile << "Type=Application\n";
         optionFile << "Name=PRCYcoin\n";
         optionFile << "Exec=" << pszExePath << " -min\n";
+=======
+    if (!fAutoStart) {
+        fs::remove(GetAutostartFilePath());
+    } else {
+        char pszExePath[MAX_PATH+1];
+        ssize_t r = readlink("/proc/self/exe", pszExePath, sizeof(pszExePath) - 1);
+        if (r == -1)
+            return false;
+        pszExePath[r] = '\0';
+
+        fs::create_directories(GetAutostartDir());
+
+        fsbridge::ofstream optionFile(GetAutostartFilePath(), std::ios_base::out | std::ios_base::trunc);
+        if (!optionFile.good())
+            return false;
+        // Write a pivx.desktop file to the autostart directory:
+        optionFile << "[Desktop Entry]\n";
+        optionFile << "Type=Application\n";
+        if (gArgs.GetBoolArg("-testnet", false))
+            optionFile << "Name=PIVX (testnet)\n";
+        else if (gArgs.GetBoolArg("-regtest", false))
+            optionFile << "Name=PIVX (regtest)\n";
+        else
+            optionFile << "Name=PIVX\n";
+        optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", gArgs.GetBoolArg("-testnet", false), gArgs.GetBoolArg("-regtest", false));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
         optionFile.close();
@@ -710,6 +1022,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     return true;
 }
 
+<<<<<<< HEAD
 
 #elif defined(Q_OS_MAC)
 #pragma GCC diagnostic push
@@ -795,6 +1108,8 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     return true;
 }
 #pragma GCC diagnostic pop
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #else
 
 bool GetStartOnSystemStartup()
@@ -812,12 +1127,15 @@ void saveWindowGeometry(const QString& strSetting, QWidget* parent)
     settings.setValue(strSetting + "Size", parent->size());
 }
 
+<<<<<<< HEAD
 void HideDisabledWidgets( QVector<QWidget*> widgets ){
     auto hide = []( QWidget* widget) { widget->setVisible(false); };
     for_each (widgets.begin(), widgets.end(), hide);
 }
 
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSize, QWidget* parent)
 {
     QSettings settings;
@@ -825,7 +1143,11 @@ void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSize, 
     QSize size = settings.value(strSetting + "Size", defaultSize).toSize();
 
     if (!pos.x() && !pos.y()) {
+<<<<<<< HEAD
         QRect screen = QApplication::desktop()->screenGeometry();
+=======
+        QRect screen = QGuiApplication::primaryScreen()->geometry();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         pos.setX((screen.width() - size.width()) / 2);
         pos.setY((screen.height() - size.height()) / 2);
     }
@@ -834,11 +1156,24 @@ void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSize, 
     parent->move(pos);
 }
 
+<<<<<<< HEAD
+=======
+// Check whether a theme is not build-in
+bool isExternal(QString theme)
+{
+    if (theme.isEmpty())
+        return false;
+
+    return (theme.operator!=("default") && theme.operator!=("default-dark"));
+}
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Open CSS when configured
 QString loadStyleSheet()
 {
     QString styleSheet;
     QSettings settings;
+<<<<<<< HEAD
     QVariant theme = settings.value("theme");
     QString cssName = QString(":/css/" + theme.toString());
     //LogPrintf("loadStyleSheet: Loading stylesheet %s\n", cssName.toStdString());
@@ -897,6 +1232,33 @@ void colorCalendarWidgetWeekends(QCalendarWidget* widget, QColor color)
     widget->findChild<QWidget*>("qt_calendar_calendarview")->setStyleSheet("padding:5px; margin:0;");
     widget->findChild<QAbstractButton*>("qt_calendar_prevmonth")->setIcon(QIcon(":/images/leftArrow_small"));
     widget->findChild<QAbstractButton*>("qt_calendar_nextmonth")->setIcon(QIcon(":/images/rightArrow_small"));
+=======
+    QString cssName;
+    QString theme = settings.value("theme", "").toString();
+
+    if (isExternal(theme)) {
+        // External CSS
+        settings.setValue("fCSSexternal", true);
+        fs::path pathAddr = GetDataDir() / "themes/";
+        cssName = pathAddr.string().c_str() + theme + "/css/theme.css";
+    } else {
+        // Build-in CSS
+        settings.setValue("fCSSexternal", false);
+        if (!theme.isEmpty()) {
+            cssName = QString(":/css/") + theme;
+        } else {
+            cssName = QString(":/css/default");
+            settings.setValue("theme", "default");
+        }
+    }
+
+    QFile qFile(cssName);
+    if (qFile.open(QFile::ReadOnly)) {
+        styleSheet = QLatin1String(qFile.readAll());
+    }
+
+    return styleSheet;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 void setClipboard(const QString& str)
@@ -905,6 +1267,7 @@ void setClipboard(const QString& str)
     QApplication::clipboard()->setText(str, QClipboard::Selection);
 }
 
+<<<<<<< HEAD
 #if BOOST_FILESYSTEM_VERSION >= 3
 boost::filesystem::path qstringToBoostPath(const QString& path)
 {
@@ -927,6 +1290,17 @@ QString boostPathToQString(const boost::filesystem::path& path)
     return QString::fromStdString(path.string());
 }
 #endif
+=======
+fs::path qstringToBoostPath(const QString& path)
+{
+    return fs::path(path.toStdString());
+}
+
+QString boostPathToQString(const fs::path& path)
+{
+    return QString::fromStdString(path.string());
+}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 QString formatDurationStr(int secs)
 {
@@ -983,6 +1357,7 @@ QString formatPingTime(double dPingTime)
 
 QString formatTimeOffset(int64_t nTimeOffset)
 {
+<<<<<<< HEAD
     return QString(QObject::tr("%1 s")).arg(QString::number((int)nTimeOffset, 10));
 }
 
@@ -996,6 +1371,9 @@ QString formatBytes(uint64_t bytes)
         return QString(QObject::tr("%1 MB")).arg(bytes / 1024 / 1024);
 
     return QString(QObject::tr("%1 GB")).arg(bytes / 1024 / 1024 / 1024);
+=======
+  return QString(QObject::tr("%1 s")).arg(QString::number((int)nTimeOffset, 10));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 } // namespace GUIUtil

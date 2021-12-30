@@ -1,7 +1,11 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,34 +21,68 @@
 #include <stdint.h>
 #include <string>
 
+<<<<<<< HEAD
 #include <boost/function.hpp>
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include <univalue.h>
 
 class CRPCCommand;
 
 namespace RPCServer
 {
+<<<<<<< HEAD
     void OnStarted(boost::function<void ()> slot);
     void OnStopped(boost::function<void ()> slot);
     void OnPreCommand(boost::function<void (const CRPCCommand&)> slot);
     void OnPostCommand(boost::function<void (const CRPCCommand&)> slot);
+=======
+    void OnStarted(std::function<void ()> slot);
+    void OnStopped(std::function<void ()> slot);
+    void OnPreCommand(std::function<void (const CRPCCommand&)> slot);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 class CBlockIndex;
 class CNetAddr;
 
+<<<<<<< HEAD
 class JSONRequest
+=======
+/** Wrapper for UniValue::VType, which includes typeAny:
+ * Used to denote don't care type. Only used by RPCTypeCheckObj */
+struct UniValueType {
+    UniValueType(UniValue::VType _type) : typeAny(false), type(_type) {}
+    UniValueType() : typeAny(true) {}
+    bool typeAny;
+    UniValue::VType type{UniValue::VNULL};
+};
+
+class JSONRPCRequest
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
 public:
     UniValue id;
     std::string strMethod;
     UniValue params;
+<<<<<<< HEAD
 
     JSONRequest() { id = NullUniValue; }
     void parse(const UniValue& valRequest);
 };
 
+=======
+    bool fHelp;
+    std::string URI;
+    std::string authUser;
+
+    JSONRPCRequest() { id = NullUniValue; params = NullUniValue; fHelp = false; }
+    void parse(const UniValue& valRequest);
+};
+
+/** Query whether RPC is running */
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 bool IsRPCRunning();
 
 /**
@@ -61,6 +99,7 @@ bool RPCIsInWarmup(std::string* statusOut);
 /**
  * Type-check arguments; throws JSONRPCError if wrong type given. Does not check that
  * the right number of arguments are passed, just that any passed are the correct type.
+<<<<<<< HEAD
  * Use like:  RPCTypeCheck(params, boost::assign::list_of(str_type)(int_type)(obj_type));
  */
 void RPCTypeCheck(const UniValue& params,
@@ -71,6 +110,24 @@ void RPCTypeCheck(const UniValue& params,
  */
 void RPCTypeCheckObj(const UniValue& o,
                      const std::map<std::string, UniValue::VType>& typesExpected, bool fAllowNull=false);
+=======
+ */
+void RPCTypeCheck(const UniValue& params,
+                  const std::list<UniValue::VType>& typesExpected, bool fAllowNull=false);
+
+/**
+ * Type-check one argument; throws JSONRPCError if wrong type given.
+ */
+void RPCTypeCheckArgument(const UniValue& value, const UniValueType& typeExpected);
+
+/**
+ * Check for expected keys/value types in an Object.
+ */
+void RPCTypeCheckObj(const UniValue& o,
+    const std::map<std::string, UniValueType>& typesExpected,
+    bool fAllowNull=false,
+    bool fStrict=false);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /** Opaque base class for timers returned by NewTimerFunc.
  * This provides no methods at the moment, but makes sure that delete
@@ -97,7 +154,11 @@ public:
      * This is needed to cope with the case in which there is no HTTP server, but
      * only GUI RPC console, and to break the dependency of pcserver on httprpc.
      */
+<<<<<<< HEAD
     virtual RPCTimerBase* NewTimer(boost::function<void(void)>& func, int64_t millis) = 0;
+=======
+    virtual RPCTimerBase* NewTimer(std::function<void(void)>& func, int64_t millis) = 0;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 /** Set factory function for timers */
@@ -108,12 +169,21 @@ void RPCSetTimerInterfaceIfUnset(RPCTimerInterface *iface);
 void RPCUnsetTimerInterface(RPCTimerInterface *iface);
 
 /**
+<<<<<<< HEAD
 * Run func nSeconds from now.
 * Overrides previous timer <name> (if any).
 */
 void RPCRunLater(const std::string& name, boost::function<void(void)> func, int64_t nSeconds);
 
 typedef UniValue(*rpcfn_type)(const UniValue& params, bool fHelp);
+=======
+ * Run func nSeconds from now.
+ * Overrides previous timer <name> (if any).
+ */
+void RPCRunLater(const std::string& name, std::function<void(void)> func, int64_t nSeconds);
+
+typedef UniValue(*rpcfn_type)(const JSONRPCRequest& jsonRequest);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 class CRPCCommand
 {
@@ -122,12 +192,20 @@ public:
     std::string name;
     rpcfn_type actor;
     bool okSafeMode;
+<<<<<<< HEAD
     bool threadSafe;
     bool reqWallet;
 };
 
 /**
  * PRCY RPC command dispatcher.
+=======
+    std::vector<std::string> argNames;
+};
+
+/**
+ * PIVX RPC command dispatcher.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  */
 class CRPCTable
 {
@@ -137,6 +215,7 @@ private:
 public:
     CRPCTable();
     const CRPCCommand* operator[](const std::string& name) const;
+<<<<<<< HEAD
     std::string help(std::string name) const;
 
     /**
@@ -147,15 +226,41 @@ public:
      * @throws an exception (UniValue) when an error happens.
      */
     UniValue execute(const std::string &method, const UniValue &params) const;
+=======
+    std::string help(const std::string& name, const JSONRPCRequest& helpreq) const;
+
+    /**
+     * Execute a method.
+     * @param request The JSONRPCRequest to execute
+     * @returns Result of the call.
+     * @throws an exception (UniValue) when an error happens.
+     */
+    UniValue execute(const JSONRPCRequest &request) const;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     /**
     * Returns a list of registered commands
     * @returns List of registered commands.
     */
     std::vector<std::string> listCommands() const;
+<<<<<<< HEAD
 };
 
 extern const CRPCTable tableRPC;
+=======
+
+    /**
+     * Appends a CRPCCommand to the dispatch table.
+     * Returns false if RPC server is already running (dump concurrency protection).
+     * Commands cannot be overwritten (returns false).
+     */
+    bool appendCommand(const std::string& name, const CRPCCommand* pcmd);
+};
+
+bool IsDeprecatedRPCEnabled(const std::string& method);
+
+extern CRPCTable tableRPC;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Utilities: convert hex-encoded Values
@@ -168,6 +273,7 @@ extern std::vector<unsigned char> ParseHexO(const UniValue& o, std::string strKe
 extern int ParseInt(const UniValue& o, std::string strKey);
 extern bool ParseBool(const UniValue& o, std::string strKey);
 
+<<<<<<< HEAD
 extern int64_t nWalletUnlockTime;
 extern CAmount AmountFromValue(const UniValue& value);
 extern UniValue ValueFromAmount(const CAmount& amount);
@@ -347,6 +453,14 @@ extern UniValue verifymessage(const UniValue& params, bool fHelp);
 extern UniValue setmocktime(const UniValue& params, bool fHelp);
 extern UniValue getstakingstatus(const UniValue& params, bool fHelp);
 
+=======
+extern CAmount AmountFromValue(const UniValue& value);
+extern UniValue ValueFromAmount(const CAmount& amount);
+extern double GetDifficulty(const CBlockIndex* blockindex = NULL);
+extern std::string HelpExampleCli(std::string methodname, std::string args);
+extern std::string HelpExampleRpc(std::string methodname, std::string args);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 bool StartRPC();
 void InterruptRPC();
 void StopRPC();

@@ -64,6 +64,7 @@ Other files used for miscellaneous purposes may also be present (LOCK, *.dbtmp).
 
 ## Level 0
 
+<<<<<<< HEAD
 When the log file grows above a certain size (1MB by default):
 Create a brand new memtable and log file and direct future updates here
 In the background:
@@ -71,6 +72,17 @@ Write the contents of the previous memtable to an sstable
 Discard the memtable
 Delete the old log file and the old memtable
 Add the new sstable to the young (level-0) level.
+=======
+When the log file grows above a certain size (4MB by default):
+Create a brand new memtable and log file and direct future updates here.
+
+In the background:
+
+1. Write the contents of the previous memtable to an sstable.
+2. Discard the memtable.
+3. Delete the old log file and the old memtable.
+4. Add the new sstable to the young (level-0) level.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 ## Compactions
 

@@ -18,6 +18,7 @@ static Slice GetLengthPrefixedSlice(const char* data) {
   return Slice(p, len);
 }
 
+<<<<<<< HEAD
 MemTable::MemTable(const InternalKeyComparator& cmp)
     : comparator_(cmp),
       refs_(0),
@@ -32,6 +33,17 @@ size_t MemTable::ApproximateMemoryUsage() { return arena_.MemoryUsage(); }
 
 int MemTable::KeyComparator::operator()(const char* aptr, const char* bptr)
     const {
+=======
+MemTable::MemTable(const InternalKeyComparator& comparator)
+    : comparator_(comparator), refs_(0), table_(comparator_, &arena_) {}
+
+MemTable::~MemTable() { assert(refs_ == 0); }
+
+size_t MemTable::ApproximateMemoryUsage() { return arena_.MemoryUsage(); }
+
+int MemTable::KeyComparator::operator()(const char* aptr,
+                                        const char* bptr) const {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   // Internal keys are encoded as length-prefixed strings.
   Slice a = GetLengthPrefixedSlice(aptr);
   Slice b = GetLengthPrefixedSlice(bptr);
@@ -48,6 +60,7 @@ static const char* EncodeKey(std::string* scratch, const Slice& target) {
   return scratch->data();
 }
 
+<<<<<<< HEAD
 class MemTableIterator: public Iterator {
  public:
   explicit MemTableIterator(MemTable::Table* table) : iter_(table) { }
@@ -60,10 +73,30 @@ class MemTableIterator: public Iterator {
   virtual void Prev() { iter_.Prev(); }
   virtual Slice key() const { return GetLengthPrefixedSlice(iter_.key()); }
   virtual Slice value() const {
+=======
+class MemTableIterator : public Iterator {
+ public:
+  explicit MemTableIterator(MemTable::Table* table) : iter_(table) {}
+
+  MemTableIterator(const MemTableIterator&) = delete;
+  MemTableIterator& operator=(const MemTableIterator&) = delete;
+
+  ~MemTableIterator() override = default;
+
+  bool Valid() const override { return iter_.Valid(); }
+  void Seek(const Slice& k) override { iter_.Seek(EncodeKey(&tmp_, k)); }
+  void SeekToFirst() override { iter_.SeekToFirst(); }
+  void SeekToLast() override { iter_.SeekToLast(); }
+  void Next() override { iter_.Next(); }
+  void Prev() override { iter_.Prev(); }
+  Slice key() const override { return GetLengthPrefixedSlice(iter_.key()); }
+  Slice value() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     Slice key_slice = GetLengthPrefixedSlice(iter_.key());
     return GetLengthPrefixedSlice(key_slice.data() + key_slice.size());
   }
 
+<<<<<<< HEAD
   virtual Status status() const { return Status::OK(); }
 
  private:
@@ -81,6 +114,18 @@ Iterator* MemTable::NewIterator() {
 
 void MemTable::Add(SequenceNumber s, ValueType type,
                    const Slice& key,
+=======
+  Status status() const override { return Status::OK(); }
+
+ private:
+  MemTable::Table::Iterator iter_;
+  std::string tmp_;  // For passing to EncodeKey
+};
+
+Iterator* MemTable::NewIterator() { return new MemTableIterator(&table_); }
+
+void MemTable::Add(SequenceNumber s, ValueType type, const Slice& key,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                    const Slice& value) {
   // Format of an entry is concatenation of:
   //  key_size     : varint32 of internal_key.size()
@@ -90,9 +135,15 @@ void MemTable::Add(SequenceNumber s, ValueType type,
   size_t key_size = key.size();
   size_t val_size = value.size();
   size_t internal_key_size = key_size + 8;
+<<<<<<< HEAD
   const size_t encoded_len =
       VarintLength(internal_key_size) + internal_key_size +
       VarintLength(val_size) + val_size;
+=======
+  const size_t encoded_len = VarintLength(internal_key_size) +
+                             internal_key_size + VarintLength(val_size) +
+                             val_size;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   char* buf = arena_.Allocate(encoded_len);
   char* p = EncodeVarint32(buf, internal_key_size);
   memcpy(p, key.data(), key_size);
@@ -121,10 +172,16 @@ bool MemTable::Get(const LookupKey& key, std::string* value, Status* s) {
     // all entries with overly large sequence numbers.
     const char* entry = iter.key();
     uint32_t key_length;
+<<<<<<< HEAD
     const char* key_ptr = GetVarint32Ptr(entry, entry+5, &key_length);
     if (comparator_.comparator.user_comparator()->Compare(
             Slice(key_ptr, key_length - 8),
             key.user_key()) == 0) {
+=======
+    const char* key_ptr = GetVarint32Ptr(entry, entry + 5, &key_length);
+    if (comparator_.comparator.user_comparator()->Compare(
+            Slice(key_ptr, key_length - 8), key.user_key()) == 0) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       // Correct user key
       const uint64_t tag = DecodeFixed64(key_ptr + key_length - 8);
       switch (static_cast<ValueType>(tag & 0xff)) {

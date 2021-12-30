@@ -2,9 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+<<<<<<< HEAD
 #include <stdio.h>
 #include "port/port.h"
 #include "leveldb/status.h"
+=======
+#include "leveldb/status.h"
+
+#include <stdio.h>
+
+#include "port/port.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 namespace leveldb {
 
@@ -18,8 +26,13 @@ const char* Status::CopyState(const char* state) {
 
 Status::Status(Code code, const Slice& msg, const Slice& msg2) {
   assert(code != kOk);
+<<<<<<< HEAD
   const uint32_t len1 = msg.size();
   const uint32_t len2 = msg2.size();
+=======
+  const uint32_t len1 = static_cast<uint32_t>(msg.size());
+  const uint32_t len2 = static_cast<uint32_t>(msg2.size());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   const uint32_t size = len1 + (len2 ? (2 + len2) : 0);
   char* result = new char[size + 5];
   memcpy(result, &size, sizeof(size));
@@ -34,7 +47,11 @@ Status::Status(Code code, const Slice& msg, const Slice& msg2) {
 }
 
 std::string Status::ToString() const {
+<<<<<<< HEAD
   if (state_ == NULL) {
+=======
+  if (state_ == nullptr) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return "OK";
   } else {
     char tmp[30];
@@ -59,8 +76,13 @@ std::string Status::ToString() const {
         type = "IO error: ";
         break;
       default:
+<<<<<<< HEAD
         snprintf(tmp, sizeof(tmp), "Unknown code(%d): ",
                  static_cast<int>(code()));
+=======
+        snprintf(tmp, sizeof(tmp),
+                 "Unknown code(%d): ", static_cast<int>(code()));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         type = tmp;
         break;
     }

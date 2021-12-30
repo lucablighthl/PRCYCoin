@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,6 +17,13 @@
 
 #include <vector>
 
+<<<<<<< HEAD
+=======
+// Helper functions for serialization.
+std::vector<unsigned char> BitsToBytes(const std::vector<bool>& bits);
+std::vector<bool> BytesToBits(const std::vector<unsigned char>& bytes);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 /** Data structure that represents a partial merkle tree.
  *
  * It represents a subset of the txid's of a known block, in a way that
@@ -81,6 +92,7 @@ protected:
     uint256 TraverseAndExtract(int height, unsigned int pos, unsigned int& nBitsUsed, unsigned int& nHashUsed, std::vector<uint256>& vMatch);
 
 public:
+<<<<<<< HEAD
     /** serialization implementation */
     ADD_SERIALIZE_METHODS;
 
@@ -103,6 +115,17 @@ public:
                 vBytes[p / 8] |= vBits[p] << (p % 8);
             READWRITE(vBytes);
         }
+=======
+
+    SERIALIZE_METHODS(CPartialMerkleTree, obj)
+    {
+        READWRITE(obj.nTransactions, obj.vHash);
+        std::vector<unsigned char> bytes;
+        SER_WRITE(obj, bytes = BitsToBytes(obj.vBits));
+        READWRITE(bytes);
+        SER_READ(obj, obj.vBits = BytesToBits(bytes));
+        SER_READ(obj, obj.fBad = false);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     /** Construct a partial merkle tree from a list of transaction id's, and a mask that selects a subset of them */
@@ -121,8 +144,11 @@ public:
 /**
  * Used to relay blocks as header + vector<merkle branch>
  * to filtered nodes.
+<<<<<<< HEAD
  *
  * NOTE: The class assumes that the given CBlock has *at least* 1 transaction. If the CBlock has 0 txs, it will hit an assertion.
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  */
 class CMerkleBlock
 {
@@ -142,6 +168,7 @@ public:
      */
     CMerkleBlock(const CBlock& block, CBloomFilter& filter);
 
+<<<<<<< HEAD
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
@@ -150,6 +177,12 @@ public:
         READWRITE(header);
         READWRITE(txn);
     }
+=======
+    CMerkleBlock() {}
+
+    SERIALIZE_METHODS(CMerkleBlock, obj) { READWRITE(obj.header, obj.txn); }
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 #endif // BITCOIN_MERKLEBLOCK_H

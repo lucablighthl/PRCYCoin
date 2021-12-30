@@ -17,7 +17,11 @@ private:
     size_t bytes;
 
 public:
+<<<<<<< HEAD
     static const size_t OUTPUT_SIZE = 64;
+=======
+    static constexpr size_t OUTPUT_SIZE = 64;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     CSHA512();
     CSHA512& Write(const unsigned char* data, size_t len);

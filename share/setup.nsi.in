@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 Name "@PACKAGE_NAME@ (@WINDOWS_BITS@-bit)"
+=======
+Name "@PACKAGE_NAME@ (64-bit)"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 RequestExecutionLevel highest
 SetCompressor /SOLID lzma
@@ -6,10 +10,17 @@ SetCompressor /SOLID lzma
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
 !define COMPANY "@PACKAGE_NAME@ project"
+<<<<<<< HEAD
 !define URL https://prcycoin.com
 
 # MUI Symbol Definitions
 !define MUI_ICON "@abs_top_srcdir@/share/pixmaps/bitcoin.ico"
+=======
+!define URL @PACKAGE_URL@
+
+# MUI Symbol Definitions
+!define MUI_ICON "@abs_top_srcdir@/share/pixmaps/pivx.ico"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 !define MUI_WELCOMEFINISHPAGE_BITMAP "@abs_top_srcdir@/share/pixmaps/nsis-wizard.bmp"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_RIGHT
@@ -27,9 +38,13 @@ SetCompressor /SOLID lzma
 # Included files
 !include Sections.nsh
 !include MUI2.nsh
+<<<<<<< HEAD
 !if "@WINDOWS_BITS@" == "64"
 !include x64.nsh
 !endif
+=======
+!include x64.nsh
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 # Variables
 Var StartMenuGroup
@@ -47,12 +62,17 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
+<<<<<<< HEAD
 OutFile @abs_top_srcdir@/@PACKAGE_TARNAME@-@PACKAGE_VERSION@-win@WINDOWS_BITS@-setup.exe
 !if "@WINDOWS_BITS@" == "64"
 InstallDir $PROGRAMFILES64\PRCYcoin
 !else
 InstallDir $PROGRAMFILES\PRCYcoin
 !endif
+=======
+OutFile @abs_top_srcdir@/@PACKAGE_TARNAME@-@PACKAGE_VERSION@-win64-setup-unsigned.exe
+InstallDir $PROGRAMFILES64\Pivx
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 CRCCheck on
 XPStyle on
 BrandingText " "
@@ -63,8 +83,13 @@ VIAddVersionKey ProductVersion "@PACKAGE_VERSION@"
 VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"
 VIAddVersionKey FileVersion "@PACKAGE_VERSION@"
+<<<<<<< HEAD
 VIAddVersionKey FileDescription ""
 VIAddVersionKey LegalCopyright ""
+=======
+VIAddVersionKey FileDescription "Installer for @PACKAGE_NAME@"
+VIAddVersionKey LegalCopyright "Copyright (C) 2015-@COPYRIGHT_YEAR@ The @PACKAGE_NAME@ developers"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 InstallDirRegKey HKCU "${REGKEY}" Path
 ShowUninstDetails show
 
@@ -78,9 +103,17 @@ Section -Main SEC0000
     SetOutPath $INSTDIR\daemon
     File @abs_top_srcdir@/release/@BITCOIN_DAEMON_NAME@@EXEEXT@
     File @abs_top_srcdir@/release/@BITCOIN_CLI_NAME@@EXEEXT@
+<<<<<<< HEAD
     File @abs_top_srcdir@/release/@BITCOIN_TX_NAME@@EXEEXT@
     SetOutPath $INSTDIR\doc
     File /r /x Makefile* @abs_top_srcdir@/doc\*.*
+=======
+    SetOutPath $INSTDIR\doc
+    File /r @abs_top_srcdir@/doc\*.*
+    SetOutPath $APPDATA\PIVXParams
+    File @abs_top_srcdir@/params/sapling-output.params
+    File @abs_top_srcdir@/params/sapling-spend.params
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     SetOutPath $INSTDIR
     WriteRegStr HKCU "${REGKEY}\Components" Main 1
 SectionEnd
@@ -92,6 +125,10 @@ Section -post SEC0001
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@
+<<<<<<< HEAD
+=======
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\@PACKAGE_NAME@ (testnet, 64-bit).lnk" "$INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@" "-testnet" "$INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@" 1
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"
@@ -103,7 +140,11 @@ Section -post SEC0001
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoModify 1
     WriteRegDWORD HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" NoRepair 1
     WriteRegStr HKCR "@PACKAGE_TARNAME@" "URL Protocol" ""
+<<<<<<< HEAD
     WriteRegStr HKCR "@PACKAGE_TARNAME@" "" "URL:PRCYcoin"
+=======
+    WriteRegStr HKCR "@PACKAGE_TARNAME@" "" "URL:Pivx"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     WriteRegStr HKCR "@PACKAGE_TARNAME@\DefaultIcon" "" $INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@
     WriteRegStr HKCR "@PACKAGE_TARNAME@\shell\open\command" "" '"$INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@" "%1"'
 SectionEnd
@@ -135,7 +176,12 @@ Section -un.post UNSEC0001
     DeleteRegKey HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk"
     Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk"
+<<<<<<< HEAD
     Delete /REBOOTOK "$SMSTARTUP\PRCYcoin.lnk"
+=======
+    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\@PACKAGE_NAME@ (testnet, 64-bit).lnk"
+    Delete /REBOOTOK "$SMSTARTUP\Pivx.lnk"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     Delete /REBOOTOK $INSTDIR\uninstall.exe
     Delete /REBOOTOK $INSTDIR\debug.log
     Delete /REBOOTOK $INSTDIR\db.log
@@ -156,7 +202,10 @@ SectionEnd
 # Installer functions
 Function .onInit
     InitPluginsDir
+<<<<<<< HEAD
 !if "@WINDOWS_BITS@" == "64"
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     ${If} ${RunningX64}
       ; disable registry redirection (enable access to 64-bit portion of registry)
       SetRegView 64
@@ -164,7 +213,10 @@ Function .onInit
       MessageBox MB_OK|MB_ICONSTOP "Cannot install 64-bit version on a 32-bit system."
       Abort
     ${EndIf}
+<<<<<<< HEAD
 !endif
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 FunctionEnd
 
 # Uninstaller functions

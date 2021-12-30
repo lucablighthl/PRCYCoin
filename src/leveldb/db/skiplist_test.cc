@@ -3,8 +3,18 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include "db/skiplist.h"
+<<<<<<< HEAD
 #include <set>
 #include "leveldb/env.h"
+=======
+
+#include <atomic>
+#include <set>
+
+#include "leveldb/env.h"
+#include "port/port.h"
+#include "port/thread_annotations.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "util/arena.h"
 #include "util/hash.h"
 #include "util/random.h"
@@ -26,7 +36,11 @@ struct Comparator {
   }
 };
 
+<<<<<<< HEAD
 class SkipTest { };
+=======
+class SkipTest {};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(SkipTest, Empty) {
   Arena arena;
@@ -112,8 +126,12 @@ TEST(SkipTest, InsertAndLookup) {
 
     // Compare against model iterator
     for (std::set<Key>::reverse_iterator model_iter = keys.rbegin();
+<<<<<<< HEAD
          model_iter != keys.rend();
          ++model_iter) {
+=======
+         model_iter != keys.rend(); ++model_iter) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       ASSERT_TRUE(iter.Valid());
       ASSERT_EQ(*model_iter, iter.key());
       iter.Prev();
@@ -126,7 +144,11 @@ TEST(SkipTest, InsertAndLookup) {
 // concurrent readers (with no synchronization other than when a
 // reader's iterator is created), the reader always observes all the
 // data that was present in the skip list when the iterator was
+<<<<<<< HEAD
 // constructor.  Because insertions are happening concurrently, we may
+=======
+// constructed.  Because insertions are happening concurrently, we may
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // also observe new values that were inserted since the iterator was
 // constructed, but we should never miss any values that were present
 // at iterator construction time.
@@ -155,12 +177,20 @@ class ConcurrentTest {
   static uint64_t hash(Key key) { return key & 0xff; }
 
   static uint64_t HashNumbers(uint64_t k, uint64_t g) {
+<<<<<<< HEAD
     uint64_t data[2] = { k, g };
+=======
+    uint64_t data[2] = {k, g};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return Hash(reinterpret_cast<char*>(data), sizeof(data), 0);
   }
 
   static Key MakeKey(uint64_t k, uint64_t g) {
+<<<<<<< HEAD
     assert(sizeof(Key) == sizeof(uint64_t));
+=======
+    static_assert(sizeof(Key) == sizeof(uint64_t), "");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     assert(k <= K);  // We sometimes pass K to seek to the end of the skiplist
     assert(g <= 0xffffffffu);
     return ((k << 40) | (g << 8) | (HashNumbers(k, g) & 0xff));
@@ -186,6 +216,7 @@ class ConcurrentTest {
 
   // Per-key generation
   struct State {
+<<<<<<< HEAD
     port::AtomicPointer generation[K];
     void Set(int k, intptr_t v) {
       generation[k].Release_Store(reinterpret_cast<void*>(v));
@@ -193,6 +224,13 @@ class ConcurrentTest {
     intptr_t Get(int k) {
       return reinterpret_cast<intptr_t>(generation[k].Acquire_Load());
     }
+=======
+    std::atomic<int> generation[K];
+    void Set(int k, int v) {
+      generation[k].store(v, std::memory_order_release);
+    }
+    int Get(int k) { return generation[k].load(std::memory_order_acquire); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     State() {
       for (int k = 0; k < K; k++) {
@@ -211,7 +249,11 @@ class ConcurrentTest {
   SkipList<Key, Comparator> list_;
 
  public:
+<<<<<<< HEAD
   ConcurrentTest() : list_(Comparator(), &arena_) { }
+=======
+  ConcurrentTest() : list_(Comparator(), &arena_) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // REQUIRES: External synchronization
   void WriteStep(Random* rnd) {
@@ -250,11 +292,17 @@ class ConcurrentTest {
         // Note that generation 0 is never inserted, so it is ok if
         // <*,0,*> is missing.
         ASSERT_TRUE((gen(pos) == 0) ||
+<<<<<<< HEAD
                     (gen(pos) > static_cast<Key>(initial_state.Get(key(pos))))
                     ) << "key: " << key(pos)
                       << "; gen: " << gen(pos)
                       << "; initgen: "
                       << initial_state.Get(key(pos));
+=======
+                    (gen(pos) > static_cast<Key>(initial_state.Get(key(pos)))))
+            << "key: " << key(pos) << "; gen: " << gen(pos)
+            << "; initgen: " << initial_state.Get(key(pos));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
         // Advance to next key in the valid key space
         if (key(pos) < key(current)) {
@@ -298,6 +346,7 @@ class TestState {
  public:
   ConcurrentTest t_;
   int seed_;
+<<<<<<< HEAD
   port::AtomicPointer quit_flag_;
 
   enum ReaderState {
@@ -313,6 +362,16 @@ class TestState {
         state_cv_(&mu_) {}
 
   void Wait(ReaderState s) {
+=======
+  std::atomic<bool> quit_flag_;
+
+  enum ReaderState { STARTING, RUNNING, DONE };
+
+  explicit TestState(int s)
+      : seed_(s), quit_flag_(false), state_(STARTING), state_cv_(&mu_) {}
+
+  void Wait(ReaderState s) LOCKS_EXCLUDED(mu_) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     mu_.Lock();
     while (state_ != s) {
       state_cv_.Wait();
@@ -320,7 +379,11 @@ class TestState {
     mu_.Unlock();
   }
 
+<<<<<<< HEAD
   void Change(ReaderState s) {
+=======
+  void Change(ReaderState s) LOCKS_EXCLUDED(mu_) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     mu_.Lock();
     state_ = s;
     state_cv_.Signal();
@@ -329,8 +392,13 @@ class TestState {
 
  private:
   port::Mutex mu_;
+<<<<<<< HEAD
   ReaderState state_;
   port::CondVar state_cv_;
+=======
+  ReaderState state_ GUARDED_BY(mu_);
+  port::CondVar state_cv_ GUARDED_BY(mu_);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 static void ConcurrentReader(void* arg) {
@@ -338,7 +406,11 @@ static void ConcurrentReader(void* arg) {
   Random rnd(state->seed_);
   int64_t reads = 0;
   state->Change(TestState::RUNNING);
+<<<<<<< HEAD
   while (!state->quit_flag_.Acquire_Load()) {
+=======
+  while (!state->quit_flag_.load(std::memory_order_acquire)) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     state->t_.ReadStep(&rnd);
     ++reads;
   }
@@ -360,7 +432,11 @@ static void RunConcurrent(int run) {
     for (int i = 0; i < kSize; i++) {
       state.t_.WriteStep(&rnd);
     }
+<<<<<<< HEAD
     state.quit_flag_.Release_Store(&state);  // Any non-NULL arg will do
+=======
+    state.quit_flag_.store(true, std::memory_order_release);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     state.Wait(TestState::DONE);
   }
 }
@@ -373,6 +449,10 @@ TEST(SkipTest, Concurrent5) { RunConcurrent(5); }
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

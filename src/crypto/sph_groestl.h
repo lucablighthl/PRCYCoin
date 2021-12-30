@@ -74,6 +74,7 @@ extern "C"{
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[64];    /* first field, for alignment */
     size_t ptr;
     union {
@@ -86,6 +87,20 @@ typedef struct {
     sph_u64 count;
 #else
     sph_u32 count_high, count_low;
+=======
+	unsigned char buf[64];    /* first field, for alignment */
+	size_t ptr;
+	union {
+#if SPH_64
+		sph_u64 wide[8];
+#endif
+		sph_u32 narrow[16];
+	} state;
+#if SPH_64
+	sph_u64 count;
+#else
+	sph_u32 count_high, count_low;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 #endif
 } sph_groestl_small_context;
@@ -114,6 +129,7 @@ typedef sph_groestl_small_context sph_groestl256_context;
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[128];    /* first field, for alignment */
     size_t ptr;
     union {
@@ -126,6 +142,20 @@ typedef struct {
     sph_u64 count;
 #else
     sph_u32 count_high, count_low;
+=======
+	unsigned char buf[128];    /* first field, for alignment */
+	size_t ptr;
+	union {
+#if SPH_64
+		sph_u64 wide[16];
+#endif
+		sph_u32 narrow[32];
+	} state;
+#if SPH_64
+	sph_u64 count;
+#else
+	sph_u32 count_high, count_low;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 #endif
 } sph_groestl_big_context;
@@ -185,7 +215,11 @@ void sph_groestl224_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_groestl224_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a Groestl-256 context. This process performs no memory allocation.
@@ -230,7 +264,11 @@ void sph_groestl256_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_groestl256_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a Groestl-384 context. This process performs no memory allocation.
@@ -275,7 +313,11 @@ void sph_groestl384_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_groestl384_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a Groestl-512 context. This process performs no memory allocation.
@@ -320,7 +362,11 @@ void sph_groestl512_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_groestl512_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #ifdef __cplusplus
 }

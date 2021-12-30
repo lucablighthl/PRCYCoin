@@ -11,8 +11,13 @@ namespace leveldb {
 
 class Histogram {
  public:
+<<<<<<< HEAD
   Histogram() { }
   ~Histogram() { }
+=======
+  Histogram() {}
+  ~Histogram() {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   void Clear();
   void Add(double value);
@@ -21,12 +26,25 @@ class Histogram {
   std::string ToString() const;
 
  private:
+<<<<<<< HEAD
+=======
+  enum { kNumBuckets = 154 };
+
+  double Median() const;
+  double Percentile(double p) const;
+  double Average() const;
+  double StandardDeviation() const;
+
+  static const double kBucketLimit[kNumBuckets];
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   double min_;
   double max_;
   double num_;
   double sum_;
   double sum_squares_;
 
+<<<<<<< HEAD
   enum { kNumBuckets = 154 };
   static const double kBucketLimit[kNumBuckets];
   double buckets_[kNumBuckets];
@@ -35,6 +53,9 @@ class Histogram {
   double Percentile(double p) const;
   double Average() const;
   double StandardDeviation() const;
+=======
+  double buckets_[kNumBuckets];
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 }  // namespace leveldb

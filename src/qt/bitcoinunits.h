@@ -1,7 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,6 +22,13 @@
 #define REAL_THIN_SP_UTF8 "\xE2\x80\x89"
 #define REAL_THIN_SP_HTML "&thinsp;"
 
+<<<<<<< HEAD
+=======
+#define COMMA_CP 0x2C
+#define COMMA_UTF8 "\x2C"
+#define COMMA_HTML "&#44;"
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // U+200A HAIR SPACE = UTF-8 E2 80 8A
 #define HAIR_SP_CP 0x200A
 #define HAIR_SP_UTF8 "\xE2\x80\x8A"
@@ -44,7 +55,11 @@
 #define THIN_SP_UTF8 REAL_THIN_SP_UTF8
 #define THIN_SP_HTML HTML_HACK_SP
 
+<<<<<<< HEAD
 /** PRCY unit definitions. Encapsulates parsing and formatting
+=======
+/** PIVX unit definitions. Encapsulates parsing and formatting
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
    and serves as list model for drop-down selection boxes.
 */
 class BitcoinUnits : public QAbstractListModel
@@ -54,6 +69,7 @@ class BitcoinUnits : public QAbstractListModel
 public:
     explicit BitcoinUnits(QObject* parent);
 
+<<<<<<< HEAD
     /** PRCY units.
       @note Source: https://en.bitcoin.it/wiki/Units . Please add only sensible ones
      */
@@ -61,6 +77,15 @@ public:
         PRCY,
         mPRCY,
         uPRCY
+=======
+    /** PIVX units.
+      @note Source: https://en.bitcoin.it/wiki/Units . Please add only sensible ones
+     */
+    enum Unit {
+        PIV,
+        mPIV,
+        uPIV
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     };
 
     enum SeparatorStyle {
@@ -80,7 +105,11 @@ public:
     //! Identifier, e.g. for image names
     static QString id(int unit);
     //! Short name
+<<<<<<< HEAD
     static QString name(int unit);
+=======
+    static QString name(int unit, bool isZpiv = false);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     //! Longer description
     static QString description(int unit);
     //! Number of Satoshis (1e-8) per unit
@@ -88,14 +117,23 @@ public:
     //! Number of decimals left
     static int decimals(int unit);
     //! Format as string
+<<<<<<< HEAD
     static QString format(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard);
+=======
+    static QString format(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard, bool cleanRemainderZeros = true);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     static QString simpleFormat(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard);
     //! Format as string (with unit)
     static QString formatWithUnit(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard);
     static QString formatHtmlWithUnit(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard);
     //! Format as string (with unit) but floor value up to "digits" settings
+<<<<<<< HEAD
     static QString floorWithUnit(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard);
     static QString floorHtmlWithUnit(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard);
+=======
+    static QString floorWithUnit(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard, bool cleanRemainderZeros = false, bool isZPIV = false);
+    static QString floorHtmlWithUnit(int unit, const CAmount& amount, bool plussign = false, SeparatorStyle separators = separatorStandard, bool cleanRemainderZeros = false, bool isZPIV = false);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     //! Parse string to coin amount
     static bool parse(int unit, const QString& value, CAmount* val_out);
     //! Gets title for amount column including current display unit if optionsModel reference available */

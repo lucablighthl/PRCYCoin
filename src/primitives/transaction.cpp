@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
 // Distributed under the MIT software license, see the accompanying
@@ -33,6 +34,34 @@ uint256 COutPoint::GetHash()
     return Hash(BEGIN(hash), END(hash), BEGIN(n), END(n));
 }
 
+=======
+// Copyright (c) 2015-2021 The PIVX developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or https://www.opensource.org/licenses/mit-license.php.
+
+#include "primitives/transaction.h"
+
+#include "hash.h"
+#include "tinyformat.h"
+#include "utilstrencodings.h"
+
+std::string BaseOutPoint::ToStringShort() const
+{
+    return strprintf("%s-%u", hash.ToString().substr(0,64), n);
+}
+
+std::string COutPoint::ToString() const
+{
+    return strprintf("COutPoint(%s, %u)", hash.ToString().substr(0,10), n);
+}
+
+std::string SaplingOutPoint::ToString() const
+{
+    return strprintf("SaplingOutPoint(%s, %u)", hash.ToString().substr(0, 10), n);
+}
+
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 CTxIn::CTxIn(COutPoint prevoutIn, CScript scriptSigIn, uint32_t nSequenceIn)
 {
     prevout = prevoutIn;
@@ -47,15 +76,37 @@ CTxIn::CTxIn(uint256 hashPrevTx, uint32_t nOut, CScript scriptSigIn, uint32_t nS
     nSequence = nSequenceIn;
 }
 
+<<<<<<< HEAD
+=======
+bool CTxIn::IsZerocoinSpend() const
+{
+    return prevout.hash.IsNull() && scriptSig.IsZerocoinSpend();
+}
+
+bool CTxIn::IsZerocoinPublicSpend() const
+{
+    return scriptSig.IsZerocoinPublicSpend();
+}
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 std::string CTxIn::ToString() const
 {
     std::string str;
     str += "CTxIn(";
     str += prevout.ToString();
     if (prevout.IsNull())
+<<<<<<< HEAD
         str += strprintf(", coinbase %s", HexStr(scriptSig));
     else
         str += strprintf(", scriptSig=%s", scriptSig.ToString().substr(0,24));
+=======
+        if(IsZerocoinSpend())
+            str += strprintf(", zerocoinspend %s...", HexStr(scriptSig).substr(0, 25));
+        else
+            str += strprintf(", coinbase %s", HexStr(scriptSig));
+    else
+        str += strprintf(", scriptSig=%s", HexStr(scriptSig).substr(0, 24));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if (nSequence != std::numeric_limits<unsigned int>::max())
         str += strprintf(", nSequence=%u", nSequence);
     str += ")";
@@ -69,6 +120,7 @@ CTxOut::CTxOut(const CAmount& nValueIn, CScript scriptPubKeyIn)
     nRounds = -10;
 }
 
+<<<<<<< HEAD
 bool COutPoint::IsMasternodeReward(const CTransaction* tx) const
 {
     if(!tx->IsCoinStake())
@@ -80,21 +132,40 @@ bool COutPoint::IsMasternodeReward(const CTransaction* tx) const
 uint256 CTxOut::GetHash() const
 {
     return SerializeHash(*this);
+=======
+uint256 CTxOut::GetHash() const
+{
+    return SerializeHash(*this);
+}
+
+bool CTxOut::IsZerocoinMint() const
+{
+    return scriptPubKey.IsZerocoinMint();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 std::string CTxOut::ToString() const
 {
+<<<<<<< HEAD
     return strprintf("CTxOut(nValue=%d.%08d, scriptPubKey=%s)", nValue / COIN, nValue % COIN, scriptPubKey.ToString().substr(0,30));
 }
 
 CMutableTransaction::CMutableTransaction() : nVersion(CTransaction::CURRENT_VERSION), nLockTime(0), hasPaymentID(0), paymentID(0), txType(TX_TYPE_FULL), nTxFee(0) {}
 CMutableTransaction::CMutableTransaction(const CTransaction& tx) : nVersion(tx.nVersion), vin(tx.vin), vout(tx.vout), nLockTime(tx.nLockTime), txPrivM(tx.txPrivM), hasPaymentID(tx.hasPaymentID), paymentID(tx.paymentID), txType(tx.txType), bulletproofs(tx.bulletproofs), nTxFee(tx.nTxFee), c(tx.c), S(tx.S), ntxFeeKeyImage(tx.ntxFeeKeyImage) {}
+=======
+    return strprintf("CTxOut(nValue=%d.%08d, scriptPubKey=%s)", nValue / COIN, nValue % COIN, HexStr(scriptPubKey).substr(0,30));
+}
+
+CMutableTransaction::CMutableTransaction() : nVersion(CTransaction::CURRENT_VERSION), nType(CTransaction::TxType::NORMAL), nLockTime(0) {}
+CMutableTransaction::CMutableTransaction(const CTransaction& tx) : vin(tx.vin), vout(tx.vout), nVersion(tx.nVersion), nType(tx.nType), nLockTime(tx.nLockTime), sapData(tx.sapData), extraPayload(tx.extraPayload) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 uint256 CMutableTransaction::GetHash() const
 {
     return SerializeHash(*this);
 }
 
+<<<<<<< HEAD
 std::string CMutableTransaction::ToString() const
 {
     std::string str;
@@ -138,11 +209,66 @@ CTransaction& CTransaction::operator=(const CTransaction &tx) {
     nTxFee = tx.nTxFee;
     ntxFeeKeyImage = tx.ntxFeeKeyImage;
     return *this;
+=======
+uint256 CTransaction::ComputeHash() const
+{
+    return SerializeHash(*this);
+}
+
+size_t CTransaction::DynamicMemoryUsage() const
+{
+    return memusage::RecursiveDynamicUsage(vin) + memusage::RecursiveDynamicUsage(vout);
+}
+
+/* For backward compatibility, the hash is initialized to 0. TODO: remove the need for this default constructor entirely. */
+CTransaction::CTransaction() : vin(), vout(), nVersion(CTransaction::CURRENT_VERSION), nType(TxType::NORMAL), nLockTime(0), hash() {}
+CTransaction::CTransaction(const CMutableTransaction &tx) : vin(tx.vin), vout(tx.vout), nVersion(tx.nVersion), nType(tx.nType), nLockTime(tx.nLockTime), sapData(tx.sapData), extraPayload(tx.extraPayload), hash(ComputeHash()) {}
+CTransaction::CTransaction(CMutableTransaction &&tx) : vin(std::move(tx.vin)), vout(std::move(tx.vout)), nVersion(tx.nVersion), nType(tx.nType), nLockTime(tx.nLockTime), sapData(tx.sapData), extraPayload(tx.extraPayload), hash(ComputeHash()) {}
+
+bool CTransaction::HasZerocoinSpendInputs() const
+{
+    for (const CTxIn& txin: vin) {
+        if (txin.IsZerocoinSpend() || txin.IsZerocoinPublicSpend())
+            return true;
+    }
+    return false;
+}
+
+bool CTransaction::HasZerocoinMintOutputs() const
+{
+    for(const CTxOut& txout : vout) {
+        if (txout.IsZerocoinMint())
+            return true;
+    }
+    return false;
+}
+
+bool CTransaction::IsCoinStake() const
+{
+    if (vin.empty())
+        return false;
+
+    bool fAllowNull = vin[0].IsZerocoinSpend();
+    if (vin[0].prevout.IsNull() && !fAllowNull)
+        return false;
+
+    return (vout.size() >= 2 && vout[0].IsEmpty());
+}
+
+bool CTransaction::HasP2CSOutputs() const
+{
+    for(const CTxOut& txout : vout) {
+        if (txout.scriptPubKey.IsPayToColdStaking())
+            return true;
+    }
+    return false;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 CAmount CTransaction::GetValueOut() const
 {
     CAmount nValueOut = 0;
+<<<<<<< HEAD
     for (std::vector<CTxOut>::const_iterator it(vout.begin()); it != vout.end(); ++it)
     {
         // PRCYcoin: previously MoneyRange() was called here. This has been replaced with negative check and boundary wrap check.
@@ -200,10 +326,56 @@ unsigned int CTransaction::CalculateModifiedSize(unsigned int nTxSize) const
             nTxSize -= offset;
     }
     return nTxSize;
+=======
+    for (const CTxOut& out : vout) {
+        // PIVX: previously MoneyRange() was called here. This has been replaced with negative check and boundary wrap check.
+        if (out.nValue < 0)
+            throw std::runtime_error("CTransaction::GetValueOut() : value out of range : less than 0");
+
+        if (nValueOut + out.nValue < nValueOut)
+            throw std::runtime_error("CTransaction::GetValueOut() : value out of range : wraps the int64_t boundary");
+
+        nValueOut += out.nValue;
+    }
+
+    // Sapling
+    if (hasSaplingData() && sapData->valueBalance < 0) {
+        // NB: negative valueBalance "takes" money from the transparent value pool just as outputs do
+        nValueOut += -sapData->valueBalance;
+
+        // Verify Sapling version
+        if (!isSaplingVersion())
+            throw std::runtime_error("GetValueOut(): invalid tx version");
+    }
+
+    return nValueOut;
+}
+
+CAmount CTransaction::GetShieldedValueIn() const
+{
+    CAmount nValue = 0;
+
+    if (hasSaplingData() && sapData->valueBalance > 0) {
+        // NB: positive valueBalance "gives" money to the transparent value pool just as inputs do
+        nValue += sapData->valueBalance;
+
+        // Verify Sapling
+        if (!isSaplingVersion())
+            throw std::runtime_error("GetValueOut(): invalid tx version");
+    }
+
+    return nValue;
+}
+
+unsigned int CTransaction::GetTotalSize() const
+{
+    return ::GetSerializeSize(*this, PROTOCOL_VERSION);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 std::string CTransaction::ToString() const
 {
+<<<<<<< HEAD
     std::string str;
     //CPubKey pubkey(txPub);
     str += strprintf("CTransaction(hash=%s, ver=%d, vin.size=%u, vout.size=%u, nLockTime=%u)\n",
@@ -217,4 +389,27 @@ std::string CTransaction::ToString() const
     for (unsigned int i = 0; i < vout.size(); i++)
         str += "    " + vout[i].ToString() + "\n";
     return str;
+=======
+    std::ostringstream ss;
+    ss << "CTransaction(hash=" << GetHash().ToString().substr(0, 10)
+       << ", ver=" << nVersion
+       << ", type=" << nType
+       << ", vin.size=" << vin.size()
+       << ", vout.size=" << vout.size()
+       << ", nLockTime=" << nLockTime;
+    if (IsShieldedTx()) {
+        ss << ", valueBalance=" << sapData->valueBalance
+           << ", vShieldedSpend.size=" << sapData->vShieldedSpend.size()
+           << ", vShieldedOutput.size=" << sapData->vShieldedOutput.size();
+    }
+    if (IsSpecialTx()) {
+        ss << ", extraPayload.size=" << extraPayload->size();
+    }
+    ss << ")\n";
+    for (const auto& in : vin)
+        ss << "    " << in.ToString() << "\n";
+    for (const auto& out : vout)
+        ss << "    " << out.ToString() << "\n";
+    return ss.str();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }

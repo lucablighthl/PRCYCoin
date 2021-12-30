@@ -7,6 +7,12 @@
 
 #include "walletmodel.h"
 
+<<<<<<< HEAD
+=======
+#include "amount.h"
+#include "primitives/transaction.h"
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include <QObject>
 
 class SendCoinsRecipient;
@@ -24,7 +30,10 @@ public:
 
     QList<SendCoinsRecipient> getRecipients();
 
+<<<<<<< HEAD
     CWalletTx* getTransaction();
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     unsigned int getTransactionSize();
 
     void setTransactionFee(const CAmount& newFee);
@@ -32,6 +41,7 @@ public:
 
     CAmount getTotalTransactionAmount();
 
+<<<<<<< HEAD
     void newPossibleKeyChange(CWallet* wallet);
     CReserveKey* getPossibleKeyChange();
 
@@ -39,6 +49,24 @@ private:
     const QList<SendCoinsRecipient> recipients;
     CWalletTx* walletTransaction;
     CReserveKey* keyChange;
+=======
+    CReserveKey* newPossibleKeyChange(CWallet* wallet);
+    CReserveKey* getPossibleKeyChange();
+
+    CTransactionRef& getTransaction();
+
+    // return the number of recipients with subtract-fee-from-amount
+    unsigned int subtractFeeFromRecipents() const;
+
+    // Whether should create a +v2 tx or go simple and create a v1.
+    bool useV2{false};
+    bool fIsStakeDelegationVoided{false};
+
+private:
+    const QList<SendCoinsRecipient> recipients;
+    CTransactionRef walletTransaction;
+    CReserveKey* keyChange{nullptr};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     CAmount fee;
 };
 

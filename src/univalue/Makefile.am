@@ -12,6 +12,10 @@ pkgconfig_DATA = pc/libunivalue.pc
 
 libunivalue_la_SOURCES = \
 	lib/univalue.cpp \
+<<<<<<< HEAD
+=======
+	lib/univalue_get.cpp \
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 	lib/univalue_read.cpp \
 	lib/univalue_write.cpp
 
@@ -94,6 +98,10 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/fail41.json \
 	$(TEST_DATA_DIR)/fail42.json \
 	$(TEST_DATA_DIR)/fail44.json \
+<<<<<<< HEAD
+=======
+	$(TEST_DATA_DIR)/fail45.json \
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 	$(TEST_DATA_DIR)/fail3.json \
 	$(TEST_DATA_DIR)/fail4.json \
 	$(TEST_DATA_DIR)/fail5.json \
@@ -104,6 +112,10 @@ TEST_FILES = \
 	$(TEST_DATA_DIR)/pass1.json \
 	$(TEST_DATA_DIR)/pass2.json \
 	$(TEST_DATA_DIR)/pass3.json \
+<<<<<<< HEAD
+=======
+	$(TEST_DATA_DIR)/pass4.json \
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 	$(TEST_DATA_DIR)/round1.json \
 	$(TEST_DATA_DIR)/round2.json \
 	$(TEST_DATA_DIR)/round3.json \

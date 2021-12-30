@@ -1,22 +1,38 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
+<<<<<<< HEAD
 // Copyright (c) 2009-2014 The Bitcoin developers
+=======
+// Copyright (c) 2009-2018 The Bitcoin developers
+// Copyright (c) 2018-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_SCRIPT_INTERPRETER_H
 #define BITCOIN_SCRIPT_INTERPRETER_H
 
+<<<<<<< HEAD
 #include "script_error.h"
 #include "primitives/transaction.h"
+=======
+#include "primitives/transaction.h"
+#include "script_error.h"
+#include "uint256.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <vector>
 #include <stdint.h>
 #include <string>
 
+<<<<<<< HEAD
 class CPubKey;
 class CScript;
 class CTransaction;
 class uint256;
+=======
+/** Special case nIn for signing Sapling txs. */
+const unsigned int NOT_AN_INPUT = UINT_MAX;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /** Signature hash types/flags */
 enum
@@ -83,12 +99,29 @@ enum
     SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY = (1U << 9)
 };
 
+<<<<<<< HEAD
 uint256 SignatureHash(const CScript &scriptCode, const CTransaction& txTo, unsigned int nIn, int nHashType);
+=======
+bool CheckSignatureEncoding(const std::vector<unsigned char> &vchSig, unsigned int flags, ScriptError* serror);
+
+struct PrecomputedTransactionData
+{
+    uint256 hashPrevouts, hashSequence, hashOutputs, hashShieldedSpends, hashShieldedOutputs;
+
+    PrecomputedTransactionData(const CTransaction& tx);
+};
+
+uint256 SignatureHash(const CScript &scriptCode, const CTransaction& txTo, unsigned int nIn, int nHashType, const CAmount& amount, SigVersion sigversion, const PrecomputedTransactionData* cache = nullptr);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 class BaseSignatureChecker
 {
 public:
+<<<<<<< HEAD
     virtual bool CheckSig(const std::vector<unsigned char>& scriptSig, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode) const
+=======
+    virtual bool CheckSig(const std::vector<unsigned char>& scriptSig, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode, SigVersion sigversion) const
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     {
         return false;
     }
@@ -98,6 +131,14 @@ public:
          return false;
     }
 
+<<<<<<< HEAD
+=======
+    virtual bool CheckColdStake(bool fAllowLastOutputFree, const CScript& prevoutScript, std::vector<valtype>& stack, unsigned int flags, ScriptError* error) const
+    {
+         return false;
+    }
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     virtual ~BaseSignatureChecker() {}
 };
 
@@ -106,14 +147,28 @@ class TransactionSignatureChecker : public BaseSignatureChecker
 private:
     const CTransaction* txTo;
     unsigned int nIn;
+<<<<<<< HEAD
+=======
+    const CAmount amount;
+    const PrecomputedTransactionData* precomTxData;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 protected:
     virtual bool VerifySignature(const std::vector<unsigned char>& vchSig, const CPubKey& vchPubKey, const uint256& sighash) const;
 
 public:
+<<<<<<< HEAD
     TransactionSignatureChecker(const CTransaction* txToIn, unsigned int nInIn) : txTo(txToIn), nIn(nInIn) {}
     bool CheckSig(const std::vector<unsigned char>& scriptSig, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode) const;
     bool CheckLockTime(const CScriptNum& nLockTime) const;
+=======
+    TransactionSignatureChecker(const CTransaction* txToIn, unsigned int nInIn, const CAmount& amountIn) : txTo(txToIn), nIn(nInIn), amount(amountIn), precomTxData(nullptr) {}
+    TransactionSignatureChecker(const CTransaction* txToIn, unsigned int nInIn, const CAmount& amountIn, const PrecomputedTransactionData& cachedHashesIn) : txTo(txToIn), nIn(nInIn), amount(amountIn), precomTxData(&cachedHashesIn) {}
+
+    bool CheckSig(const std::vector<unsigned char>& scriptSig, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode, SigVersion sigversion) const override ;
+    bool CheckLockTime(const CScriptNum& nLockTime) const override;
+    bool CheckColdStake(bool fAllowLastOutputFree, const CScript& prevoutScript, std::vector<valtype>& stack, unsigned int flags, ScriptError* serror) const override;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 class MutableTransactionSignatureChecker : public TransactionSignatureChecker
@@ -122,10 +177,18 @@ private:
     const CTransaction txTo;
 
 public:
+<<<<<<< HEAD
     MutableTransactionSignatureChecker(const CMutableTransaction* txToIn, unsigned int nInIn) : TransactionSignatureChecker(&txTo, nInIn), txTo(*txToIn) {}
 };
 
 bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* error = NULL);
 bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* error = NULL);
+=======
+    MutableTransactionSignatureChecker(const CMutableTransaction* txToIn, unsigned int nInIn, const CAmount& amount) : TransactionSignatureChecker(&txTo, nInIn, amount), txTo(*txToIn) {}
+};
+
+bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, SigVersion sigversion, ScriptError* error = NULL);
+bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigned int flags, const BaseSignatureChecker& checker, SigVersion sigversion, ScriptError* serror = NULL);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #endif // BITCOIN_SCRIPT_INTERPRETER_H

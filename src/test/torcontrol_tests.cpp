@@ -1,12 +1,23 @@
 // Copyright (c) 2017 The Zcash developers
+<<<<<<< HEAD
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 //
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "torcontrol.cpp"
 
 #include <boost/test/unit_test.hpp>
 
+<<<<<<< HEAD
 #ifdef DISABLE_PASSED_TEST
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 BOOST_AUTO_TEST_SUITE(torcontrol_tests)
 
 void CheckSplitTorReplyLine(std::string input, std::string command, std::string args)
@@ -21,8 +32,13 @@ BOOST_AUTO_TEST_CASE(util_SplitTorReplyLine)
 {
     // Data we should receive during normal usage
     CheckSplitTorReplyLine(
+<<<<<<< HEAD
         "PROTOCOLINFO PRCYERSION",
         "PROTOCOLINFO", "PRCYERSION");
+=======
+        "PROTOCOLINFO PIVERSION",
+        "PROTOCOLINFO", "PIVERSION");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     CheckSplitTorReplyLine(
         "AUTH METHODS=COOKIE,SAFECOOKIE COOKIEFILE=\"/home/x/.tor/control_auth_cookie\"",
         "AUTH", "METHODS=COOKIE,SAFECOOKIE COOKIEFILE=\"/home/x/.tor/control_auth_cookie\"");
@@ -196,4 +212,7 @@ BOOST_AUTO_TEST_CASE(util_ParseTorReplyMapping)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

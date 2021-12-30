@@ -1,12 +1,21 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_PEERTABLEMODEL_H
 #define BITCOIN_QT_PEERTABLEMODEL_H
 
+<<<<<<< HEAD
 #include "main.h"
 #include "net.h"
+=======
+#include "net.h"
+#include "net_processing.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <QAbstractTableModel>
 #include <QStringList>
@@ -45,7 +54,10 @@ class PeerTableModel : public QAbstractTableModel
 
 public:
     explicit PeerTableModel(ClientModel* parent = 0);
+<<<<<<< HEAD
     ~PeerTableModel();
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     const CNodeCombinedStats* getNodeStats(int idx);
     int getRowByNodeId(NodeId nodeid);
     void startAutoRefresh();
@@ -54,10 +66,15 @@ public:
     enum ColumnIndex {
         NetNodeId = 0,
         Address = 1,
+<<<<<<< HEAD
         Ping = 2,
         Sent = 3,
         Received = 4,
         Subversion = 5
+=======
+        Subversion = 2,
+        Ping = 3
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     };
 
     /** @name Methods overridden from QAbstractTableModel

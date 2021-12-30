@@ -3,6 +3,10 @@
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
 #include <stdio.h>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/dumpfile.h"
 #include "leveldb/env.h"
 #include "leveldb/status.h"
@@ -12,6 +16,7 @@ namespace {
 
 class StdoutPrinter : public WritableFile {
  public:
+<<<<<<< HEAD
   virtual Status Append(const Slice& data) {
     fwrite(data.data(), 1, data.size(), stdout);
     return Status::OK();
@@ -20,6 +25,16 @@ class StdoutPrinter : public WritableFile {
   virtual Status Flush() { return Status::OK(); }
   virtual Status Sync() { return Status::OK(); }
   virtual std::string GetName() const { return "[stdout]"; }
+=======
+  Status Append(const Slice& data) override {
+    fwrite(data.data(), 1, data.size(), stdout);
+    return Status::OK();
+  }
+  Status Close() override { return Status::OK(); }
+  Status Flush() override { return Status::OK(); }
+  Status Sync() override { return Status::OK(); }
+  std::string GetName() const override { return "[stdout]"; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 bool HandleDumpCommand(Env* env, char** files, int num) {
@@ -39,11 +54,17 @@ bool HandleDumpCommand(Env* env, char** files, int num) {
 }  // namespace leveldb
 
 static void Usage() {
+<<<<<<< HEAD
   fprintf(
       stderr,
       "Usage: leveldbutil command...\n"
       "   dump files...         -- dump contents of specified files\n"
       );
+=======
+  fprintf(stderr,
+          "Usage: leveldbutil command...\n"
+          "   dump files...         -- dump contents of specified files\n");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 int main(int argc, char** argv) {
@@ -55,7 +76,11 @@ int main(int argc, char** argv) {
   } else {
     std::string command = argv[1];
     if (command == "dump") {
+<<<<<<< HEAD
       ok = leveldb::HandleDumpCommand(env, argv+2, argc-2);
+=======
+      ok = leveldb::HandleDumpCommand(env, argv + 2, argc - 2);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     } else {
       Usage();
       ok = false;

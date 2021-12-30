@@ -1,7 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +18,11 @@
 #include <QDataWidgetMapper>
 #include <QMessageBox>
 
+<<<<<<< HEAD
 EditAddressDialog::EditAddressDialog(Mode mode, QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
+=======
+EditAddressDialog::EditAddressDialog(Mode mode, QWidget* parent) : QDialog(parent),
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                                                                    ui(new Ui::EditAddressDialog),
                                                                    mapper(0),
                                                                    mode(mode),
@@ -104,7 +112,11 @@ void EditAddressDialog::accept()
             break;
         case AddressTableModel::INVALID_ADDRESS:
             QMessageBox::warning(this, windowTitle(),
+<<<<<<< HEAD
                 tr("The entered address \"%1\" is not a valid PRCY address.").arg(ui->addressEdit->text()),
+=======
+                tr("The entered address \"%1\" is not a valid PIVX address.").arg(ui->addressEdit->text()),
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 QMessageBox::Ok, QMessageBox::Ok);
             break;
         case AddressTableModel::DUPLICATE_ADDRESS:

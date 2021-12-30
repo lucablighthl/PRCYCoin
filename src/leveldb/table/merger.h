@@ -18,8 +18,13 @@ class Iterator;
 // key is present in K child iterators, it will be yielded K times.
 //
 // REQUIRES: n >= 0
+<<<<<<< HEAD
 extern Iterator* NewMergingIterator(
     const Comparator* comparator, Iterator** children, int n);
+=======
+Iterator* NewMergingIterator(const Comparator* comparator, Iterator** children,
+                             int n);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace leveldb
 

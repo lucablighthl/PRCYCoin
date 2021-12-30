@@ -1,5 +1,9 @@
 #!/bin/sh
+<<<<<<< HEAD
 
+=======
+set -e
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 if [ $# -ne 3 ];
     then echo "usage: $0 <input> <stripped-binary> <debug-binary>"
 fi

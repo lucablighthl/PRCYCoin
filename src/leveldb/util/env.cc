@@ -6,13 +6,18 @@
 
 namespace leveldb {
 
+<<<<<<< HEAD
 Env::~Env() {
 }
+=======
+Env::~Env() = default;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 Status Env::NewAppendableFile(const std::string& fname, WritableFile** result) {
   return Status::NotSupported("NewAppendableFile", fname);
 }
 
+<<<<<<< HEAD
 SequentialFile::~SequentialFile() {
 }
 
@@ -30,6 +35,20 @@ FileLock::~FileLock() {
 
 void Log(Logger* info_log, const char* format, ...) {
   if (info_log != NULL) {
+=======
+SequentialFile::~SequentialFile() = default;
+
+RandomAccessFile::~RandomAccessFile() = default;
+
+WritableFile::~WritableFile() = default;
+
+Logger::~Logger() = default;
+
+FileLock::~FileLock() = default;
+
+void Log(Logger* info_log, const char* format, ...) {
+  if (info_log != nullptr) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     va_list ap;
     va_start(ap, format);
     info_log->Logv(format, ap);
@@ -38,8 +57,12 @@ void Log(Logger* info_log, const char* format, ...) {
 }
 
 static Status DoWriteStringToFile(Env* env, const Slice& data,
+<<<<<<< HEAD
                                   const std::string& fname,
                                   bool should_sync) {
+=======
+                                  const std::string& fname, bool should_sync) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   WritableFile* file;
   Status s = env->NewWritableFile(fname, &file);
   if (!s.ok()) {
@@ -94,7 +117,11 @@ Status ReadFileToString(Env* env, const std::string& fname, std::string* data) {
   return s;
 }
 
+<<<<<<< HEAD
 EnvWrapper::~EnvWrapper() {
 }
+=======
+EnvWrapper::~EnvWrapper() {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace leveldb

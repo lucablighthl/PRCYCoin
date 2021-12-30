@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 // Copyright (c) 2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_HTTPSERVER_H
 #define BITCOIN_HTTPSERVER_H
+=======
+// Copyright (c) 2015-2021 The Bitcoin Core developers
+// Copyright (c) 2021 The PIVX developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PIVX_HTTPSERVER_H
+#define PIVX_HTTPSERVER_H
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <string>
 #include <stdint.h>
@@ -32,6 +42,13 @@ void InterruptHTTPServer();
 /** Stop HTTP server */
 void StopHTTPServer();
 
+<<<<<<< HEAD
+=======
+/** Change logging level for libevent. Removes BCLog::LIBEVENT from log categories if
+ * libevent doesn't support debug logging.*/
+bool UpdateHTTPServerLogging(bool enable);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 /** Handler for requests to a certain HTTP path */
 typedef std::function<void(HTTPRequest* req, const std::string &)> HTTPRequestHandler;
 /** Register handler for prefix.
@@ -82,7 +99,11 @@ public:
 
     /**
      * Get the request header specified by hdr, or an empty string.
+<<<<<<< HEAD
      * Return an pair (isPresent,string).
+=======
+     * Return an pair (isPresent,std::string).
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
      */
     std::pair<bool, std::string> GetHeader(const std::string& hdr);
 
@@ -144,4 +165,10 @@ private:
     struct event* ev;
 };
 
+<<<<<<< HEAD
 #endif // BITCOIN_HTTPSERVER_H
+=======
+std::string urlDecode(const std::string &urlEncoded);
+
+#endif // PIVX_HTTPSERVER_H
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

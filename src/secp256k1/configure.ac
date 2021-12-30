@@ -5,8 +5,13 @@ AC_CONFIG_MACRO_DIR([build-aux/m4])
 AC_CANONICAL_HOST
 AH_TOP([#ifndef LIBSECP256K1_CONFIG_H])
 AH_TOP([#define LIBSECP256K1_CONFIG_H])
+<<<<<<< HEAD
 AH_BOTTOM([#endif //LIBSECP256K1_CONFIG_H])
 AM_INIT_AUTOMAKE([foreign])
+=======
+AH_BOTTOM([#endif /*LIBSECP256K1_CONFIG_H*/])
+AM_INIT_AUTOMAKE([foreign subdir-objects])
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 LT_INIT
 
 dnl make the compilation flags quiet unless V=1 is used
@@ -17,6 +22,7 @@ PKG_PROG_PKG_CONFIG
 AC_PATH_TOOL(AR, ar)
 AC_PATH_TOOL(RANLIB, ranlib)
 AC_PATH_TOOL(STRIP, strip)
+<<<<<<< HEAD
 
 AC_PROG_CC_C99
 if test x"$ac_cv_prog_cc_c99" == x"no"; then
@@ -31,6 +37,21 @@ case $host in
      use_pkgconfig=yes
      ;;
 esac
+=======
+AX_PROG_CC_FOR_BUILD
+
+if test "x$CFLAGS" = "x"; then
+  CFLAGS="-g"
+fi
+
+AM_PROG_CC_C_O
+
+AC_PROG_CC_C89
+if test x"$ac_cv_prog_cc_c89" = x"no"; then
+  AC_MSG_ERROR([c89 compiler support required])
+fi
+AM_PROG_AS
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 case $host_os in
   *darwin*)
@@ -66,7 +87,11 @@ esac
 
 CFLAGS="$CFLAGS -W"
 
+<<<<<<< HEAD
 warn_CFLAGS="-Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-unused-function"
+=======
+warn_CFLAGS="-std=c89 -pedantic -Wall -Wextra -Wcast-align -Wnested-externs -Wshadow -Wstrict-prototypes -Wno-unused-function -Wno-long-long -Wno-overlength-strings"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 saved_CFLAGS="$CFLAGS"
 CFLAGS="$CFLAGS $warn_CFLAGS"
 AC_MSG_CHECKING([if ${CC} supports ${warn_CFLAGS}])
@@ -76,31 +101,96 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([[char foo;]])],
       CFLAGS="$saved_CFLAGS"
     ])
 
+<<<<<<< HEAD
+=======
+saved_CFLAGS="$CFLAGS"
+CFLAGS="$CFLAGS -fvisibility=hidden"
+AC_MSG_CHECKING([if ${CC} supports -fvisibility=hidden])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[char foo;]])],
+    [ AC_MSG_RESULT([yes]) ],
+    [ AC_MSG_RESULT([no])
+      CFLAGS="$saved_CFLAGS"
+    ])
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 AC_ARG_ENABLE(benchmark,
     AS_HELP_STRING([--enable-benchmark],[compile benchmark (default is yes)]),
     [use_benchmark=$enableval],
     [use_benchmark=yes])
 
+<<<<<<< HEAD
+=======
+AC_ARG_ENABLE(coverage,
+    AS_HELP_STRING([--enable-coverage],[enable compiler flags to support kcov coverage analysis]),
+    [enable_coverage=$enableval],
+    [enable_coverage=no])
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 AC_ARG_ENABLE(tests,
     AS_HELP_STRING([--enable-tests],[compile tests (default is yes)]),
     [use_tests=$enableval],
     [use_tests=yes])
 
+<<<<<<< HEAD
+=======
+AC_ARG_ENABLE(openssl_tests,
+    AS_HELP_STRING([--enable-openssl-tests],[enable OpenSSL tests, if OpenSSL is available (default is auto)]),
+    [enable_openssl_tests=$enableval],
+    [enable_openssl_tests=auto])
+
+AC_ARG_ENABLE(experimental,
+    AS_HELP_STRING([--enable-experimental],[allow experimental configure options (default is no)]),
+    [use_experimental=$enableval],
+    [use_experimental=no])
+
+AC_ARG_ENABLE(exhaustive_tests,
+    AS_HELP_STRING([--enable-exhaustive-tests],[compile exhaustive tests (default is yes)]),
+    [use_exhaustive_tests=$enableval],
+    [use_exhaustive_tests=yes])
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 AC_ARG_ENABLE(endomorphism,
     AS_HELP_STRING([--enable-endomorphism],[enable endomorphism (default is no)]),
     [use_endomorphism=$enableval],
     [use_endomorphism=no])
 
+<<<<<<< HEAD
 AC_ARG_WITH([field], [AS_HELP_STRING([--with-field=gmp|64bit|64bit_asm|32bit|auto],
 [Specify Field Implementation. Default is auto])],[req_field=$withval], [req_field=auto])
 
 AC_ARG_WITH([bignum], [AS_HELP_STRING([--with-bignum=gmp|none|auto],
+=======
+AC_ARG_ENABLE(ecmult_static_precomputation,
+    AS_HELP_STRING([--enable-ecmult-static-precomputation],[enable precomputed ecmult table for signing (default is yes)]),
+    [use_ecmult_static_precomputation=$enableval],
+    [use_ecmult_static_precomputation=auto])
+
+AC_ARG_ENABLE(module_ecdh,
+    AS_HELP_STRING([--enable-module-ecdh],[enable ECDH shared secret computation (experimental)]),
+    [enable_module_ecdh=$enableval],
+    [enable_module_ecdh=no])
+
+AC_ARG_ENABLE(module_recovery,
+    AS_HELP_STRING([--enable-module-recovery],[enable ECDSA pubkey recovery module (default is no)]),
+    [enable_module_recovery=$enableval],
+    [enable_module_recovery=no])
+
+AC_ARG_ENABLE(jni,
+    AS_HELP_STRING([--enable-jni],[enable libsecp256k1_jni (default is no)]),
+    [use_jni=$enableval],
+    [use_jni=no])
+
+AC_ARG_WITH([field], [AS_HELP_STRING([--with-field=64bit|32bit|auto],
+[Specify Field Implementation. Default is auto])],[req_field=$withval], [req_field=auto])
+
+AC_ARG_WITH([bignum], [AS_HELP_STRING([--with-bignum=gmp|no|auto],
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 [Specify Bignum Implementation. Default is auto])],[req_bignum=$withval], [req_bignum=auto])
 
 AC_ARG_WITH([scalar], [AS_HELP_STRING([--with-scalar=64bit|32bit|auto],
 [Specify scalar implementation. Default is auto])],[req_scalar=$withval], [req_scalar=auto])
 
+<<<<<<< HEAD
 AC_CHECK_TYPES([__int128])
 
 AC_CHECK_DECL(__builtin_expect,AC_DEFINE(HAVE_BUILTIN_EXPECT,1,[Define this symbol if __builtin_expect is available]),,)
@@ -111,19 +201,103 @@ if test x"$req_field" = x"auto"; then
     set_field=64bit_asm
   fi
 
+=======
+AC_ARG_WITH([asm], [AS_HELP_STRING([--with-asm=x86_64|arm|no|auto]
+[Specify assembly optimizations to use. Default is auto (experimental: arm)])],[req_asm=$withval], [req_asm=auto])
+
+AC_CHECK_TYPES([__int128])
+
+AC_MSG_CHECKING([for __builtin_expect])
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([[void myfunc() {__builtin_expect(0,0);}]])],
+    [ AC_MSG_RESULT([yes]);AC_DEFINE(HAVE_BUILTIN_EXPECT,1,[Define this symbol if __builtin_expect is available]) ],
+    [ AC_MSG_RESULT([no])
+    ])
+
+if test x"$enable_coverage" = x"yes"; then
+    AC_DEFINE(COVERAGE, 1, [Define this symbol to compile out all VERIFY code])
+    CFLAGS="$CFLAGS -O0 --coverage"
+    LDFLAGS="--coverage"
+else
+    CFLAGS="$CFLAGS -O3"
+fi
+
+if test x"$use_ecmult_static_precomputation" != x"no"; then
+  save_cross_compiling=$cross_compiling
+  cross_compiling=no
+  TEMP_CC="$CC"
+  CC="$CC_FOR_BUILD"
+  AC_MSG_CHECKING([native compiler: ${CC_FOR_BUILD}])
+  AC_RUN_IFELSE(
+    [AC_LANG_PROGRAM([], [return 0])],
+    [working_native_cc=yes],
+    [working_native_cc=no],[dnl])
+  CC="$TEMP_CC"
+  cross_compiling=$save_cross_compiling
+
+  if test x"$working_native_cc" = x"no"; then
+    set_precomp=no
+    if test x"$use_ecmult_static_precomputation" = x"yes";  then
+      AC_MSG_ERROR([${CC_FOR_BUILD} does not produce working binaries. Please set CC_FOR_BUILD])
+    else
+      AC_MSG_RESULT([${CC_FOR_BUILD} does not produce working binaries. Please set CC_FOR_BUILD])
+    fi
+  else
+    AC_MSG_RESULT([ok])
+    set_precomp=yes
+  fi
+else
+  set_precomp=no
+fi
+
+if test x"$req_asm" = x"auto"; then
+  SECP_64BIT_ASM_CHECK
+  if test x"$has_64bit_asm" = x"yes"; then
+    set_asm=x86_64
+  fi
+  if test x"$set_asm" = x; then
+    set_asm=no
+  fi
+else
+  set_asm=$req_asm
+  case $set_asm in
+  x86_64)
+    SECP_64BIT_ASM_CHECK
+    if test x"$has_64bit_asm" != x"yes"; then
+      AC_MSG_ERROR([x86_64 assembly optimization requested but not available])
+    fi
+    ;;
+  arm)
+    ;;
+  no)
+    ;;
+  *)
+    AC_MSG_ERROR([invalid assembly optimization selection])
+    ;;
+  esac
+fi
+
+if test x"$req_field" = x"auto"; then
+  if test x"set_asm" = x"x86_64"; then
+    set_field=64bit
+  fi
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   if test x"$set_field" = x; then
     SECP_INT128_CHECK
     if test x"$has_int128" = x"yes"; then
       set_field=64bit
     fi
   fi
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   if test x"$set_field" = x; then
     set_field=32bit
   fi
 else
   set_field=$req_field
   case $set_field in
+<<<<<<< HEAD
   64bit_asm)
     SECP_64BIT_ASM_CHECK
     ;;
@@ -132,6 +306,15 @@ else
     ;;
   gmp)
     SECP_GMP_CHECK
+=======
+  64bit)
+    if test x"$set_asm" != x"x86_64"; then
+      SECP_INT128_CHECK
+      if test x"$has_int128" != x"yes"; then
+        AC_MSG_ERROR([64bit field explicitly requested but neither __int128 support or x86_64 assembly available])
+      fi
+    fi
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     ;;
   32bit)
     ;;
@@ -142,11 +325,17 @@ else
 fi
 
 if test x"$req_scalar" = x"auto"; then
+<<<<<<< HEAD
   if test x"$set_scalar" = x; then
     SECP_INT128_CHECK
     if test x"$has_int128" = x"yes"; then
       set_scalar=64bit
     fi
+=======
+  SECP_INT128_CHECK
+  if test x"$has_int128" = x"yes"; then
+    set_scalar=64bit
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   fi
   if test x"$set_scalar" = x; then
     set_scalar=32bit
@@ -156,6 +345,12 @@ else
   case $set_scalar in
   64bit)
     SECP_INT128_CHECK
+<<<<<<< HEAD
+=======
+    if test x"$has_int128" != x"yes"; then
+      AC_MSG_ERROR([64bit scalar explicitly requested but __int128 support not available])
+    fi
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     ;;
   32bit)
     ;;
@@ -166,16 +361,34 @@ else
 fi
 
 if test x"$req_bignum" = x"auto"; then
+<<<<<<< HEAD
   if test x"$set_bignum" = x; then
     set_bignum=none
+=======
+  SECP_GMP_CHECK
+  if test x"$has_gmp" = x"yes"; then
+    set_bignum=gmp
+  fi
+
+  if test x"$set_bignum" = x; then
+    set_bignum=no
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   fi
 else
   set_bignum=$req_bignum
   case $set_bignum in
   gmp)
     SECP_GMP_CHECK
+<<<<<<< HEAD
     ;;
   none)
+=======
+    if test x"$has_gmp" != x"yes"; then
+      AC_MSG_ERROR([gmp bignum explicitly requested but libgmp not available])
+    fi
+    ;;
+  no)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     ;;
   *)
     AC_MSG_ERROR([invalid bignum implementation selection])
@@ -183,6 +396,7 @@ else
   esac
 fi
 
+<<<<<<< HEAD
 # select field implementation
 case $set_field in
 64bit_asm)
@@ -197,6 +411,30 @@ gmp)
   AC_DEFINE(HAVE_LIBGMP,1,[Define this symbol if libgmp is installed])
   AC_DEFINE(USE_FIELD_GMP, 1, [Define this symbol to use the FIELD_GMP implementation])
   ;;
+=======
+# select assembly optimization
+use_external_asm=no
+
+case $set_asm in
+x86_64)
+  AC_DEFINE(USE_ASM_X86_64, 1, [Define this symbol to enable x86_64 assembly optimizations])
+  ;;
+arm)
+  use_external_asm=yes
+  ;;
+no)
+  ;;
+*)
+  AC_MSG_ERROR([invalid assembly optimizations])
+  ;;
+esac
+
+# select field implementation
+case $set_field in
+64bit)
+  AC_DEFINE(USE_FIELD_5X52, 1, [Define this symbol to use the FIELD_5X52 implementation])
+  ;;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 32bit)
   AC_DEFINE(USE_FIELD_10X26, 1, [Define this symbol to use the FIELD_10X26 implementation])
   ;;
@@ -213,7 +451,11 @@ gmp)
   AC_DEFINE(USE_FIELD_INV_NUM, 1, [Define this symbol to use the num-based field inverse implementation])
   AC_DEFINE(USE_SCALAR_INV_NUM, 1, [Define this symbol to use the num-based scalar inverse implementation])
   ;;
+<<<<<<< HEAD
 none)
+=======
+no)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   AC_DEFINE(USE_NUM_NONE, 1, [Define this symbol to use no num implementation])
   AC_DEFINE(USE_FIELD_INV_BUILTIN, 1, [Define this symbol to use the native field inverse implementation])
   AC_DEFINE(USE_SCALAR_INV_BUILTIN, 1, [Define this symbol to use the native scalar inverse implementation])
@@ -238,6 +480,7 @@ esac
 
 if test x"$use_tests" = x"yes"; then
   SECP_OPENSSL_CHECK
+<<<<<<< HEAD
   if test x"$has_openssl_ec" == x"yes"; then
     AC_DEFINE(ENABLE_OPENSSL_TESTS, 1, [Define this symbol if OpenSSL EC functions are available])
     SECP_TEST_INCLUDES="$SSL_CFLAGS $CRYPTO_CFLAGS"
@@ -253,6 +496,55 @@ if test x"$use_tests" = x"yes"; then
 fi
 
 if test x"$set_field" = x"gmp" || test x"$set_bignum" = x"gmp"; then
+=======
+  if test x"$has_openssl_ec" = x"yes"; then
+    if test x"$enable_openssl_tests" != x"no"; then
+      AC_DEFINE(ENABLE_OPENSSL_TESTS, 1, [Define this symbol if OpenSSL EC functions are available])
+      SECP_TEST_INCLUDES="$SSL_CFLAGS $CRYPTO_CFLAGS"
+      SECP_TEST_LIBS="$CRYPTO_LIBS"
+
+      case $host in
+      *mingw*)
+        SECP_TEST_LIBS="$SECP_TEST_LIBS -lgdi32"
+        ;;
+      esac
+    fi
+  else
+    if test x"$enable_openssl_tests" = x"yes"; then
+      AC_MSG_ERROR([OpenSSL tests requested but OpenSSL with EC support is not available])
+    fi
+  fi
+else
+  if test x"$enable_openssl_tests" = x"yes"; then
+    AC_MSG_ERROR([OpenSSL tests requested but tests are not enabled])
+  fi
+fi
+
+if test x"$use_jni" != x"no"; then
+  AX_JNI_INCLUDE_DIR
+  have_jni_dependencies=yes
+  if test x"$enable_module_ecdh" = x"no"; then
+    have_jni_dependencies=no
+  fi
+  if test "x$JNI_INCLUDE_DIRS" = "x"; then
+    have_jni_dependencies=no
+  fi
+  if test "x$have_jni_dependencies" = "xno"; then
+    if test x"$use_jni" = x"yes"; then
+      AC_MSG_ERROR([jni support explicitly requested but headers/dependencies were not found. Enable ECDH and try again.])
+    fi
+    AC_MSG_WARN([jni headers/dependencies not found. jni support disabled])
+    use_jni=no
+  else
+    use_jni=yes
+    for JNI_INCLUDE_DIR in $JNI_INCLUDE_DIRS; do
+      JNI_INCLUDES="$JNI_INCLUDES -I$JNI_INCLUDE_DIR"
+    done
+  fi
+fi
+
+if test x"$set_bignum" = x"gmp"; then
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   SECP_LIBS="$SECP_LIBS $GMP_LIBS"
   SECP_INCLUDES="$SECP_INCLUDES $GMP_CPPFLAGS"
 fi
@@ -261,20 +553,84 @@ if test x"$use_endomorphism" = x"yes"; then
   AC_DEFINE(USE_ENDOMORPHISM, 1, [Define this symbol to use endomorphism optimization])
 fi
 
+<<<<<<< HEAD
 AC_MSG_NOTICE([Using field implementation: $set_field])
 AC_MSG_NOTICE([Using bignum implementation: $set_bignum])
 AC_MSG_NOTICE([Using scalar implementation: $set_scalar])
 
 AC_CONFIG_HEADERS([src/libsecp256k1-config.h])
 AC_CONFIG_FILES([Makefile libsecp256k1.pc])
+=======
+if test x"$set_precomp" = x"yes"; then
+  AC_DEFINE(USE_ECMULT_STATIC_PRECOMPUTATION, 1, [Define this symbol to use a statically generated ecmult table])
+fi
+
+if test x"$enable_module_ecdh" = x"yes"; then
+  AC_DEFINE(ENABLE_MODULE_ECDH, 1, [Define this symbol to enable the ECDH module])
+fi
+
+if test x"$enable_module_recovery" = x"yes"; then
+  AC_DEFINE(ENABLE_MODULE_RECOVERY, 1, [Define this symbol to enable the ECDSA pubkey recovery module])
+fi
+
+AC_C_BIGENDIAN()
+
+if test x"$use_external_asm" = x"yes"; then
+  AC_DEFINE(USE_EXTERNAL_ASM, 1, [Define this symbol if an external (non-inline) assembly implementation is used])
+fi
+
+AC_MSG_NOTICE([Using static precomputation: $set_precomp])
+AC_MSG_NOTICE([Using assembly optimizations: $set_asm])
+AC_MSG_NOTICE([Using field implementation: $set_field])
+AC_MSG_NOTICE([Using bignum implementation: $set_bignum])
+AC_MSG_NOTICE([Using scalar implementation: $set_scalar])
+AC_MSG_NOTICE([Using endomorphism optimizations: $use_endomorphism])
+AC_MSG_NOTICE([Building benchmarks: $use_benchmark])
+AC_MSG_NOTICE([Building for coverage analysis: $enable_coverage])
+AC_MSG_NOTICE([Building ECDH module: $enable_module_ecdh])
+AC_MSG_NOTICE([Building ECDSA pubkey recovery module: $enable_module_recovery])
+AC_MSG_NOTICE([Using jni: $use_jni])
+
+if test x"$enable_experimental" = x"yes"; then
+  AC_MSG_NOTICE([******])
+  AC_MSG_NOTICE([WARNING: experimental build])
+  AC_MSG_NOTICE([Experimental features do not have stable APIs or properties, and may not be safe for production use.])
+  AC_MSG_NOTICE([Building ECDH module: $enable_module_ecdh])
+  AC_MSG_NOTICE([******])
+else
+  if test x"$enable_module_ecdh" = x"yes"; then
+    AC_MSG_ERROR([ECDH module is experimental. Use --enable-experimental to allow.])
+  fi
+  if test x"$set_asm" = x"arm"; then
+    AC_MSG_ERROR([ARM assembly optimization is experimental. Use --enable-experimental to allow.])
+  fi
+fi
+
+AC_CONFIG_HEADERS([src/libsecp256k1-config.h])
+AC_CONFIG_FILES([Makefile libsecp256k1.pc])
+AC_SUBST(JNI_INCLUDES)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 AC_SUBST(SECP_INCLUDES)
 AC_SUBST(SECP_LIBS)
 AC_SUBST(SECP_TEST_LIBS)
 AC_SUBST(SECP_TEST_INCLUDES)
+<<<<<<< HEAD
 AC_SUBST(YASM_BINFMT)
 AM_CONDITIONAL([USE_ASM], [test x"$set_field" == x"64bit_asm"])
 AM_CONDITIONAL([USE_TESTS], [test x"$use_tests" != x"no"])
 AM_CONDITIONAL([USE_BENCHMARK], [test x"$use_benchmark" != x"no"])
+=======
+AM_CONDITIONAL([ENABLE_COVERAGE], [test x"$enable_coverage" = x"yes"])
+AM_CONDITIONAL([USE_TESTS], [test x"$use_tests" != x"no"])
+AM_CONDITIONAL([USE_EXHAUSTIVE_TESTS], [test x"$use_exhaustive_tests" != x"no"])
+AM_CONDITIONAL([USE_BENCHMARK], [test x"$use_benchmark" = x"yes"])
+AM_CONDITIONAL([USE_ECMULT_STATIC_PRECOMPUTATION], [test x"$set_precomp" = x"yes"])
+AM_CONDITIONAL([ENABLE_MODULE_ECDH], [test x"$enable_module_ecdh" = x"yes"])
+AM_CONDITIONAL([ENABLE_MODULE_RECOVERY], [test x"$enable_module_recovery" = x"yes"])
+AM_CONDITIONAL([USE_JNI], [test x"$use_jni" == x"yes"])
+AM_CONDITIONAL([USE_EXTERNAL_ASM], [test x"$use_external_asm" = x"yes"])
+AM_CONDITIONAL([USE_ASM_ARM], [test x"$set_asm" = x"arm"])
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 dnl make sure nothing new is exported so that we don't break the cache
 PKGCONFIG_PATH_TEMP="$PKG_CONFIG_PATH"

@@ -1,7 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,6 +13,7 @@
 
 #include "hash.h"
 #include "script/standard.h"
+<<<<<<< HEAD
 #include "script/sign.h"
 #include "tinyformat.h"
 #include "utilstrencodings.h"
@@ -245,11 +250,36 @@ uint256 CBlock::CheckPoAMerkleBranch(uint256 mhash, const std::vector<uint256>& 
         nIndex >>= 1;
     }
     return mhash;
+=======
+#include "tinyformat.h"
+#include "utilstrencodings.h"
+#include "util/system.h"
+
+uint256 CBlockHeader::GetHash() const
+{
+    if (nVersion < 4)  {
+#if defined(WORDS_BIGENDIAN)
+        uint8_t data[80];
+        WriteLE32(&data[0], nVersion);
+        memcpy(&data[4], hashPrevBlock.begin(), hashPrevBlock.size());
+        memcpy(&data[36], hashMerkleRoot.begin(), hashMerkleRoot.size());
+        WriteLE32(&data[68], nTime);
+        WriteLE32(&data[72], nBits);
+        WriteLE32(&data[76], nNonce);
+        return HashQuark(data, data + 80);
+#else // Can take shortcut for little endian
+        return HashQuark(BEGIN(nVersion), END(nNonce));
+#endif
+    }
+    // version >= 4
+    return SerializeHash(*this);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 std::string CBlock::ToString() const
 {
     std::stringstream s;
+<<<<<<< HEAD
     if (IsProofOfAudit()) {
         s << strprintf("PoABlock(hash=%s, ver=%d, hashPrevBlock=%s, hashPrevPoABlock=%s, hashMerkleRoot=%s, hashPoAMerkleRoot=%s, minedHash=%s, nTime=%u, nBits=%08x, nNonce=%u, vtx=%u, PoSBlocks=%u)\n",
             GetHash().ToString(),
@@ -279,6 +309,20 @@ std::string CBlock::ToString() const
     for (unsigned int i = 0; i < vMerkleTree.size(); i++)
         s << " " << vMerkleTree[i].ToString();
     s << "\n";
+=======
+    s << strprintf("CBlock(hash=%s, ver=%d, hashPrevBlock=%s, hashMerkleRoot=%s, nTime=%u, nBits=%08x, nNonce=%u, hashFinalSaplingRoot=%s, vtx=%u)\n",
+        GetHash().ToString(),
+        nVersion,
+        hashPrevBlock.ToString(),
+        hashMerkleRoot.ToString(),
+        nTime, nBits, nNonce,
+        hashFinalSaplingRoot.ToString(),
+        vtx.size());
+    for (unsigned int i = 0; i < vtx.size(); i++)
+    {
+        s << "  " << vtx[i]->ToString() << "\n";
+    }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return s.str();
 }
 
@@ -286,6 +330,7 @@ void CBlock::print() const
 {
     LogPrintf("%s", ToString());
 }
+<<<<<<< HEAD
 
 // ppcoin: sign block
 bool CBlock::SignBlock(const CKeyStore& keystore)
@@ -408,3 +453,5 @@ bool CBlock::CheckBlockSignature() const
 
     return false;
 }
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

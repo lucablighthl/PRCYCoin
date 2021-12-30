@@ -19,10 +19,16 @@
 #define STORAGE_LEVELDB_INCLUDE_CACHE_H_
 
 #include <stdint.h>
+<<<<<<< HEAD
+=======
+
+#include "leveldb/export.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/slice.h"
 
 namespace leveldb {
 
+<<<<<<< HEAD
 class Cache;
 
 // Create a new cache with a fixed size capacity.  This implementation
@@ -32,13 +38,31 @@ extern Cache* NewLRUCache(size_t capacity);
 class Cache {
  public:
   Cache() { }
+=======
+class LEVELDB_EXPORT Cache;
+
+// Create a new cache with a fixed size capacity.  This implementation
+// of Cache uses a least-recently-used eviction policy.
+LEVELDB_EXPORT Cache* NewLRUCache(size_t capacity);
+
+class LEVELDB_EXPORT Cache {
+ public:
+  Cache() = default;
+
+  Cache(const Cache&) = delete;
+  Cache& operator=(const Cache&) = delete;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Destroys all existing entries by calling the "deleter"
   // function that was passed to the constructor.
   virtual ~Cache();
 
   // Opaque handle to an entry stored in the cache.
+<<<<<<< HEAD
   struct Handle { };
+=======
+  struct Handle {};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Insert a mapping from key->value into the cache and assign it
   // the specified charge against the total cache capacity.
@@ -52,7 +76,11 @@ class Cache {
   virtual Handle* Insert(const Slice& key, void* value, size_t charge,
                          void (*deleter)(const Slice& key, void* value)) = 0;
 
+<<<<<<< HEAD
   // If the cache has no mapping for "key", returns NULL.
+=======
+  // If the cache has no mapping for "key", returns nullptr.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   //
   // Else return a handle that corresponds to the mapping.  The caller
   // must call this->Release(handle) when the returned mapping is no
@@ -99,10 +127,13 @@ class Cache {
 
   struct Rep;
   Rep* rep_;
+<<<<<<< HEAD
 
   // No copying allowed
   Cache(const Cache&);
   void operator=(const Cache&);
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 }  // namespace leveldb

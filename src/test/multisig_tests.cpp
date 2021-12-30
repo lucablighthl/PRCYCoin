@@ -1,14 +1,23 @@
 // Copyright (c) 2011-2013 The Bitcoin Core developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "key.h"
 #include "keystore.h"
+<<<<<<< HEAD
 #include "main.h"
+=======
+#include "policy/policy.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/interpreter.h"
 #include "script/sign.h"
+<<<<<<< HEAD
 #include "uint256.h"
 
 #ifdef ENABLE_WALLET
@@ -29,12 +38,34 @@ CScript
 sign_multisig(CScript scriptPubKey, vector<CKey> keys, CTransaction transaction, int whichIn)
 {
     uint256 hash = SignatureHash(scriptPubKey, transaction, whichIn, SIGHASH_ALL);
+=======
+#include "script/ismine.h"
+#include "uint256.h"
+#include "test_pivx.h"
+
+
+#include <boost/test/unit_test.hpp>
+
+
+typedef std::vector<unsigned char> valtype;
+
+BOOST_FIXTURE_TEST_SUITE(multisig_tests, TestingSetup)
+
+CScript
+sign_multisig(const CScript& scriptPubKey, const std::vector<CKey>& keys, const CTransaction& transaction, int whichIn)
+{
+    const uint256& hash = SignatureHash(scriptPubKey, transaction, whichIn, SIGHASH_ALL, 0, SIGVERSION_BASE);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     CScript result;
     result << OP_0; // CHECKMULTISIG bug workaround
     for (const CKey &key : keys)
     {
+<<<<<<< HEAD
         vector<unsigned char> vchSig;
+=======
+        std::vector<unsigned char> vchSig;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         BOOST_CHECK(key.Sign(hash, vchSig));
         vchSig.push_back((unsigned char)SIGHASH_ALL);
         result << vchSig;
@@ -48,6 +79,10 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
 
     ScriptError err;
     CKey key[4];
+<<<<<<< HEAD
+=======
+    CAmount amount = 0;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     for (int i = 0; i < 4; i++)
         key[i].MakeNewKey(true);
 
@@ -76,19 +111,31 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
         txTo[i].vout[0].nValue = 1;
     }
 
+<<<<<<< HEAD
     vector<CKey> keys;
+=======
+    std::vector<CKey> keys;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     CScript s;
 
     // Test a AND b:
     keys.clear();
+<<<<<<< HEAD
     keys += key[0],key[1]; // magic operator+= from boost.assign
     s = sign_multisig(a_and_b, keys, txTo[0], 0);
     BOOST_CHECK(VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0), &err));
+=======
+    keys.push_back(key[0]);
+    keys.push_back(key[1]);
+    s = sign_multisig(a_and_b, keys, txTo[0], 0);
+    BOOST_CHECK(VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0, amount), SIGVERSION_BASE, &err));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
 
     for (int i = 0; i < 4; i++)
     {
         keys.clear();
+<<<<<<< HEAD
         keys += key[i];
         s = sign_multisig(a_and_b, keys, txTo[0], 0);
         BOOST_CHECK_MESSAGE(!VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0), &err), strprintf("a&b 1: %d", i));
@@ -98,6 +145,18 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
         keys += key[1],key[i];
         s = sign_multisig(a_and_b, keys, txTo[0], 0);
         BOOST_CHECK_MESSAGE(!VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0), &err), strprintf("a&b 2: %d", i));
+=======
+        keys.push_back(key[i]);
+        s = sign_multisig(a_and_b, keys, txTo[0], 0);
+        BOOST_CHECK_MESSAGE(!VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0, amount), SIGVERSION_BASE, &err), strprintf("a&b 1: %d", i));
+        BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_INVALID_STACK_OPERATION, ScriptErrorString(err));
+
+        keys.clear();
+        keys.push_back(key[1]);
+        keys.push_back(key[i]);
+        s = sign_multisig(a_and_b, keys, txTo[0], 0);
+        BOOST_CHECK_MESSAGE(!VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0, amount), SIGVERSION_BASE, &err), strprintf("a&b 2: %d", i));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_EVAL_FALSE, ScriptErrorString(err));
     }
 
@@ -105,22 +164,38 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
     for (int i = 0; i < 4; i++)
     {
         keys.clear();
+<<<<<<< HEAD
         keys += key[i];
         s = sign_multisig(a_or_b, keys, txTo[1], 0);
         if (i == 0 || i == 1)
         {
             BOOST_CHECK_MESSAGE(VerifyScript(s, a_or_b, flags, MutableTransactionSignatureChecker(&txTo[1], 0), &err), strprintf("a|b: %d", i));
+=======
+        keys.push_back(key[i]);
+        s = sign_multisig(a_or_b, keys, txTo[1], 0);
+        if (i == 0 || i == 1)
+        {
+            BOOST_CHECK_MESSAGE(VerifyScript(s, a_or_b, flags, MutableTransactionSignatureChecker(&txTo[1], 0, amount), SIGVERSION_BASE, &err), strprintf("a|b: %d", i));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
         }
         else
         {
+<<<<<<< HEAD
             BOOST_CHECK_MESSAGE(!VerifyScript(s, a_or_b, flags, MutableTransactionSignatureChecker(&txTo[1], 0), &err), strprintf("a|b: %d", i));
+=======
+            BOOST_CHECK_MESSAGE(!VerifyScript(s, a_or_b, flags, MutableTransactionSignatureChecker(&txTo[1], 0, amount), SIGVERSION_BASE, &err), strprintf("a|b: %d", i));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_EVAL_FALSE, ScriptErrorString(err));
         }
     }
     s.clear();
     s << OP_0 << OP_1;
+<<<<<<< HEAD
     BOOST_CHECK(!VerifyScript(s, a_or_b, flags, MutableTransactionSignatureChecker(&txTo[1], 0), &err));
+=======
+    BOOST_CHECK(!VerifyScript(s, a_or_b, flags, MutableTransactionSignatureChecker(&txTo[1], 0, amount), SIGVERSION_BASE, &err));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_SIG_DER, ScriptErrorString(err));
 
 
@@ -128,16 +203,29 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
         for (int j = 0; j < 4; j++)
         {
             keys.clear();
+<<<<<<< HEAD
             keys += key[i],key[j];
             s = sign_multisig(escrow, keys, txTo[2], 0);
             if (i < j && i < 3 && j < 3)
             {
                 BOOST_CHECK_MESSAGE(VerifyScript(s, escrow, flags, MutableTransactionSignatureChecker(&txTo[2], 0), &err), strprintf("escrow 1: %d %d", i, j));
+=======
+            keys.push_back(key[i]);
+            keys.push_back(key[j]);
+            s = sign_multisig(escrow, keys, txTo[2], 0);
+            if (i < j && i < 3 && j < 3)
+            {
+                BOOST_CHECK_MESSAGE(VerifyScript(s, escrow, flags, MutableTransactionSignatureChecker(&txTo[2], 0, amount), SIGVERSION_BASE, &err), strprintf("escrow 1: %d %d", i, j));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
             }
             else
             {
+<<<<<<< HEAD
                 BOOST_CHECK_MESSAGE(!VerifyScript(s, escrow, flags, MutableTransactionSignatureChecker(&txTo[2], 0), &err), strprintf("escrow 2: %d %d", i, j));
+=======
+                BOOST_CHECK_MESSAGE(!VerifyScript(s, escrow, flags, MutableTransactionSignatureChecker(&txTo[2], 0, amount), SIGVERSION_BASE, &err), strprintf("escrow 2: %d %d", i, j));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_EVAL_FALSE, ScriptErrorString(err));
             }
         }
@@ -203,7 +291,11 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
     partialkeystore.AddKey(key[0]);
 
     {
+<<<<<<< HEAD
         vector<valtype> solutions;
+=======
+        std::vector<valtype> solutions;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         txnouttype whichType;
         CScript s;
         s << ToByteVector(key[0].GetPubKey()) << OP_CHECKSIG;
@@ -212,6 +304,7 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
         CTxDestination addr;
         BOOST_CHECK(ExtractDestination(s, addr));
         BOOST_CHECK(addr == keyaddr[0]);
+<<<<<<< HEAD
 #ifdef ENABLE_WALLET
         BOOST_CHECK(IsMine(keystore, s));
         BOOST_CHECK(!IsMine(emptykeystore, s));
@@ -219,6 +312,13 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
     }
     {
         vector<valtype> solutions;
+=======
+        BOOST_CHECK(IsMine(keystore, s));
+        BOOST_CHECK(!IsMine(emptykeystore, s));
+    }
+    {
+        std::vector<valtype> solutions;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         txnouttype whichType;
         CScript s;
         s << OP_DUP << OP_HASH160 << ToByteVector(key[0].GetPubKey().GetID()) << OP_EQUALVERIFY << OP_CHECKSIG;
@@ -227,6 +327,7 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
         CTxDestination addr;
         BOOST_CHECK(ExtractDestination(s, addr));
         BOOST_CHECK(addr == keyaddr[0]);
+<<<<<<< HEAD
 #ifdef ENABLE_WALLET
         BOOST_CHECK(IsMine(keystore, s));
         BOOST_CHECK(!IsMine(emptykeystore, s));
@@ -234,6 +335,13 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
     }
     {
         vector<valtype> solutions;
+=======
+        BOOST_CHECK(IsMine(keystore, s));
+        BOOST_CHECK(!IsMine(emptykeystore, s));
+    }
+    {
+        std::vector<valtype> solutions;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         txnouttype whichType;
         CScript s;
         s << OP_2 << ToByteVector(key[0].GetPubKey()) << ToByteVector(key[1].GetPubKey()) << OP_2 << OP_CHECKMULTISIG;
@@ -241,6 +349,7 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
         BOOST_CHECK_EQUAL(solutions.size(), 4U);
         CTxDestination addr;
         BOOST_CHECK(!ExtractDestination(s, addr));
+<<<<<<< HEAD
 #ifdef ENABLE_WALLET
         BOOST_CHECK(IsMine(keystore, s));
         BOOST_CHECK(!IsMine(emptykeystore, s));
@@ -249,17 +358,30 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
     }
     {
         vector<valtype> solutions;
+=======
+        BOOST_CHECK(IsMine(keystore, s));
+        BOOST_CHECK(!IsMine(emptykeystore, s));
+        BOOST_CHECK(!IsMine(partialkeystore, s));
+    }
+    {
+        std::vector<valtype> solutions;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         txnouttype whichType;
         CScript s;
         s << OP_1 << ToByteVector(key[0].GetPubKey()) << ToByteVector(key[1].GetPubKey()) << OP_2 << OP_CHECKMULTISIG;
         BOOST_CHECK(Solver(s, whichType, solutions));
         BOOST_CHECK_EQUAL(solutions.size(), 4U);
+<<<<<<< HEAD
         vector<CTxDestination> addrs;
+=======
+        std::vector<CTxDestination> addrs;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         int nRequired;
         BOOST_CHECK(ExtractDestinations(s, whichType, addrs, nRequired));
         BOOST_CHECK(addrs[0] == keyaddr[0]);
         BOOST_CHECK(addrs[1] == keyaddr[1]);
         BOOST_CHECK(nRequired == 1);
+<<<<<<< HEAD
 #ifdef ENABLE_WALLET
         BOOST_CHECK(IsMine(keystore, s));
         BOOST_CHECK(!IsMine(emptykeystore, s));
@@ -268,6 +390,14 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
     }
     {
         vector<valtype> solutions;
+=======
+        BOOST_CHECK(IsMine(keystore, s));
+        BOOST_CHECK(!IsMine(emptykeystore, s));
+        BOOST_CHECK(!IsMine(partialkeystore, s));
+    }
+    {
+        std::vector<valtype> solutions;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         txnouttype whichType;
         CScript s;
         s << OP_2 << ToByteVector(key[0].GetPubKey()) << ToByteVector(key[1].GetPubKey()) << ToByteVector(key[2].GetPubKey()) << OP_3 << OP_CHECKMULTISIG;
@@ -314,7 +444,11 @@ BOOST_AUTO_TEST_CASE(multisig_Sign)
 
     for (int i = 0; i < 3; i++)
     {
+<<<<<<< HEAD
         BOOST_CHECK_MESSAGE(SignSignature(keystore, txFrom, txTo[i], 0), strprintf("SignSignature %d", i));
+=======
+        BOOST_CHECK_MESSAGE(SignSignature(keystore, txFrom, txTo[i], 0, SIGHASH_ALL), strprintf("SignSignature %d", i));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 }
 

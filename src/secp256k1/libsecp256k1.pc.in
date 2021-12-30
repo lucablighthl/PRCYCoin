@@ -5,7 +5,11 @@ includedir=@includedir@
 
 Name: libsecp256k1
 Description: Optimized C library for EC operations on curve secp256k1
+<<<<<<< HEAD
 URL: https://github.com/bitcoin/secp256k1
+=======
+URL: https://github.com/bitcoin-core/secp256k1
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 Version: @PACKAGE_VERSION@
 Cflags: -I${includedir}
 Libs.private: @SECP_LIBS@

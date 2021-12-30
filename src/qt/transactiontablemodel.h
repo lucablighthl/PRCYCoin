@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,6 +14,15 @@
 #include <QAbstractTableModel>
 #include <QStringList>
 
+<<<<<<< HEAD
+=======
+#include <memory>
+
+namespace interfaces {
+    class Handler;
+}
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 class TransactionRecord;
 class TransactionTablePriv;
 class WalletModel;
@@ -23,8 +36,14 @@ class TransactionTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
+<<<<<<< HEAD
     explicit TransactionTableModel(CWallet* wallet, WalletModel* parent = 0);
     ~TransactionTableModel();
+=======
+    explicit TransactionTableModel(CWallet* wallet, WalletModel* parent = nullptr);
+    ~TransactionTableModel() override;
+    void init();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     enum ColumnIndex {
         Status = 0,
@@ -32,8 +51,12 @@ public:
         Date = 2,
         Type = 3,
         ToAddress = 4,
+<<<<<<< HEAD
         Amount = 5,
         Confirmations = 6
+=======
+        Amount = 5
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     };
 
     /** Roles to get specific information from a transaction row.
@@ -48,16 +71,22 @@ public:
         WatchonlyRole,
         /** Watch-only icon */
         WatchonlyDecorationRole,
+<<<<<<< HEAD
         /** Long description (HTML format) */
         LongDescriptionRole,
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         /** Address of transaction */
         AddressRole,
         /** Label of address related to transaction */
         LabelRole,
         /** Net amount of transaction */
         AmountRole,
+<<<<<<< HEAD
         /** Unique identifier */
         TxIDRole,
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         /** Transaction hash */
         TxHashRole,
         /** Is transaction confirmed? */
@@ -65,6 +94,7 @@ public:
         /** Formatted amount, without brackets when unconfirmed */
         FormattedAmountRole,
         /** Transaction status (TransactionRecord::Status) */
+<<<<<<< HEAD
         StatusRole
     };
 
@@ -81,6 +111,39 @@ private:
     QStringList columns;
     TransactionTablePriv* priv;
     bool fProcessingQueuedTransactions;
+=======
+        StatusRole,
+        /** Credit amount of transaction */
+        ShieldedCreditAmountRole,
+        /** Transaction size in bytes */
+        SizeRole
+    };
+
+    int rowCount(const QModelIndex& parent) const override;
+    int columnCount(const QModelIndex& parent) const override;
+    int size() const;
+    QVariant data(const QModelIndex& index, int role) const override;
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
+    bool processingQueuedTransactions() const { return fProcessingQueuedTransactions; }
+
+Q_SIGNALS:
+    // Emitted only during startup when records gets parsed
+    void txLoaded(const QString& hash, const int txType, const int txStatus);
+    // Emitted when a transaction that belongs to this wallet gets connected to the chain and/or committed locally.
+    void txArrived(const QString& hash, const bool isCoinStake, const bool isMNReward, const bool isCSAnyType);
+
+private:
+    // Listeners
+    std::unique_ptr<interfaces::Handler> m_handler_transaction_changed;
+    std::unique_ptr<interfaces::Handler> m_handler_show_progress;
+
+    CWallet* wallet{nullptr};
+    WalletModel* walletModel{nullptr};
+    QStringList columns{};
+    TransactionTablePriv* priv{nullptr};
+    bool fProcessingQueuedTransactions{false};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
@@ -90,7 +153,10 @@ private:
     QString formatTxStatus(const TransactionRecord* wtx) const;
     QString formatTxDate(const TransactionRecord* wtx) const;
     QString formatTxType(const TransactionRecord* wtx) const;
+<<<<<<< HEAD
     QString formatTxConfirmations(const TransactionRecord* wtx) const;
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     QString formatTxToAddress(const TransactionRecord* wtx, bool tooltip) const;
     QString formatTxAmount(const TransactionRecord* wtx, bool showUnconfirmed = true, BitcoinUnits::SeparatorStyle separators = BitcoinUnits::separatorStandard) const;
     QString formatTooltip(const TransactionRecord* rec) const;
@@ -111,6 +177,7 @@ public Q_SLOTS:
     friend class TransactionTablePriv;
 };
 
+<<<<<<< HEAD
 class TxTableModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -118,4 +185,6 @@ class TxTableModel : public QAbstractTableModel
 public:
 };
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif // BITCOIN_QT_TRANSACTIONTABLEMODEL_H

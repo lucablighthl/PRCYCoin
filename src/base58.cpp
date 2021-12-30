@@ -1,10 +1,15 @@
 // Copyright (c) 2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "base58.h"
 
 #include "hash.h"
+<<<<<<< HEAD
 #include "uint256.h"
 
 #include <assert.h>
@@ -20,18 +25,47 @@
 static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
+=======
+#include "util/string.h"
+
+#include "uint256.h"
+
+#include <algorithm>
+#include <assert.h>
+#include <sstream>
+#include <vector>
+
+#include <limits>
+
+/** All alphanumeric characters except for "0", "I", "O", and "l" */
+static const char* pszBase58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+
+bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch, int max_ret_len)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     // Skip leading spaces.
     while (*psz && isspace(*psz))
         psz++;
     // Skip and count leading '1's.
     int zeroes = 0;
+<<<<<<< HEAD
     while (*psz == '1') {
         zeroes++;
         psz++;
     }
     // Allocate enough space in big-endian base256 representation.
     std::vector<unsigned char> b256(strlen(psz) * 733 / 1000 + 1); // log(58) / log(256), rounded up.
+=======
+    int length = 0;
+    while (*psz == '1') {
+        zeroes++;
+        if (zeroes > max_ret_len) return false;
+        psz++;
+    }
+    // Allocate enough space in big-endian base256 representation.
+    int size = strlen(psz) * 733 /1000 + 1; // log(58) / log(256), rounded up.
+    std::vector<unsigned char> b256(size);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // Process the characters.
     while (*psz && !isspace(*psz)) {
         // Decode base58 character
@@ -40,12 +74,22 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
             return false;
         // Apply "b256 = b256 * 58 + ch".
         int carry = ch - pszBase58;
+<<<<<<< HEAD
         for (std::vector<unsigned char>::reverse_iterator it = b256.rbegin(); it != b256.rend(); it++) {
+=======
+        int i = 0;
+        for (std::vector<unsigned char>::reverse_iterator it = b256.rbegin(); (carry != 0 || i < length) && (it != b256.rend()); ++it, ++i) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             carry += 58 * (*it);
             *it = carry % 256;
             carry /= 256;
         }
         assert(carry == 0);
+<<<<<<< HEAD
+=======
+        length = i;
+        if (length + zeroes > max_ret_len) return false;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         psz++;
     }
     // Skip trailing spaces.
@@ -54,9 +98,13 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
     if (*psz != 0)
         return false;
     // Skip leading zeroes in b256.
+<<<<<<< HEAD
     std::vector<unsigned char>::iterator it = b256.begin();
     while (it != b256.end() && *it == 0)
         it++;
+=======
+    std::vector<unsigned char>::iterator it = b256.begin() + (size - length);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // Copy result into output vector.
     vch.reserve(zeroes + (b256.end() - it));
     vch.assign(zeroes, 0x00);
@@ -65,6 +113,7 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vch)
     return true;
 }
 
+<<<<<<< HEAD
 std::string DecodeBase58(const char* psz)
 {
     std::vector<unsigned char> vch;
@@ -80,30 +129,57 @@ std::string DecodeBase58(const char* psz)
     return ss.str();
 }
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 std::string EncodeBase58(const unsigned char* pbegin, const unsigned char* pend)
 {
     // Skip & count leading zeroes.
     int zeroes = 0;
+<<<<<<< HEAD
+=======
+    int length = 0;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     while (pbegin != pend && *pbegin == 0) {
         pbegin++;
         zeroes++;
     }
     // Allocate enough space in big-endian base58 representation.
+<<<<<<< HEAD
     std::vector<unsigned char> b58((pend - pbegin) * 138 / 100 + 1); // log(256) / log(58), rounded up.
     // Process the bytes.
     while (pbegin != pend) {
         int carry = *pbegin;
         // Apply "b58 = b58 * 256 + ch".
         for (std::vector<unsigned char>::reverse_iterator it = b58.rbegin(); it != b58.rend(); it++) {
+=======
+    int size = (pend - pbegin) * 138 / 100 + 1; // log(256) / log(58), rounded up.
+    std::vector<unsigned char> b58(size);
+    // Process the bytes.
+    while (pbegin != pend) {
+        int carry = *pbegin;
+        int i = 0;
+        // Apply "b58 = b58 * 256 + ch".
+        for (std::vector<unsigned char>::reverse_iterator it = b58.rbegin(); (carry != 0 || i < length) && (it != b58.rend()); it++, i++) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             carry += 256 * (*it);
             *it = carry % 58;
             carry /= 58;
         }
+<<<<<<< HEAD
         assert(carry == 0);
         pbegin++;
     }
     // Skip leading zeroes in base58 result.
     std::vector<unsigned char>::iterator it = b58.begin();
+=======
+
+        assert(carry == 0);
+        length = i;
+        pbegin++;
+    }
+    // Skip leading zeroes in base58 result.
+    std::vector<unsigned char>::iterator it = b58.begin() + (size - length);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     while (it != b58.end() && *it == 0)
         it++;
     // Translate the result into a string.
@@ -117,12 +193,24 @@ std::string EncodeBase58(const unsigned char* pbegin, const unsigned char* pend)
 
 std::string EncodeBase58(const std::vector<unsigned char>& vch)
 {
+<<<<<<< HEAD
     return EncodeBase58(&vch[0], &vch[0] + vch.size());
 }
 
 bool DecodeBase58(const std::string& str, std::vector<unsigned char>& vchRet)
 {
     return DecodeBase58(str.c_str(), vchRet);
+=======
+    return EncodeBase58(vch.data(), vch.data() + vch.size());
+}
+
+bool DecodeBase58(const std::string& str, std::vector<unsigned char>& vchRet, int max_ret_len)
+{
+    if (!ValidAsCString(str)) {
+        return false;
+    }
+    return DecodeBase58(str.c_str(), vchRet, max_ret_len);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 std::string EncodeBase58Check(const std::vector<unsigned char>& vchIn)
@@ -134,16 +222,26 @@ std::string EncodeBase58Check(const std::vector<unsigned char>& vchIn)
     return EncodeBase58(vch);
 }
 
+<<<<<<< HEAD
 bool DecodeBase58Check(const char* psz, std::vector<unsigned char>& vchRet)
 {
     if (!DecodeBase58(psz, vchRet) ||
+=======
+bool DecodeBase58Check(const char* psz, std::vector<unsigned char>& vchRet, int max_ret_len)
+{
+    if (!DecodeBase58(psz, vchRet, max_ret_len > std::numeric_limits<int>::max() - 4 ? std::numeric_limits<int>::max() : max_ret_len + 4) ||
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         (vchRet.size() < 4)) {
         vchRet.clear();
         return false;
     }
     // re-calculate the checksum, insure it matches the included 4-byte checksum
     uint256 hash = Hash(vchRet.begin(), vchRet.end() - 4);
+<<<<<<< HEAD
     if (memcmp(&hash, &vchRet.end()[-4], 4) != 0) {
+=======
+    if (memcmp(&hash, &vchRet[vchRet.size() - 4], 4) != 0) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         vchRet.clear();
         return false;
     }
@@ -151,6 +249,7 @@ bool DecodeBase58Check(const char* psz, std::vector<unsigned char>& vchRet)
     return true;
 }
 
+<<<<<<< HEAD
 bool DecodeBase58Check(const std::string& str, std::vector<unsigned char>& vchRet)
 {
     return DecodeBase58Check(str.c_str(), vchRet);
@@ -324,4 +423,12 @@ bool CBitcoinSecret::SetString(const char* pszSecret)
 bool CBitcoinSecret::SetString(const std::string& strSecret)
 {
     return SetString(strSecret.c_str());
+=======
+bool DecodeBase58Check(const std::string& str, std::vector<unsigned char>& vchRet, int max_ret)
+{
+    if (!ValidAsCString(str)) {
+        return false;
+    }
+    return DecodeBase58Check(str.c_str(), vchRet, max_ret);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }

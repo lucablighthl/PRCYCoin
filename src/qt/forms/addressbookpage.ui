@@ -97,7 +97,11 @@
         <string>&amp;New</string>
        </property>
        <property name="icon">
+<<<<<<< HEAD
         <iconset resource="../prcycoin.qrc">
+=======
+        <iconset resource="../pivx.qrc">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
        </property>
        <property name="autoDefault">
@@ -114,7 +118,11 @@
         <string>&amp;Copy</string>
        </property>
        <property name="icon">
+<<<<<<< HEAD
         <iconset resource="../prcycoin.qrc">
+=======
+        <iconset resource="../pivx.qrc">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          <normaloff>:/icons/editcopy</normaloff>:/icons/editcopy</iconset>
        </property>
        <property name="autoDefault">
@@ -131,7 +139,11 @@
         <string>&amp;Delete</string>
        </property>
        <property name="icon">
+<<<<<<< HEAD
         <iconset resource="../prcycoin.qrc">
+=======
+        <iconset resource="../pivx.qrc">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
        </property>
        <property name="autoDefault">
@@ -161,7 +173,11 @@
         <string>&amp;Export</string>
        </property>
        <property name="icon">
+<<<<<<< HEAD
         <iconset resource="../prcycoin.qrc">
+=======
+        <iconset resource="../pivx.qrc">
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
          <normaloff>:/icons/export</normaloff>:/icons/export</iconset>
        </property>
        <property name="autoDefault">
@@ -190,7 +206,11 @@
   </layout>
  </widget>
  <resources>
+<<<<<<< HEAD
   <include location="../prcycoin.qrc"/>
+=======
+  <include location="../pivx.qrc"/>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  </resources>
  <connections/>
 </ui>

@@ -9,13 +9,20 @@
 #include <vector>
 
 #include <boost/thread/condition_variable.hpp>
+<<<<<<< HEAD
 #include <boost/thread/locks.hpp>
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include <boost/thread/mutex.hpp>
 
 template <typename T>
 class CCheckQueueControl;
 
+<<<<<<< HEAD
 /** 
+=======
+/**
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  * Queue for verifications that have to be performed.
   * The verifications are represented by a type T, which must provide an
   * operator(), returning a bool.
@@ -58,9 +65,12 @@ private:
      */
     unsigned int nTodo;
 
+<<<<<<< HEAD
     //! Whether we're shutting down.
     bool fQuit;
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     //! The maximum number of elements to be processed in one batch
     unsigned int nBatchSize;
 
@@ -88,7 +98,11 @@ private:
                 }
                 // logically, the do loop starts here
                 while (queue.empty()) {
+<<<<<<< HEAD
                     if ((fMaster || fQuit) && nTodo == 0) {
+=======
+                    if (fMaster && nTodo == 0) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                         nTotal--;
                         bool fRet = fAllOk;
                         // reset the status for new work later
@@ -127,7 +141,11 @@ private:
 
 public:
     //! Create a new check queue
+<<<<<<< HEAD
     CCheckQueue(unsigned int nBatchSizeIn) : nIdle(0), nTotal(0), fAllOk(true), nTodo(0), fQuit(false), nBatchSize(nBatchSizeIn) {}
+=======
+    explicit CCheckQueue(unsigned int nBatchSizeIn) : nIdle(0), nTotal(0), fAllOk(true), nTodo(0), nBatchSize(nBatchSizeIn) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     //! Worker thread
     void Thread()
@@ -167,7 +185,11 @@ public:
     }
 };
 
+<<<<<<< HEAD
 /** 
+=======
+/**
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  * RAII-style controller object for a CCheckQueue that guarantees the passed
  * queue is finished before continuing.
  */

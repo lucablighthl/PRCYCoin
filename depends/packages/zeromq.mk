@@ -8,7 +8,10 @@ $(package)_patches=0001-fix-build-with-older-mingw64.patch 0002-disable-pthread_
 define $(package)_set_vars
   $(package)_config_opts=--without-docs --disable-shared --without-libsodium --disable-curve --disable-curve-keygen --disable-perf --disable-Werror
   $(package)_config_opts_linux=--with-pic
+<<<<<<< HEAD
   $(package)_config_opts_android=--with-pic
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   $(package)_cxxflags=-std=c++11
 endef
 

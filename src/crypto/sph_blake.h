@@ -80,11 +80,19 @@ extern "C"{
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[64];    /* first field, for alignment */
     size_t ptr;
     sph_u32 H[8];
     sph_u32 S[4];
     sph_u32 T0, T1;
+=======
+	unsigned char buf[64];    /* first field, for alignment */
+	size_t ptr;
+	sph_u32 H[8];
+	sph_u32 S[4];
+	sph_u32 T0, T1;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_blake_small_context;
 
@@ -114,11 +122,19 @@ typedef sph_blake_small_context sph_blake256_context;
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[128];    /* first field, for alignment */
     size_t ptr;
     sph_u64 H[8];
     sph_u64 S[4];
     sph_u64 T0, T1;
+=======
+	unsigned char buf[128];    /* first field, for alignment */
+	size_t ptr;
+	sph_u64 H[8];
+	sph_u64 S[4];
+	sph_u64 T0, T1;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_blake_big_context;
 
@@ -179,7 +195,11 @@ void sph_blake224_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_blake224_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a BLAKE-256 context. This process performs no memory allocation.
@@ -224,7 +244,11 @@ void sph_blake256_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_blake256_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #if SPH_64
 
@@ -271,7 +295,11 @@ void sph_blake384_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_blake384_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a BLAKE-512 context. This process performs no memory allocation.
@@ -316,7 +344,11 @@ void sph_blake512_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_blake512_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #endif
 

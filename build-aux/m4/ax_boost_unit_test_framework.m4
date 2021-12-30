@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 # ================================================================================
 #  http://www.gnu.org/software/autoconf-archive/ax_boost_unit_test_framework.html
 # ================================================================================
+=======
+# =================================================================================
+#  https://www.gnu.org/software/autoconf-archive/ax_boost_unit_test_framework.html
+# =================================================================================
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #
 # SYNOPSIS
 #
@@ -29,7 +35,11 @@
 #   and this notice are preserved. This file is offered as-is, without any
 #   warranty.
 
+<<<<<<< HEAD
 #serial 19
+=======
+#serial 21
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 AC_DEFUN([AX_BOOST_UNIT_TEST_FRAMEWORK],
 [
@@ -66,7 +76,11 @@ AC_DEFUN([AX_BOOST_UNIT_TEST_FRAMEWORK],
         [AC_LANG_PUSH([C++])
 			 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[@%:@include <boost/test/unit_test.hpp>]],
                                     [[using boost::unit_test::test_suite;
+<<<<<<< HEAD
 							 test_suite* test= BOOST_TEST_SUITE( "Unit test example 1" ); return 0;]])],
+=======
+							 test_suite* test= BOOST_TEST_SUITE( "Unit test example 1" ); if (test == NULL) { return 1; } else { return 0; }]])],
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                    ax_cv_boost_unit_test_framework=yes, ax_cv_boost_unit_test_framework=no)
          AC_LANG_POP([C++])
 		])
@@ -76,7 +90,10 @@ AC_DEFUN([AX_BOOST_UNIT_TEST_FRAMEWORK],
 
             if test "x$ax_boost_user_unit_test_framework_lib" = "x"; then
 			saved_ldflags="${LDFLAGS}"
+<<<<<<< HEAD
                 ax_lib=
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 for monitor_library in `ls $BOOSTLIBDIR/libboost_unit_test_framework*.so* $BOOSTLIBDIR/libboost_unit_test_framework*.dylib* $BOOSTLIBDIR/libboost_unit_test_framework*.a* 2>/dev/null` ; do
                     if test -r $monitor_library ; then
                        libextension=`echo $monitor_library | sed 's,.*/,,' | sed -e 's;^lib\(boost_unit_test_framework.*\)\.so.*$;\1;' -e 's;^lib\(boost_unit_test_framework.*\)\.dylib.*$;\1;' -e 's;^lib\(boost_unit_test_framework.*\)\.a.*$;\1;'`
@@ -125,7 +142,11 @@ AC_DEFUN([AX_BOOST_UNIT_TEST_FRAMEWORK],
                done
             fi
             if test "x$ax_lib" = "x"; then
+<<<<<<< HEAD
                 AC_MSG_ERROR(Could not find a version of the boost_unit_test_framework library!)
+=======
+                AC_MSG_ERROR(Could not find a version of the library!)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             fi
 			if test "x$link_unit_test_framework" != "xyes"; then
 				AC_MSG_ERROR(Could not link against $ax_lib !)

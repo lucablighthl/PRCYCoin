@@ -1028,7 +1028,11 @@ typedef long long sph_s64;
  * 64-bit Sparc architecture (implies v9).
  */
 #elif ((defined __sparc__ || defined __sparc) && defined __arch64__) \
+<<<<<<< HEAD
     || defined __sparcv9
+=======
+	|| defined __sparcv9
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #define SPH_DETECT_BIG_ENDIAN        1
 #define SPH_DETECT_UPTR              sph_u64
@@ -1041,7 +1045,11 @@ typedef long long sph_s64;
  * 32-bit Sparc.
  */
 #elif (defined __sparc__ || defined __sparc) \
+<<<<<<< HEAD
     && !(defined __sparcv9 || defined __arch64__)
+=======
+	&& !(defined __sparcv9 || defined __arch64__)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #define SPH_DETECT_BIG_ENDIAN        1
 #define SPH_DETECT_UPTR              sph_u32
@@ -1075,7 +1083,11 @@ typedef long long sph_s64;
  * PowerPC.
  */
 #elif defined __powerpc__ || defined __POWERPC__ || defined __ppc__ \
+<<<<<<< HEAD
     || defined _ARCH_PPC
+=======
+	|| defined _ARCH_PPC
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /*
  * Note: we do not declare cross-endian access to be "fast": even if
@@ -1101,7 +1113,11 @@ typedef long long sph_s64;
  * Itanium, 64-bit.
  */
 #elif defined __ia64 || defined __ia64__ \
+<<<<<<< HEAD
     || defined __itanium__ || defined _M_IA64
+=======
+	|| defined __itanium__ || defined _M_IA64
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #if defined __BIG_ENDIAN__ || defined _BIG_ENDIAN
 #define SPH_DETECT_BIG_ENDIAN        1
@@ -1187,8 +1203,13 @@ typedef long long sph_s64;
 static SPH_INLINE sph_u32
 sph_bswap32(sph_u32 x)
 {
+<<<<<<< HEAD
     __asm__ __volatile__ ("bswapl %0" : "=r" (x) : "0" (x));
     return x;
+=======
+	__asm__ __volatile__ ("bswapl %0" : "=r" (x) : "0" (x));
+	return x;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 #if SPH_64
@@ -1196,8 +1217,13 @@ sph_bswap32(sph_u32 x)
 static SPH_INLINE sph_u64
 sph_bswap64(sph_u64 x)
 {
+<<<<<<< HEAD
     return ((sph_u64)sph_bswap32((sph_u32)x) << 32)
         | (sph_u64)sph_bswap32((sph_u32)(x >> 32));
+=======
+	return ((sph_u64)sph_bswap32((sph_u32)x) << 32)
+		| (sph_u64)sph_bswap32((sph_u32)(x >> 32));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 #endif
@@ -1212,8 +1238,13 @@ sph_bswap64(sph_u64 x)
 static SPH_INLINE sph_u32
 sph_bswap32(sph_u32 x)
 {
+<<<<<<< HEAD
     __asm__ __volatile__ ("bswapl %0" : "=r" (x) : "0" (x));
     return x;
+=======
+	__asm__ __volatile__ ("bswapl %0" : "=r" (x) : "0" (x));
+	return x;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 #if SPH_64
@@ -1221,8 +1252,13 @@ sph_bswap32(sph_u32 x)
 static SPH_INLINE sph_u64
 sph_bswap64(sph_u64 x)
 {
+<<<<<<< HEAD
     __asm__ __volatile__ ("bswapq %0" : "=r" (x) : "0" (x));
     return x;
+=======
+	__asm__ __volatile__ ("bswapq %0" : "=r" (x) : "0" (x));
+	return x;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 #endif
@@ -1238,11 +1274,19 @@ sph_bswap64(sph_u64 x)
 static __inline sph_u32 __declspec(naked) __fastcall
 sph_bswap32(sph_u32 x)
 {
+<<<<<<< HEAD
     __asm {
         bswap  ecx
         mov    eax,ecx
         ret
     }
+=======
+	__asm {
+		bswap  ecx
+		mov    eax,ecx
+		ret
+	}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 #if SPH_64
@@ -1250,8 +1294,13 @@ sph_bswap32(sph_u32 x)
 static SPH_INLINE sph_u64
 sph_bswap64(sph_u64 x)
 {
+<<<<<<< HEAD
     return ((sph_u64)sph_bswap32((sph_u32)x) << 32)
         | (sph_u64)sph_bswap32((sph_u32)(x >> 32));
+=======
+	return ((sph_u64)sph_bswap32((sph_u32)x) << 32)
+		| (sph_u64)sph_bswap32((sph_u32)(x >> 32));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 #endif
@@ -1265,10 +1314,17 @@ sph_bswap64(sph_u64 x)
 static SPH_INLINE sph_u32
 sph_bswap32(sph_u32 x)
 {
+<<<<<<< HEAD
     x = SPH_T32((x << 16) | (x >> 16));
     x = ((x & SPH_C32(0xFF00FF00)) >> 8)
         | ((x & SPH_C32(0x00FF00FF)) << 8);
     return x;
+=======
+	x = SPH_T32((x << 16) | (x >> 16));
+	x = ((x & SPH_C32(0xFF00FF00)) >> 8)
+		| ((x & SPH_C32(0x00FF00FF)) << 8);
+	return x;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 #if SPH_64
@@ -1282,12 +1338,21 @@ sph_bswap32(sph_u32 x)
 static SPH_INLINE sph_u64
 sph_bswap64(sph_u64 x)
 {
+<<<<<<< HEAD
     x = SPH_T64((x << 32) | (x >> 32));
     x = ((x & SPH_C64(0xFFFF0000FFFF0000)) >> 16)
         | ((x & SPH_C64(0x0000FFFF0000FFFF)) << 16);
     x = ((x & SPH_C64(0xFF00FF00FF00FF00)) >> 8)
         | ((x & SPH_C64(0x00FF00FF00FF00FF)) << 8);
     return x;
+=======
+	x = SPH_T64((x << 32) | (x >> 32));
+	x = ((x & SPH_C64(0xFFFF0000FFFF0000)) >> 16)
+		| ((x & SPH_C64(0x0000FFFF0000FFFF)) << 16);
+	x = ((x & SPH_C64(0xFF00FF00FF00FF00)) >> 8)
+		| ((x & SPH_C64(0x00FF00FF00FF00FF)) << 8);
+	return x;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 #endif
@@ -1313,6 +1378,7 @@ sph_bswap64(sph_u64 x)
  */
 
 #define SPH_SPARCV9_SET_ASI   \
+<<<<<<< HEAD
     sph_u32 sph_sparcv9_asi; \
     __asm__ __volatile__ ( \
         "rd %%asi,%0\n\twr %%g0,0x88,%%asi" : "=r" (sph_sparcv9_asi));
@@ -1326,35 +1392,70 @@ sph_bswap64(sph_u64 x)
             : "=r" (sph_sparcv9_tmp) : "r" (base)); \
         sph_sparcv9_tmp; \
     })
+=======
+	sph_u32 sph_sparcv9_asi; \
+	__asm__ __volatile__ ( \
+		"rd %%asi,%0\n\twr %%g0,0x88,%%asi" : "=r" (sph_sparcv9_asi));
+
+#define SPH_SPARCV9_RESET_ASI  \
+	__asm__ __volatile__ ("wr %%g0,%0,%%asi" : : "r" (sph_sparcv9_asi));
+
+#define SPH_SPARCV9_DEC32LE(base, idx)   ({ \
+		sph_u32 sph_sparcv9_tmp; \
+		__asm__ __volatile__ ("lda [%1+" #idx "*4]%%asi,%0" \
+			: "=r" (sph_sparcv9_tmp) : "r" (base)); \
+		sph_sparcv9_tmp; \
+	})
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #endif
 
 static SPH_INLINE void
 sph_enc16be(void *dst, unsigned val)
 {
+<<<<<<< HEAD
     ((unsigned char *)dst)[0] = (val >> 8);
     ((unsigned char *)dst)[1] = val;
+=======
+	((unsigned char *)dst)[0] = (val >> 8);
+	((unsigned char *)dst)[1] = val;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 static SPH_INLINE unsigned
 sph_dec16be(const void *src)
 {
+<<<<<<< HEAD
     return ((unsigned)(((const unsigned char *)src)[0]) << 8)
         | (unsigned)(((const unsigned char *)src)[1]);
+=======
+	return ((unsigned)(((const unsigned char *)src)[0]) << 8)
+		| (unsigned)(((const unsigned char *)src)[1]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 static SPH_INLINE void
 sph_enc16le(void *dst, unsigned val)
 {
+<<<<<<< HEAD
     ((unsigned char *)dst)[0] = val;
     ((unsigned char *)dst)[1] = val >> 8;
+=======
+	((unsigned char *)dst)[0] = val;
+	((unsigned char *)dst)[1] = val >> 8;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 static SPH_INLINE unsigned
 sph_dec16le(const void *src)
 {
+<<<<<<< HEAD
     return (unsigned)(((const unsigned char *)src)[0])
         | ((unsigned)(((const unsigned char *)src)[1]) << 8);
+=======
+	return (unsigned)(((const unsigned char *)src)[0])
+		| ((unsigned)(((const unsigned char *)src)[1]) << 8);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 /**
@@ -1369,6 +1470,7 @@ sph_enc32be(void *dst, sph_u32 val)
 #if defined SPH_UPTR
 #if SPH_UNALIGNED
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     val = sph_bswap32(val);
 #endif
     *(sph_u32 *)dst = val;
@@ -1390,6 +1492,29 @@ sph_enc32be(void *dst, sph_u32 val)
     ((unsigned char *)dst)[1] = (val >> 16);
     ((unsigned char *)dst)[2] = (val >> 8);
     ((unsigned char *)dst)[3] = val;
+=======
+	val = sph_bswap32(val);
+#endif
+	*(sph_u32 *)dst = val;
+#else
+	if (((SPH_UPTR)dst & 3) == 0) {
+#if SPH_LITTLE_ENDIAN
+		val = sph_bswap32(val);
+#endif
+		*(sph_u32 *)dst = val;
+	} else {
+		((unsigned char *)dst)[0] = (val >> 24);
+		((unsigned char *)dst)[1] = (val >> 16);
+		((unsigned char *)dst)[2] = (val >> 8);
+		((unsigned char *)dst)[3] = val;
+	}
+#endif
+#else
+	((unsigned char *)dst)[0] = (val >> 24);
+	((unsigned char *)dst)[1] = (val >> 16);
+	((unsigned char *)dst)[2] = (val >> 8);
+	((unsigned char *)dst)[3] = val;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1404,6 +1529,7 @@ static SPH_INLINE void
 sph_enc32be_aligned(void *dst, sph_u32 val)
 {
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     *(sph_u32 *)dst = sph_bswap32(val);
 #elif SPH_BIG_ENDIAN
     *(sph_u32 *)dst = val;
@@ -1412,6 +1538,16 @@ sph_enc32be_aligned(void *dst, sph_u32 val)
     ((unsigned char *)dst)[1] = (val >> 16);
     ((unsigned char *)dst)[2] = (val >> 8);
     ((unsigned char *)dst)[3] = val;
+=======
+	*(sph_u32 *)dst = sph_bswap32(val);
+#elif SPH_BIG_ENDIAN
+	*(sph_u32 *)dst = val;
+#else
+	((unsigned char *)dst)[0] = (val >> 24);
+	((unsigned char *)dst)[1] = (val >> 16);
+	((unsigned char *)dst)[2] = (val >> 8);
+	((unsigned char *)dst)[3] = val;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1427,6 +1563,7 @@ sph_dec32be(const void *src)
 #if defined SPH_UPTR
 #if SPH_UNALIGNED
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     return sph_bswap32(*(const sph_u32 *)src);
 #else
     return *(const sph_u32 *)src;
@@ -1450,6 +1587,31 @@ sph_dec32be(const void *src)
         | ((sph_u32)(((const unsigned char *)src)[1]) << 16)
         | ((sph_u32)(((const unsigned char *)src)[2]) << 8)
         | (sph_u32)(((const unsigned char *)src)[3]);
+=======
+	return sph_bswap32(*(const sph_u32 *)src);
+#else
+	return *(const sph_u32 *)src;
+#endif
+#else
+	if (((SPH_UPTR)src & 3) == 0) {
+#if SPH_LITTLE_ENDIAN
+		return sph_bswap32(*(const sph_u32 *)src);
+#else
+		return *(const sph_u32 *)src;
+#endif
+	} else {
+		return ((sph_u32)(((const unsigned char *)src)[0]) << 24)
+			| ((sph_u32)(((const unsigned char *)src)[1]) << 16)
+			| ((sph_u32)(((const unsigned char *)src)[2]) << 8)
+			| (sph_u32)(((const unsigned char *)src)[3]);
+	}
+#endif
+#else
+	return ((sph_u32)(((const unsigned char *)src)[0]) << 24)
+		| ((sph_u32)(((const unsigned char *)src)[1]) << 16)
+		| ((sph_u32)(((const unsigned char *)src)[2]) << 8)
+		| (sph_u32)(((const unsigned char *)src)[3]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1464,6 +1626,7 @@ static SPH_INLINE sph_u32
 sph_dec32be_aligned(const void *src)
 {
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     return sph_bswap32(*(const sph_u32 *)src);
 #elif SPH_BIG_ENDIAN
     return *(const sph_u32 *)src;
@@ -1472,6 +1635,16 @@ sph_dec32be_aligned(const void *src)
         | ((sph_u32)(((const unsigned char *)src)[1]) << 16)
         | ((sph_u32)(((const unsigned char *)src)[2]) << 8)
         | (sph_u32)(((const unsigned char *)src)[3]);
+=======
+	return sph_bswap32(*(const sph_u32 *)src);
+#elif SPH_BIG_ENDIAN
+	return *(const sph_u32 *)src;
+#else
+	return ((sph_u32)(((const unsigned char *)src)[0]) << 24)
+		| ((sph_u32)(((const unsigned char *)src)[1]) << 16)
+		| ((sph_u32)(((const unsigned char *)src)[2]) << 8)
+		| (sph_u32)(((const unsigned char *)src)[3]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1487,6 +1660,7 @@ sph_enc32le(void *dst, sph_u32 val)
 #if defined SPH_UPTR
 #if SPH_UNALIGNED
 #if SPH_BIG_ENDIAN
+<<<<<<< HEAD
     val = sph_bswap32(val);
 #endif
     *(sph_u32 *)dst = val;
@@ -1508,6 +1682,29 @@ sph_enc32le(void *dst, sph_u32 val)
     ((unsigned char *)dst)[1] = (val >> 8);
     ((unsigned char *)dst)[2] = (val >> 16);
     ((unsigned char *)dst)[3] = (val >> 24);
+=======
+	val = sph_bswap32(val);
+#endif
+	*(sph_u32 *)dst = val;
+#else
+	if (((SPH_UPTR)dst & 3) == 0) {
+#if SPH_BIG_ENDIAN
+		val = sph_bswap32(val);
+#endif
+		*(sph_u32 *)dst = val;
+	} else {
+		((unsigned char *)dst)[0] = val;
+		((unsigned char *)dst)[1] = (val >> 8);
+		((unsigned char *)dst)[2] = (val >> 16);
+		((unsigned char *)dst)[3] = (val >> 24);
+	}
+#endif
+#else
+	((unsigned char *)dst)[0] = val;
+	((unsigned char *)dst)[1] = (val >> 8);
+	((unsigned char *)dst)[2] = (val >> 16);
+	((unsigned char *)dst)[3] = (val >> 24);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1522,6 +1719,7 @@ static SPH_INLINE void
 sph_enc32le_aligned(void *dst, sph_u32 val)
 {
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     *(sph_u32 *)dst = val;
 #elif SPH_BIG_ENDIAN
     *(sph_u32 *)dst = sph_bswap32(val);
@@ -1530,6 +1728,16 @@ sph_enc32le_aligned(void *dst, sph_u32 val)
     ((unsigned char *)dst)[1] = (val >> 8);
     ((unsigned char *)dst)[2] = (val >> 16);
     ((unsigned char *)dst)[3] = (val >> 24);
+=======
+	*(sph_u32 *)dst = val;
+#elif SPH_BIG_ENDIAN
+	*(sph_u32 *)dst = sph_bswap32(val);
+#else
+	((unsigned char *)dst)[0] = val;
+	((unsigned char *)dst)[1] = (val >> 8);
+	((unsigned char *)dst)[2] = (val >> 16);
+	((unsigned char *)dst)[3] = (val >> 24);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1545,6 +1753,7 @@ sph_dec32le(const void *src)
 #if defined SPH_UPTR
 #if SPH_UNALIGNED
 #if SPH_BIG_ENDIAN
+<<<<<<< HEAD
     return sph_bswap32(*(const sph_u32 *)src);
 #else
     return *(const sph_u32 *)src;
@@ -1564,6 +1773,27 @@ sph_dec32le(const void *src)
         __asm__ __volatile__ (
             "lda [%1]0x88,%0" : "=r" (tmp) : "r" (src));
         return tmp;
+=======
+	return sph_bswap32(*(const sph_u32 *)src);
+#else
+	return *(const sph_u32 *)src;
+#endif
+#else
+	if (((SPH_UPTR)src & 3) == 0) {
+#if SPH_BIG_ENDIAN
+#if SPH_SPARCV9_GCC && !SPH_NO_ASM
+		sph_u32 tmp;
+
+		/*
+		 * "__volatile__" is needed here because without it,
+		 * gcc-3.4.3 miscompiles the code and performs the
+		 * access before the test on the address, thus triggering
+		 * a bus error...
+		 */
+		__asm__ __volatile__ (
+			"lda [%1]0x88,%0" : "=r" (tmp) : "r" (src));
+		return tmp;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 /*
  * On PowerPC, this turns out not to be worth the effort: the inline
  * assembly makes GCC optimizer uncomfortable, which tends to nullify
@@ -1577,6 +1807,7 @@ sph_dec32le(const void *src)
  * functions, the generic code appears to be efficient enough already.
  *
 #elif (SPH_PPC32_GCC || SPH_PPC64_GCC) && !SPH_NO_ASM
+<<<<<<< HEAD
         sph_u32 tmp;
 
         __asm__ __volatile__ (
@@ -1601,6 +1832,32 @@ sph_dec32le(const void *src)
         | ((sph_u32)(((const unsigned char *)src)[1]) << 8)
         | ((sph_u32)(((const unsigned char *)src)[2]) << 16)
         | ((sph_u32)(((const unsigned char *)src)[3]) << 24);
+=======
+		sph_u32 tmp;
+
+		__asm__ __volatile__ (
+			"lwbrx %0,0,%1" : "=r" (tmp) : "r" (src));
+		return tmp;
+ */
+#else
+		return sph_bswap32(*(const sph_u32 *)src);
+#endif
+#else
+		return *(const sph_u32 *)src;
+#endif
+	} else {
+		return (sph_u32)(((const unsigned char *)src)[0])
+			| ((sph_u32)(((const unsigned char *)src)[1]) << 8)
+			| ((sph_u32)(((const unsigned char *)src)[2]) << 16)
+			| ((sph_u32)(((const unsigned char *)src)[3]) << 24);
+	}
+#endif
+#else
+	return (sph_u32)(((const unsigned char *)src)[0])
+		| ((sph_u32)(((const unsigned char *)src)[1]) << 8)
+		| ((sph_u32)(((const unsigned char *)src)[2]) << 16)
+		| ((sph_u32)(((const unsigned char *)src)[3]) << 24);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1615,6 +1872,7 @@ static SPH_INLINE sph_u32
 sph_dec32le_aligned(const void *src)
 {
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     return *(const sph_u32 *)src;
 #elif SPH_BIG_ENDIAN
 #if SPH_SPARCV9_GCC && !SPH_NO_ASM
@@ -1622,10 +1880,20 @@ sph_dec32le_aligned(const void *src)
 
     __asm__ __volatile__ ("lda [%1]0x88,%0" : "=r" (tmp) : "r" (src));
     return tmp;
+=======
+	return *(const sph_u32 *)src;
+#elif SPH_BIG_ENDIAN
+#if SPH_SPARCV9_GCC && !SPH_NO_ASM
+	sph_u32 tmp;
+
+	__asm__ __volatile__ ("lda [%1]0x88,%0" : "=r" (tmp) : "r" (src));
+	return tmp;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 /*
  * Not worth it generally.
  *
 #elif (SPH_PPC32_GCC || SPH_PPC64_GCC) && !SPH_NO_ASM
+<<<<<<< HEAD
     sph_u32 tmp;
 
     __asm__ __volatile__ ("lwbrx %0,0,%1" : "=r" (tmp) : "r" (src));
@@ -1639,6 +1907,21 @@ sph_dec32le_aligned(const void *src)
         | ((sph_u32)(((const unsigned char *)src)[1]) << 8)
         | ((sph_u32)(((const unsigned char *)src)[2]) << 16)
         | ((sph_u32)(((const unsigned char *)src)[3]) << 24);
+=======
+	sph_u32 tmp;
+
+	__asm__ __volatile__ ("lwbrx %0,0,%1" : "=r" (tmp) : "r" (src));
+	return tmp;
+ */
+#else
+	return sph_bswap32(*(const sph_u32 *)src);
+#endif
+#else
+	return (sph_u32)(((const unsigned char *)src)[0])
+		| ((sph_u32)(((const unsigned char *)src)[1]) << 8)
+		| ((sph_u32)(((const unsigned char *)src)[2]) << 16)
+		| ((sph_u32)(((const unsigned char *)src)[3]) << 24);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1656,6 +1939,7 @@ sph_enc64be(void *dst, sph_u64 val)
 #if defined SPH_UPTR
 #if SPH_UNALIGNED
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     val = sph_bswap64(val);
 #endif
     *(sph_u64 *)dst = val;
@@ -1685,6 +1969,37 @@ sph_enc64be(void *dst, sph_u64 val)
     ((unsigned char *)dst)[5] = (val >> 16);
     ((unsigned char *)dst)[6] = (val >> 8);
     ((unsigned char *)dst)[7] = val;
+=======
+	val = sph_bswap64(val);
+#endif
+	*(sph_u64 *)dst = val;
+#else
+	if (((SPH_UPTR)dst & 7) == 0) {
+#if SPH_LITTLE_ENDIAN
+		val = sph_bswap64(val);
+#endif
+		*(sph_u64 *)dst = val;
+	} else {
+		((unsigned char *)dst)[0] = (val >> 56);
+		((unsigned char *)dst)[1] = (val >> 48);
+		((unsigned char *)dst)[2] = (val >> 40);
+		((unsigned char *)dst)[3] = (val >> 32);
+		((unsigned char *)dst)[4] = (val >> 24);
+		((unsigned char *)dst)[5] = (val >> 16);
+		((unsigned char *)dst)[6] = (val >> 8);
+		((unsigned char *)dst)[7] = val;
+	}
+#endif
+#else
+	((unsigned char *)dst)[0] = (val >> 56);
+	((unsigned char *)dst)[1] = (val >> 48);
+	((unsigned char *)dst)[2] = (val >> 40);
+	((unsigned char *)dst)[3] = (val >> 32);
+	((unsigned char *)dst)[4] = (val >> 24);
+	((unsigned char *)dst)[5] = (val >> 16);
+	((unsigned char *)dst)[6] = (val >> 8);
+	((unsigned char *)dst)[7] = val;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1699,6 +2014,7 @@ static SPH_INLINE void
 sph_enc64be_aligned(void *dst, sph_u64 val)
 {
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     *(sph_u64 *)dst = sph_bswap64(val);
 #elif SPH_BIG_ENDIAN
     *(sph_u64 *)dst = val;
@@ -1711,6 +2027,20 @@ sph_enc64be_aligned(void *dst, sph_u64 val)
     ((unsigned char *)dst)[5] = (val >> 16);
     ((unsigned char *)dst)[6] = (val >> 8);
     ((unsigned char *)dst)[7] = val;
+=======
+	*(sph_u64 *)dst = sph_bswap64(val);
+#elif SPH_BIG_ENDIAN
+	*(sph_u64 *)dst = val;
+#else
+	((unsigned char *)dst)[0] = (val >> 56);
+	((unsigned char *)dst)[1] = (val >> 48);
+	((unsigned char *)dst)[2] = (val >> 40);
+	((unsigned char *)dst)[3] = (val >> 32);
+	((unsigned char *)dst)[4] = (val >> 24);
+	((unsigned char *)dst)[5] = (val >> 16);
+	((unsigned char *)dst)[6] = (val >> 8);
+	((unsigned char *)dst)[7] = val;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1726,6 +2056,7 @@ sph_dec64be(const void *src)
 #if defined SPH_UPTR
 #if SPH_UNALIGNED
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     return sph_bswap64(*(const sph_u64 *)src);
 #else
     return *(const sph_u64 *)src;
@@ -1757,6 +2088,39 @@ sph_dec64be(const void *src)
         | ((sph_u64)(((const unsigned char *)src)[5]) << 16)
         | ((sph_u64)(((const unsigned char *)src)[6]) << 8)
         | (sph_u64)(((const unsigned char *)src)[7]);
+=======
+	return sph_bswap64(*(const sph_u64 *)src);
+#else
+	return *(const sph_u64 *)src;
+#endif
+#else
+	if (((SPH_UPTR)src & 7) == 0) {
+#if SPH_LITTLE_ENDIAN
+		return sph_bswap64(*(const sph_u64 *)src);
+#else
+		return *(const sph_u64 *)src;
+#endif
+	} else {
+		return ((sph_u64)(((const unsigned char *)src)[0]) << 56)
+			| ((sph_u64)(((const unsigned char *)src)[1]) << 48)
+			| ((sph_u64)(((const unsigned char *)src)[2]) << 40)
+			| ((sph_u64)(((const unsigned char *)src)[3]) << 32)
+			| ((sph_u64)(((const unsigned char *)src)[4]) << 24)
+			| ((sph_u64)(((const unsigned char *)src)[5]) << 16)
+			| ((sph_u64)(((const unsigned char *)src)[6]) << 8)
+			| (sph_u64)(((const unsigned char *)src)[7]);
+	}
+#endif
+#else
+	return ((sph_u64)(((const unsigned char *)src)[0]) << 56)
+		| ((sph_u64)(((const unsigned char *)src)[1]) << 48)
+		| ((sph_u64)(((const unsigned char *)src)[2]) << 40)
+		| ((sph_u64)(((const unsigned char *)src)[3]) << 32)
+		| ((sph_u64)(((const unsigned char *)src)[4]) << 24)
+		| ((sph_u64)(((const unsigned char *)src)[5]) << 16)
+		| ((sph_u64)(((const unsigned char *)src)[6]) << 8)
+		| (sph_u64)(((const unsigned char *)src)[7]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1771,6 +2135,7 @@ static SPH_INLINE sph_u64
 sph_dec64be_aligned(const void *src)
 {
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     return sph_bswap64(*(const sph_u64 *)src);
 #elif SPH_BIG_ENDIAN
     return *(const sph_u64 *)src;
@@ -1783,6 +2148,20 @@ sph_dec64be_aligned(const void *src)
         | ((sph_u64)(((const unsigned char *)src)[5]) << 16)
         | ((sph_u64)(((const unsigned char *)src)[6]) << 8)
         | (sph_u64)(((const unsigned char *)src)[7]);
+=======
+	return sph_bswap64(*(const sph_u64 *)src);
+#elif SPH_BIG_ENDIAN
+	return *(const sph_u64 *)src;
+#else
+	return ((sph_u64)(((const unsigned char *)src)[0]) << 56)
+		| ((sph_u64)(((const unsigned char *)src)[1]) << 48)
+		| ((sph_u64)(((const unsigned char *)src)[2]) << 40)
+		| ((sph_u64)(((const unsigned char *)src)[3]) << 32)
+		| ((sph_u64)(((const unsigned char *)src)[4]) << 24)
+		| ((sph_u64)(((const unsigned char *)src)[5]) << 16)
+		| ((sph_u64)(((const unsigned char *)src)[6]) << 8)
+		| (sph_u64)(((const unsigned char *)src)[7]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1798,6 +2177,7 @@ sph_enc64le(void *dst, sph_u64 val)
 #if defined SPH_UPTR
 #if SPH_UNALIGNED
 #if SPH_BIG_ENDIAN
+<<<<<<< HEAD
     val = sph_bswap64(val);
 #endif
     *(sph_u64 *)dst = val;
@@ -1827,6 +2207,37 @@ sph_enc64le(void *dst, sph_u64 val)
     ((unsigned char *)dst)[5] = (val >> 40);
     ((unsigned char *)dst)[6] = (val >> 48);
     ((unsigned char *)dst)[7] = (val >> 56);
+=======
+	val = sph_bswap64(val);
+#endif
+	*(sph_u64 *)dst = val;
+#else
+	if (((SPH_UPTR)dst & 7) == 0) {
+#if SPH_BIG_ENDIAN
+		val = sph_bswap64(val);
+#endif
+		*(sph_u64 *)dst = val;
+	} else {
+		((unsigned char *)dst)[0] = val;
+		((unsigned char *)dst)[1] = (val >> 8);
+		((unsigned char *)dst)[2] = (val >> 16);
+		((unsigned char *)dst)[3] = (val >> 24);
+		((unsigned char *)dst)[4] = (val >> 32);
+		((unsigned char *)dst)[5] = (val >> 40);
+		((unsigned char *)dst)[6] = (val >> 48);
+		((unsigned char *)dst)[7] = (val >> 56);
+	}
+#endif
+#else
+	((unsigned char *)dst)[0] = val;
+	((unsigned char *)dst)[1] = (val >> 8);
+	((unsigned char *)dst)[2] = (val >> 16);
+	((unsigned char *)dst)[3] = (val >> 24);
+	((unsigned char *)dst)[4] = (val >> 32);
+	((unsigned char *)dst)[5] = (val >> 40);
+	((unsigned char *)dst)[6] = (val >> 48);
+	((unsigned char *)dst)[7] = (val >> 56);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1841,6 +2252,7 @@ static SPH_INLINE void
 sph_enc64le_aligned(void *dst, sph_u64 val)
 {
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     *(sph_u64 *)dst = val;
 #elif SPH_BIG_ENDIAN
     *(sph_u64 *)dst = sph_bswap64(val);
@@ -1853,6 +2265,20 @@ sph_enc64le_aligned(void *dst, sph_u64 val)
     ((unsigned char *)dst)[5] = (val >> 40);
     ((unsigned char *)dst)[6] = (val >> 48);
     ((unsigned char *)dst)[7] = (val >> 56);
+=======
+	*(sph_u64 *)dst = val;
+#elif SPH_BIG_ENDIAN
+	*(sph_u64 *)dst = sph_bswap64(val);
+#else
+	((unsigned char *)dst)[0] = val;
+	((unsigned char *)dst)[1] = (val >> 8);
+	((unsigned char *)dst)[2] = (val >> 16);
+	((unsigned char *)dst)[3] = (val >> 24);
+	((unsigned char *)dst)[4] = (val >> 32);
+	((unsigned char *)dst)[5] = (val >> 40);
+	((unsigned char *)dst)[6] = (val >> 48);
+	((unsigned char *)dst)[7] = (val >> 56);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1868,6 +2294,7 @@ sph_dec64le(const void *src)
 #if defined SPH_UPTR
 #if SPH_UNALIGNED
 #if SPH_BIG_ENDIAN
+<<<<<<< HEAD
     return sph_bswap64(*(const sph_u64 *)src);
 #else
     return *(const sph_u64 *)src;
@@ -1881,10 +2308,26 @@ sph_dec64le(const void *src)
         __asm__ __volatile__ (
             "ldxa [%1]0x88,%0" : "=r" (tmp) : "r" (src));
         return tmp;
+=======
+	return sph_bswap64(*(const sph_u64 *)src);
+#else
+	return *(const sph_u64 *)src;
+#endif
+#else
+	if (((SPH_UPTR)src & 7) == 0) {
+#if SPH_BIG_ENDIAN
+#if SPH_SPARCV9_GCC_64 && !SPH_NO_ASM
+		sph_u64 tmp;
+
+		__asm__ __volatile__ (
+			"ldxa [%1]0x88,%0" : "=r" (tmp) : "r" (src));
+		return tmp;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 /*
  * Not worth it generally.
  *
 #elif SPH_PPC32_GCC && !SPH_NO_ASM
+<<<<<<< HEAD
         return (sph_u64)sph_dec32le_aligned(src)
             | ((sph_u64)sph_dec32le_aligned(
                 (const char *)src + 4) << 32);
@@ -1921,6 +2364,44 @@ sph_dec64le(const void *src)
         | ((sph_u64)(((const unsigned char *)src)[5]) << 40)
         | ((sph_u64)(((const unsigned char *)src)[6]) << 48)
         | ((sph_u64)(((const unsigned char *)src)[7]) << 56);
+=======
+		return (sph_u64)sph_dec32le_aligned(src)
+			| ((sph_u64)sph_dec32le_aligned(
+				(const char *)src + 4) << 32);
+#elif SPH_PPC64_GCC && !SPH_NO_ASM
+		sph_u64 tmp;
+
+		__asm__ __volatile__ (
+			"ldbrx %0,0,%1" : "=r" (tmp) : "r" (src));
+		return tmp;
+ */
+#else
+		return sph_bswap64(*(const sph_u64 *)src);
+#endif
+#else
+		return *(const sph_u64 *)src;
+#endif
+	} else {
+		return (sph_u64)(((const unsigned char *)src)[0])
+			| ((sph_u64)(((const unsigned char *)src)[1]) << 8)
+			| ((sph_u64)(((const unsigned char *)src)[2]) << 16)
+			| ((sph_u64)(((const unsigned char *)src)[3]) << 24)
+			| ((sph_u64)(((const unsigned char *)src)[4]) << 32)
+			| ((sph_u64)(((const unsigned char *)src)[5]) << 40)
+			| ((sph_u64)(((const unsigned char *)src)[6]) << 48)
+			| ((sph_u64)(((const unsigned char *)src)[7]) << 56);
+	}
+#endif
+#else
+	return (sph_u64)(((const unsigned char *)src)[0])
+		| ((sph_u64)(((const unsigned char *)src)[1]) << 8)
+		| ((sph_u64)(((const unsigned char *)src)[2]) << 16)
+		| ((sph_u64)(((const unsigned char *)src)[3]) << 24)
+		| ((sph_u64)(((const unsigned char *)src)[4]) << 32)
+		| ((sph_u64)(((const unsigned char *)src)[5]) << 40)
+		| ((sph_u64)(((const unsigned char *)src)[6]) << 48)
+		| ((sph_u64)(((const unsigned char *)src)[7]) << 56);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 
@@ -1935,6 +2416,7 @@ static SPH_INLINE sph_u64
 sph_dec64le_aligned(const void *src)
 {
 #if SPH_LITTLE_ENDIAN
+<<<<<<< HEAD
     return *(const sph_u64 *)src;
 #elif SPH_BIG_ENDIAN
 #if SPH_SPARCV9_GCC_64 && !SPH_NO_ASM
@@ -1942,10 +2424,20 @@ sph_dec64le_aligned(const void *src)
 
     __asm__ __volatile__ ("ldxa [%1]0x88,%0" : "=r" (tmp) : "r" (src));
     return tmp;
+=======
+	return *(const sph_u64 *)src;
+#elif SPH_BIG_ENDIAN
+#if SPH_SPARCV9_GCC_64 && !SPH_NO_ASM
+	sph_u64 tmp;
+
+	__asm__ __volatile__ ("ldxa [%1]0x88,%0" : "=r" (tmp) : "r" (src));
+	return tmp;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 /*
  * Not worth it generally.
  *
 #elif SPH_PPC32_GCC && !SPH_NO_ASM
+<<<<<<< HEAD
     return (sph_u64)sph_dec32le_aligned(src)
         | ((sph_u64)sph_dec32le_aligned((const char *)src + 4) << 32);
 #elif SPH_PPC64_GCC && !SPH_NO_ASM
@@ -1966,6 +2458,28 @@ sph_dec64le_aligned(const void *src)
         | ((sph_u64)(((const unsigned char *)src)[5]) << 40)
         | ((sph_u64)(((const unsigned char *)src)[6]) << 48)
         | ((sph_u64)(((const unsigned char *)src)[7]) << 56);
+=======
+	return (sph_u64)sph_dec32le_aligned(src)
+		| ((sph_u64)sph_dec32le_aligned((const char *)src + 4) << 32);
+#elif SPH_PPC64_GCC && !SPH_NO_ASM
+	sph_u64 tmp;
+
+	__asm__ __volatile__ ("ldbrx %0,0,%1" : "=r" (tmp) : "r" (src));
+	return tmp;
+ */
+#else
+	return sph_bswap64(*(const sph_u64 *)src);
+#endif
+#else
+	return (sph_u64)(((const unsigned char *)src)[0])
+		| ((sph_u64)(((const unsigned char *)src)[1]) << 8)
+		| ((sph_u64)(((const unsigned char *)src)[2]) << 16)
+		| ((sph_u64)(((const unsigned char *)src)[3]) << 24)
+		| ((sph_u64)(((const unsigned char *)src)[4]) << 32)
+		| ((sph_u64)(((const unsigned char *)src)[5]) << 40)
+		| ((sph_u64)(((const unsigned char *)src)[6]) << 48)
+		| ((sph_u64)(((const unsigned char *)src)[7]) << 56);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 }
 

@@ -19,9 +19,16 @@
 #define BOOST_CHECK_THROW(stmt, excMatch) { \
         try { \
             (stmt); \
+<<<<<<< HEAD
         } catch (excMatch & e) { \
 	} catch (...) { \
 	    assert(0); \
+=======
+            assert(0 && "No exception caught"); \
+        } catch (excMatch & e) { \
+	} catch (...) { \
+	    assert(0 && "Wrong exception caught"); \
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 	} \
     }
 #define BOOST_CHECK_NO_THROW(stmt) { \
@@ -205,14 +212,31 @@ BOOST_AUTO_TEST_CASE(univalue_array)
 
     BOOST_CHECK(arr.push_backV(vec));
 
+<<<<<<< HEAD
     BOOST_CHECK_EQUAL(arr.empty(), false);
     BOOST_CHECK_EQUAL(arr.size(), 5);
+=======
+    BOOST_CHECK(arr.push_back((uint64_t) 400ULL));
+    BOOST_CHECK(arr.push_back((int64_t) -400LL));
+    BOOST_CHECK(arr.push_back((int) -401));
+    BOOST_CHECK(arr.push_back(-40.1));
+
+    BOOST_CHECK_EQUAL(arr.empty(), false);
+    BOOST_CHECK_EQUAL(arr.size(), 9);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     BOOST_CHECK_EQUAL(arr[0].getValStr(), "1023");
     BOOST_CHECK_EQUAL(arr[1].getValStr(), "zippy");
     BOOST_CHECK_EQUAL(arr[2].getValStr(), "pippy");
     BOOST_CHECK_EQUAL(arr[3].getValStr(), "boing");
     BOOST_CHECK_EQUAL(arr[4].getValStr(), "going");
+<<<<<<< HEAD
+=======
+    BOOST_CHECK_EQUAL(arr[5].getValStr(), "400");
+    BOOST_CHECK_EQUAL(arr[6].getValStr(), "-400");
+    BOOST_CHECK_EQUAL(arr[7].getValStr(), "-401");
+    BOOST_CHECK_EQUAL(arr[8].getValStr(), "-40.1");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     BOOST_CHECK_EQUAL(arr[999].getValStr(), "");
 
@@ -251,6 +275,15 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     strKey = "temperature";
     BOOST_CHECK(obj.pushKV(strKey, (double) 90.012));
 
+<<<<<<< HEAD
+=======
+    strKey = "moon";
+    BOOST_CHECK(obj.pushKV(strKey, true));
+
+    strKey = "spoon";
+    BOOST_CHECK(obj.pushKV(strKey, false));
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     UniValue obj2(UniValue::VOBJ);
     BOOST_CHECK(obj2.pushKV("cat1", 9000));
     BOOST_CHECK(obj2.pushKV("cat2", 12345));
@@ -258,7 +291,11 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK(obj.pushKVs(obj2));
 
     BOOST_CHECK_EQUAL(obj.empty(), false);
+<<<<<<< HEAD
     BOOST_CHECK_EQUAL(obj.size(), 9);
+=======
+    BOOST_CHECK_EQUAL(obj.size(), 11);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     BOOST_CHECK_EQUAL(obj["age"].getValStr(), "100");
     BOOST_CHECK_EQUAL(obj["first"].getValStr(), "John");
@@ -267,6 +304,11 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK_EQUAL(obj["time"].getValStr(), "3600");
     BOOST_CHECK_EQUAL(obj["calories"].getValStr(), "12");
     BOOST_CHECK_EQUAL(obj["temperature"].getValStr(), "90.012");
+<<<<<<< HEAD
+=======
+    BOOST_CHECK_EQUAL(obj["moon"].getValStr(), "1");
+    BOOST_CHECK_EQUAL(obj["spoon"].getValStr(), "");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     BOOST_CHECK_EQUAL(obj["cat1"].getValStr(), "9000");
     BOOST_CHECK_EQUAL(obj["cat2"].getValStr(), "12345");
 
@@ -279,6 +321,11 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     BOOST_CHECK(obj.exists("time"));
     BOOST_CHECK(obj.exists("calories"));
     BOOST_CHECK(obj.exists("temperature"));
+<<<<<<< HEAD
+=======
+    BOOST_CHECK(obj.exists("moon"));
+    BOOST_CHECK(obj.exists("spoon"));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     BOOST_CHECK(obj.exists("cat1"));
     BOOST_CHECK(obj.exists("cat2"));
 
@@ -292,6 +339,11 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     objTypes["time"] = UniValue::VNUM;
     objTypes["calories"] = UniValue::VNUM;
     objTypes["temperature"] = UniValue::VNUM;
+<<<<<<< HEAD
+=======
+    objTypes["moon"] = UniValue::VBOOL;
+    objTypes["spoon"] = UniValue::VBOOL;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     objTypes["cat1"] = UniValue::VNUM;
     objTypes["cat2"] = UniValue::VNUM;
     BOOST_CHECK(obj.checkObject(objTypes));
@@ -302,6 +354,30 @@ BOOST_AUTO_TEST_CASE(univalue_object)
     obj.clear();
     BOOST_CHECK(obj.empty());
     BOOST_CHECK_EQUAL(obj.size(), 0);
+<<<<<<< HEAD
+=======
+    BOOST_CHECK_EQUAL(obj.getType(), UniValue::VNULL);
+
+    BOOST_CHECK_EQUAL(obj.setObject(), true);
+    UniValue uv;
+    uv.setInt(42);
+    obj.__pushKV("age", uv);
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "42");
+
+    uv.setInt(43);
+    obj.pushKV("age", uv);
+    BOOST_CHECK_EQUAL(obj.size(), 1);
+    BOOST_CHECK_EQUAL(obj["age"].getValStr(), "43");
+
+    obj.pushKV("name", "foo bar");
+
+    std::map<std::string,UniValue> kv;
+    obj.getObjMap(kv);
+    BOOST_CHECK_EQUAL(kv["age"].getValStr(), "43");
+    BOOST_CHECK_EQUAL(kv["name"].getValStr(), "foo bar");
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 static const char *json1 =

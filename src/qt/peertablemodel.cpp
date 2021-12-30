@@ -1,4 +1,8 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,9 +11,15 @@
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "guiutil.h"
+<<<<<<< HEAD
 
 #include "net.h"
 #include "sync.h"
+=======
+#include "net.h"
+#include "sync.h"
+#include "validation.h"  // cs_main
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <algorithm>
 
@@ -25,7 +35,11 @@ bool NodeLessThan::operator()(const CNodeCombinedStats& left, const CNodeCombine
     if (order == Qt::DescendingOrder)
         std::swap(pLeft, pRight);
 
+<<<<<<< HEAD
     switch (column) {
+=======
+    switch(column) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     case PeerTableModel::NetNodeId:
         return pLeft->nodeid < pRight->nodeid;
     case PeerTableModel::Address:
@@ -34,10 +48,13 @@ bool NodeLessThan::operator()(const CNodeCombinedStats& left, const CNodeCombine
         return pLeft->cleanSubVer.compare(pRight->cleanSubVer) < 0;
     case PeerTableModel::Ping:
         return pLeft->dPingTime < pRight->dPingTime;
+<<<<<<< HEAD
     case PeerTableModel::Sent:
         return pLeft->nSendBytes < pRight->nSendBytes;
     case PeerTableModel::Received:
         return pLeft->nRecvBytes < pRight->nRecvBytes;
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     return false;
@@ -60,6 +77,7 @@ public:
     void refreshPeers()
     {
         {
+<<<<<<< HEAD
             TRY_LOCK(cs_vNodes, lockNodes);
             if (!lockNodes) {
                 // skip the refresh if we can't immediately get the lock
@@ -74,6 +92,20 @@ public:
                 stats.nodeStateStats.nSyncHeight = -1;
                 stats.fNodeStateStatsAvailable = false;
                 pnode->copyStats(stats.nodeStats);
+=======
+            cachedNodeStats.clear();
+            std::vector<CNodeStats> vstats;
+            if(g_connman)
+                g_connman->GetNodeStats(vstats);
+            cachedNodeStats.reserve(vstats.size());
+            for (const CNodeStats& nodestats : vstats) {
+                CNodeCombinedStats stats;
+                stats.nodeStateStats.nMisbehavior = 0;
+                stats.nodeStateStats.nSyncHeight = -1;
+                stats.nodeStateStats.nCommonHeight = -1;
+                stats.fNodeStateStatsAvailable = false;
+                stats.nodeStats = nodestats;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 cachedNodeStats.append(stats);
             }
         }
@@ -94,8 +126,13 @@ public:
         // build index map
         mapNodeRows.clear();
         int row = 0;
+<<<<<<< HEAD
         for (CNodeCombinedStats& stats : cachedNodeStats)
             mapNodeRows.insert(std::pair<NodeId, int>(stats.nodeStats.nodeid, row++));
+=======
+        for (const CNodeCombinedStats& stats : cachedNodeStats)
+            mapNodeRows.emplace(stats.nodeStats.nodeid, row++);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     int size()
@@ -117,24 +154,36 @@ PeerTableModel::PeerTableModel(ClientModel* parent) : QAbstractTableModel(parent
                                                       clientModel(parent),
                                                       timer(0)
 {
+<<<<<<< HEAD
     columns << tr("NodeId") << tr("Node/Service") << tr("Ping") << tr("Sent") << tr("Received") << tr("User Agent");
+=======
+    columns << tr("NodeID") << tr("Address/Hostname") << tr("Version") << tr("Ping Time");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     priv = new PeerTablePriv();
     // default to unsorted
     priv->sortColumn = -1;
 
     // set up timer for auto refresh
+<<<<<<< HEAD
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), SLOT(refresh()));
+=======
+    timer = new QTimer();
+    connect(timer, &QTimer::timeout, this, &PeerTableModel::refresh);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     timer->setInterval(MODEL_UPDATE_DELAY);
 
     // load initial data
     refresh();
 }
 
+<<<<<<< HEAD
 PeerTableModel::~PeerTableModel() {
     delete priv;
 }
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 void PeerTableModel::startAutoRefresh()
 {
     timer->start();
@@ -166,16 +215,25 @@ QVariant PeerTableModel::data(const QModelIndex& index, int role) const
     CNodeCombinedStats* rec = static_cast<CNodeCombinedStats*>(index.internalPointer());
 
     if (role == Qt::DisplayRole) {
+<<<<<<< HEAD
         switch (index.column()) {
         case NetNodeId:
             return (qint64)rec->nodeStats.nodeid;
         case Address:
             // prepend to peer address down-arrow symbol for inbound connection and up-arrow for outbound connection
             return QString(rec->nodeStats.fInbound ? "↓ " : "↑ ") + QString::fromStdString(rec->nodeStats.addrName);
+=======
+        switch(index.column()) {
+        case NetNodeId:
+            return rec->nodeStats.nodeid;
+        case Address:
+            return QString::fromStdString(rec->nodeStats.addrName);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         case Subversion:
             return QString::fromStdString(rec->nodeStats.cleanSubVer);
         case Ping:
             return GUIUtil::formatPingTime(rec->nodeStats.dPingTime);
+<<<<<<< HEAD
         case Sent:
             return GUIUtil::formatBytes(rec->nodeStats.nSendBytes);
         case Received:
@@ -190,6 +248,12 @@ QVariant PeerTableModel::data(const QModelIndex& index, int role) const
             default:
                 return QVariant();
         }
+=======
+        }
+    } else if (role == Qt::TextAlignmentRole) {
+        if (index.column() == Ping)
+            return (int)(Qt::AlignRight | Qt::AlignVCenter);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     return QVariant();
@@ -208,7 +272,11 @@ QVariant PeerTableModel::headerData(int section, Qt::Orientation orientation, in
 Qt::ItemFlags PeerTableModel::flags(const QModelIndex& index) const
 {
     if (!index.isValid())
+<<<<<<< HEAD
         return 0;
+=======
+        return Qt::NoItemFlags;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     Qt::ItemFlags retval = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     return retval;

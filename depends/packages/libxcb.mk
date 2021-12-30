@@ -7,6 +7,7 @@ $(package)_dependencies=xcb_proto libXau
 
 define $(package)_set_vars
 $(package)_config_opts=--disable-static
+<<<<<<< HEAD
 # Because we pass -qt-xcb to Qt, it will compile in a set of xcb helper libraries and extensions,
 # so we skip building all of the extensions here.
 # More info is available from: https://doc.qt.io/qt-5.9/linux-requirements.html
@@ -19,6 +20,8 @@ $(package)_config_opts += --disable-xevie --disable-xfixes --disable-xfree86-dri
 $(package)_config_opts += --disable-xinerama --disable-xinput --disable-xkb
 $(package)_config_opts += --disable-xprint --disable-selinux --disable-xtest
 $(package)_config_opts += --disable-xv --disable-xvmc
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 endef
 
 define $(package)_preprocess_cmds

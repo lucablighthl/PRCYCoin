@@ -5,6 +5,10 @@
 #include "db/log_reader.h"
 
 #include <stdio.h>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "leveldb/env.h"
 #include "util/coding.h"
 #include "util/crc32c.h"
@@ -12,8 +16,12 @@
 namespace leveldb {
 namespace log {
 
+<<<<<<< HEAD
 Reader::Reporter::~Reporter() {
 }
+=======
+Reader::Reporter::~Reporter() = default;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 Reader::Reader(SequentialFile* file, Reporter* reporter, bool checksum,
                uint64_t initial_offset)
@@ -26,6 +34,7 @@ Reader::Reader(SequentialFile* file, Reporter* reporter, bool checksum,
       last_record_offset_(0),
       end_of_buffer_offset_(0),
       initial_offset_(initial_offset),
+<<<<<<< HEAD
       resyncing_(initial_offset > 0) {
 }
 
@@ -35,11 +44,22 @@ Reader::~Reader() {
 
 bool Reader::SkipToInitialBlock() {
   size_t offset_in_block = initial_offset_ % kBlockSize;
+=======
+      resyncing_(initial_offset > 0) {}
+
+Reader::~Reader() { delete[] backing_store_; }
+
+bool Reader::SkipToInitialBlock() {
+  const size_t offset_in_block = initial_offset_ % kBlockSize;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   uint64_t block_start_location = initial_offset_ - offset_in_block;
 
   // Don't search a block if we'd be in the trailer
   if (offset_in_block > kBlockSize - 6) {
+<<<<<<< HEAD
     offset_in_block = 0;
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     block_start_location += kBlockSize;
   }
 
@@ -99,9 +119,13 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch) {
           // it could emit an empty kFirstType record at the tail end
           // of a block followed by a kFullType or kFirstType record
           // at the beginning of the next block.
+<<<<<<< HEAD
           if (scratch->empty()) {
             in_fragmented_record = false;
           } else {
+=======
+          if (!scratch->empty()) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             ReportCorruption(scratch->size(), "partial record without end(1)");
           }
         }
@@ -117,9 +141,13 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch) {
           // it could emit an empty kFirstType record at the tail end
           // of a block followed by a kFullType or kFirstType record
           // at the beginning of the next block.
+<<<<<<< HEAD
           if (scratch->empty()) {
             in_fragmented_record = false;
           } else {
+=======
+          if (!scratch->empty()) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             ReportCorruption(scratch->size(), "partial record without end(2)");
           }
         }
@@ -181,16 +209,24 @@ bool Reader::ReadRecord(Slice* record, std::string* scratch) {
   return false;
 }
 
+<<<<<<< HEAD
 uint64_t Reader::LastRecordOffset() {
   return last_record_offset_;
 }
+=======
+uint64_t Reader::LastRecordOffset() { return last_record_offset_; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 void Reader::ReportCorruption(uint64_t bytes, const char* reason) {
   ReportDrop(bytes, Status::Corruption(reason, file_->GetName()));
 }
 
 void Reader::ReportDrop(uint64_t bytes, const Status& reason) {
+<<<<<<< HEAD
   if (reporter_ != NULL &&
+=======
+  if (reporter_ != nullptr &&
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       end_of_buffer_offset_ - buffer_.size() - bytes >= initial_offset_) {
     reporter_->Corruption(static_cast<size_t>(bytes), reason);
   }

@@ -16,18 +16,28 @@ namespace leveldb {
 // For testing: emit an array with one hash value per key
 class TestHashFilter : public FilterPolicy {
  public:
+<<<<<<< HEAD
   virtual const char* Name() const {
     return "TestHashFilter";
   }
 
   virtual void CreateFilter(const Slice* keys, int n, std::string* dst) const {
+=======
+  const char* Name() const override { return "TestHashFilter"; }
+
+  void CreateFilter(const Slice* keys, int n, std::string* dst) const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     for (int i = 0; i < n; i++) {
       uint32_t h = Hash(keys[i].data(), keys[i].size(), 1);
       PutFixed32(dst, h);
     }
   }
 
+<<<<<<< HEAD
   virtual bool KeyMayMatch(const Slice& key, const Slice& filter) const {
+=======
+  bool KeyMayMatch(const Slice& key, const Slice& filter) const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     uint32_t h = Hash(key.data(), key.size(), 1);
     for (size_t i = 0; i + 4 <= filter.size(); i += 4) {
       if (h == DecodeFixed32(filter.data() + i)) {
@@ -69,8 +79,13 @@ TEST(FilterBlockTest, SingleChunk) {
   ASSERT_TRUE(reader.KeyMayMatch(100, "box"));
   ASSERT_TRUE(reader.KeyMayMatch(100, "hello"));
   ASSERT_TRUE(reader.KeyMayMatch(100, "foo"));
+<<<<<<< HEAD
   ASSERT_TRUE(! reader.KeyMayMatch(100, "missing"));
   ASSERT_TRUE(! reader.KeyMayMatch(100, "other"));
+=======
+  ASSERT_TRUE(!reader.KeyMayMatch(100, "missing"));
+  ASSERT_TRUE(!reader.KeyMayMatch(100, "other"));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 TEST(FilterBlockTest, MultiChunk) {
@@ -99,6 +114,7 @@ TEST(FilterBlockTest, MultiChunk) {
   // Check first filter
   ASSERT_TRUE(reader.KeyMayMatch(0, "foo"));
   ASSERT_TRUE(reader.KeyMayMatch(2000, "bar"));
+<<<<<<< HEAD
   ASSERT_TRUE(! reader.KeyMayMatch(0, "box"));
   ASSERT_TRUE(! reader.KeyMayMatch(0, "hello"));
 
@@ -113,16 +129,41 @@ TEST(FilterBlockTest, MultiChunk) {
   ASSERT_TRUE(! reader.KeyMayMatch(4100, "bar"));
   ASSERT_TRUE(! reader.KeyMayMatch(4100, "box"));
   ASSERT_TRUE(! reader.KeyMayMatch(4100, "hello"));
+=======
+  ASSERT_TRUE(!reader.KeyMayMatch(0, "box"));
+  ASSERT_TRUE(!reader.KeyMayMatch(0, "hello"));
+
+  // Check second filter
+  ASSERT_TRUE(reader.KeyMayMatch(3100, "box"));
+  ASSERT_TRUE(!reader.KeyMayMatch(3100, "foo"));
+  ASSERT_TRUE(!reader.KeyMayMatch(3100, "bar"));
+  ASSERT_TRUE(!reader.KeyMayMatch(3100, "hello"));
+
+  // Check third filter (empty)
+  ASSERT_TRUE(!reader.KeyMayMatch(4100, "foo"));
+  ASSERT_TRUE(!reader.KeyMayMatch(4100, "bar"));
+  ASSERT_TRUE(!reader.KeyMayMatch(4100, "box"));
+  ASSERT_TRUE(!reader.KeyMayMatch(4100, "hello"));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Check last filter
   ASSERT_TRUE(reader.KeyMayMatch(9000, "box"));
   ASSERT_TRUE(reader.KeyMayMatch(9000, "hello"));
+<<<<<<< HEAD
   ASSERT_TRUE(! reader.KeyMayMatch(9000, "foo"));
   ASSERT_TRUE(! reader.KeyMayMatch(9000, "bar"));
+=======
+  ASSERT_TRUE(!reader.KeyMayMatch(9000, "foo"));
+  ASSERT_TRUE(!reader.KeyMayMatch(9000, "bar"));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

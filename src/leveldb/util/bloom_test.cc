@@ -19,6 +19,7 @@ static Slice Key(int i, char* buffer) {
 }
 
 class BloomTest {
+<<<<<<< HEAD
  private:
   const FilterPolicy* policy_;
   std::string filter_;
@@ -30,15 +31,25 @@ class BloomTest {
   ~BloomTest() {
     delete policy_;
   }
+=======
+ public:
+  BloomTest() : policy_(NewBloomFilterPolicy(10)) {}
+
+  ~BloomTest() { delete policy_; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   void Reset() {
     keys_.clear();
     filter_.clear();
   }
 
+<<<<<<< HEAD
   void Add(const Slice& s) {
     keys_.push_back(s.ToString());
   }
+=======
+  void Add(const Slice& s) { keys_.push_back(s.ToString()); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   void Build() {
     std::vector<Slice> key_slices;
@@ -52,6 +63,7 @@ class BloomTest {
     if (kVerbose >= 2) DumpFilter();
   }
 
+<<<<<<< HEAD
   size_t FilterSize() const {
     return filter_.size();
   }
@@ -62,6 +74,16 @@ class BloomTest {
       const unsigned int c = static_cast<unsigned int>(filter_[i]);
       for (int j = 0; j < 8; j++) {
         fprintf(stderr, "%c", (c & (1 <<j)) ? '1' : '.');
+=======
+  size_t FilterSize() const { return filter_.size(); }
+
+  void DumpFilter() {
+    fprintf(stderr, "F(");
+    for (size_t i = 0; i + 1 < filter_.size(); i++) {
+      const unsigned int c = static_cast<unsigned int>(filter_[i]);
+      for (int j = 0; j < 8; j++) {
+        fprintf(stderr, "%c", (c & (1 << j)) ? '1' : '.');
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       }
     }
     fprintf(stderr, ")\n");
@@ -84,11 +106,24 @@ class BloomTest {
     }
     return result / 10000.0;
   }
+<<<<<<< HEAD
 };
 
 TEST(BloomTest, EmptyFilter) {
   ASSERT_TRUE(! Matches("hello"));
   ASSERT_TRUE(! Matches("world"));
+=======
+
+ private:
+  const FilterPolicy* policy_;
+  std::string filter_;
+  std::vector<std::string> keys_;
+};
+
+TEST(BloomTest, EmptyFilter) {
+  ASSERT_TRUE(!Matches("hello"));
+  ASSERT_TRUE(!Matches("world"));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 TEST(BloomTest, Small) {
@@ -96,8 +131,13 @@ TEST(BloomTest, Small) {
   Add("world");
   ASSERT_TRUE(Matches("hello"));
   ASSERT_TRUE(Matches("world"));
+<<<<<<< HEAD
   ASSERT_TRUE(! Matches("x"));
   ASSERT_TRUE(! Matches("foo"));
+=======
+  ASSERT_TRUE(!Matches("x"));
+  ASSERT_TRUE(!Matches("foo"));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 static int NextLength(int length) {
@@ -140,6 +180,7 @@ TEST(BloomTest, VaryingLengths) {
     double rate = FalsePositiveRate();
     if (kVerbose >= 1) {
       fprintf(stderr, "False positives: %5.2f%% @ length = %6d ; bytes = %6d\n",
+<<<<<<< HEAD
               rate*100.0, length, static_cast<int>(FilterSize()));
     }
     ASSERT_LE(rate, 0.02);   // Must not be over 2%
@@ -151,12 +192,31 @@ TEST(BloomTest, VaryingLengths) {
             good_filters, mediocre_filters);
   }
   ASSERT_LE(mediocre_filters, good_filters/5);
+=======
+              rate * 100.0, length, static_cast<int>(FilterSize()));
+    }
+    ASSERT_LE(rate, 0.02);  // Must not be over 2%
+    if (rate > 0.0125)
+      mediocre_filters++;  // Allowed, but not too often
+    else
+      good_filters++;
+  }
+  if (kVerbose >= 1) {
+    fprintf(stderr, "Filters: %d good, %d mediocre\n", good_filters,
+            mediocre_filters);
+  }
+  ASSERT_LE(mediocre_filters, good_filters / 5);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 // Different bits-per-byte
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

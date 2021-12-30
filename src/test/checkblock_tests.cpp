@@ -6,6 +6,7 @@
 // Unit tests for block.CheckBlock()
 //
 
+<<<<<<< HEAD
 
 
 #include "clientversion.h"
@@ -24,6 +25,24 @@ BOOST_AUTO_TEST_SUITE(CheckBlock_tests)
 bool read_block(const std::string& filename, CBlock& block)
 {
     namespace fs = boost::filesystem;
+=======
+#include "test/test_pivx.h"
+
+#include "clientversion.h"
+#include "fs.h"
+#include "utiltime.h"
+#include "validation.h"
+
+#include <cstdio>
+
+#include <boost/test/unit_test.hpp>
+
+
+BOOST_FIXTURE_TEST_SUITE(CheckBlock_tests, BasicTestingSetup)
+
+bool read_block(const std::string& filename, CBlock& block)
+{
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     fs::path testFile = fs::current_path() / "data" / filename;
 #ifdef TEST_DATA_DIR
     if (!fs::exists(testFile))
@@ -67,4 +86,7 @@ BOOST_AUTO_TEST_CASE(May15)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

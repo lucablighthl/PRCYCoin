@@ -11,9 +11,15 @@ rpcpass = ""
 
 
 if rpcpass == "":
+<<<<<<< HEAD
     access = ServiceProxy("http://127.0.0.1:59683")
 else:
     access = ServiceProxy("http://"+rpcuser+":"+rpcpass+"@127.0.0.1:59683")
+=======
+    access = ServiceProxy("http://127.0.0.1:51473")
+else:
+    access = ServiceProxy("http://"+rpcuser+":"+rpcpass+"@127.0.0.1:51473")
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 cmd = sys.argv[1].lower()
 
 if cmd == "backupwallet":
@@ -292,6 +298,7 @@ elif cmd == "setgenerate":
             print access.setgenerate(gen)
     except:
         print "\n---An error occurred---\n"
+<<<<<<< HEAD
 elif cmd == "generatepoa":
 	try:
 		gen= raw_input("Generate? (true/false): ")
@@ -302,6 +309,9 @@ elif cmd == "generatepoa":
             print access.generatepoa(gen)
     except:
         print "\n---An error occurred---\n"
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 elif cmd == "settxfee":
     try:
         amt = raw_input("Amount:")
@@ -322,10 +332,17 @@ elif cmd == "validateaddress":
     except:
         print "\n---An error occurred---\n"
 
+<<<<<<< HEAD
 elif cmd == "unlockwallet":
     try:
         pwd = getpass.getpass(prompt="Enter wallet passphrase: ")
         access.unlockwallet(pwd, 60)
+=======
+elif cmd == "walletpassphrase":
+    try:
+        pwd = getpass.getpass(prompt="Enter wallet passphrase: ")
+        access.walletpassphrase(pwd, 60)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         print "\n---Wallet unlocked---\n"
     except:
         print "\n---An error occurred---\n"

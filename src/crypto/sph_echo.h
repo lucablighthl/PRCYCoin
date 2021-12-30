@@ -76,6 +76,7 @@ extern "C"{
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[192];    /* first field, for alignment */
     size_t ptr;
     union {
@@ -85,6 +86,17 @@ typedef struct {
 #endif
     } u;
     sph_u32 C0, C1, C2, C3;
+=======
+	unsigned char buf[192];    /* first field, for alignment */
+	size_t ptr;
+	union {
+		sph_u32 Vs[4][4];
+#if SPH_64
+		sph_u64 Vb[4][2];
+#endif
+	} u;
+	sph_u32 C0, C1, C2, C3;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_echo_small_context;
 
@@ -101,6 +113,7 @@ typedef struct {
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[128];    /* first field, for alignment */
     size_t ptr;
     union {
@@ -110,6 +123,17 @@ typedef struct {
 #endif
     } u;
     sph_u32 C0, C1, C2, C3;
+=======
+	unsigned char buf[128];    /* first field, for alignment */
+	size_t ptr;
+	union {
+		sph_u32 Vs[8][4];
+#if SPH_64
+		sph_u64 Vb[8][2];
+#endif
+	} u;
+	sph_u32 C0, C1, C2, C3;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_echo_big_context;
 
@@ -176,7 +200,11 @@ void sph_echo224_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_echo224_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize an ECHO-256 context. This process performs no memory allocation.
@@ -221,7 +249,11 @@ void sph_echo256_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_echo256_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize an ECHO-384 context. This process performs no memory allocation.
@@ -266,7 +298,11 @@ void sph_echo384_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_echo384_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize an ECHO-512 context. This process performs no memory allocation.
@@ -311,8 +347,13 @@ void sph_echo512_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_echo512_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
     
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+	
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #ifdef __cplusplus
 }
 #endif

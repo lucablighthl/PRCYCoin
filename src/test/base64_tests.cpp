@@ -3,11 +3,19 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "utilstrencodings.h"
+<<<<<<< HEAD
 
 #include <boost/test/unit_test.hpp>
 
 #ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(base64_tests)
+=======
+#include "test/test_pivx.h"
+
+#include <boost/test/unit_test.hpp>
+
+BOOST_FIXTURE_TEST_SUITE(base64_tests, BasicTestingSetup)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 BOOST_AUTO_TEST_CASE(base64_testvectors)
 {
@@ -23,4 +31,7 @@ BOOST_AUTO_TEST_CASE(base64_testvectors)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

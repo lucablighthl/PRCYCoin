@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+<<<<<<< HEAD
 #include <algorithm>
 #include <stdint.h>
 #include "leveldb/comparator.h"
@@ -12,10 +13,27 @@
 namespace leveldb {
 
 Comparator::~Comparator() { }
+=======
+#include "leveldb/comparator.h"
+
+#include <algorithm>
+#include <cstdint>
+#include <string>
+#include <type_traits>
+
+#include "leveldb/slice.h"
+#include "util/logging.h"
+#include "util/no_destructor.h"
+
+namespace leveldb {
+
+Comparator::~Comparator() = default;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 namespace {
 class BytewiseComparatorImpl : public Comparator {
  public:
+<<<<<<< HEAD
   BytewiseComparatorImpl() { }
 
   virtual const char* Name() const {
@@ -29,6 +47,18 @@ class BytewiseComparatorImpl : public Comparator {
   virtual void FindShortestSeparator(
       std::string* start,
       const Slice& limit) const {
+=======
+  BytewiseComparatorImpl() = default;
+
+  const char* Name() const override { return "leveldb.BytewiseComparator"; }
+
+  int Compare(const Slice& a, const Slice& b) const override {
+    return a.compare(b);
+  }
+
+  void FindShortestSeparator(std::string* start,
+                             const Slice& limit) const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // Find length of common prefix
     size_t min_length = std::min(start->size(), limit.size());
     size_t diff_index = 0;
@@ -50,14 +80,22 @@ class BytewiseComparatorImpl : public Comparator {
     }
   }
 
+<<<<<<< HEAD
   virtual void FindShortSuccessor(std::string* key) const {
+=======
+  void FindShortSuccessor(std::string* key) const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // Find first character that can be incremented
     size_t n = key->size();
     for (size_t i = 0; i < n; i++) {
       const uint8_t byte = (*key)[i];
       if (byte != static_cast<uint8_t>(0xff)) {
         (*key)[i] = byte + 1;
+<<<<<<< HEAD
         key->resize(i+1);
+=======
+        key->resize(i + 1);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         return;
       }
     }
@@ -66,6 +104,7 @@ class BytewiseComparatorImpl : public Comparator {
 };
 }  // namespace
 
+<<<<<<< HEAD
 static port::OnceType once = LEVELDB_ONCE_INIT;
 static const Comparator* bytewise;
 
@@ -76,6 +115,11 @@ static void InitModule() {
 const Comparator* BytewiseComparator() {
   port::InitOnce(&once, InitModule);
   return bytewise;
+=======
+const Comparator* BytewiseComparator() {
+  static NoDestructor<BytewiseComparatorImpl> singleton;
+  return singleton.get();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 }  // namespace leveldb

@@ -12,7 +12,11 @@ class CBlockIndex;
 class CZMQAbstractPublishNotifier : public CZMQAbstractNotifier
 {
 private:
+<<<<<<< HEAD
     uint32_t nSequence; // upcounting per message sequence number
+=======
+    uint32_t nSequence{0}; // upcounting per message sequence number
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 public:
 
@@ -40,12 +44,15 @@ public:
     bool NotifyTransaction(const CTransaction &transaction);
 };
 
+<<<<<<< HEAD
 class CZMQPublishHashTransactionLockNotifier : public CZMQAbstractPublishNotifier
 {
 public:
     bool NotifyTransactionLock(const CTransaction &transaction);
 };
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 class CZMQPublishRawBlockNotifier : public CZMQAbstractPublishNotifier
 {
 public:
@@ -58,10 +65,13 @@ public:
     bool NotifyTransaction(const CTransaction &transaction);
 };
 
+<<<<<<< HEAD
 class CZMQPublishRawTransactionLockNotifier : public CZMQAbstractPublishNotifier
 {
 public:
     bool NotifyTransactionLock(const CTransaction &transaction);
 };
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif // BITCOIN_ZMQ_ZMQPUBLISHNOTIFIER_H

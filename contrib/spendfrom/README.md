@@ -7,7 +7,11 @@ address (or addresses).
 Depends on [jsonrpc](http://json-rpc.org/).
 
 	spendfrom.py --from=FROMADDRESS1[,FROMADDRESS2] --to=TOADDRESS --amount=amount \
+<<<<<<< HEAD
 	             --fee=fee --datadir=/path/to/.prcycoin --testnet --dry_run
+=======
+	             --fee=fee --datadir=/path/to/.pivx --testnet --dry_run
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 With no arguments, outputs a list of amounts associated with addresses.
 
@@ -16,7 +20,11 @@ With arguments, sends coins received by the `FROMADDRESS` addresses to the `TOAD
 ### Notes ###
 
 - You may explicitly specify how much fee to pay (a fee more than 1% of the amount
+<<<<<<< HEAD
 will fail,  though, to prevent prcycoin-losing accidents). Spendfrom may fail if
+=======
+will fail,  though, to prevent pivx-losing accidents). Spendfrom may fail if
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 it thinks the transaction would never be confirmed (if the amount being sent is
 too small, or if the transaction is too many bytes for the fee).
 

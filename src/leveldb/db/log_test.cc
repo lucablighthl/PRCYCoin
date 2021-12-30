@@ -37,6 +37,7 @@ static std::string RandomSkewedString(int i, Random* rnd) {
 }
 
 class LogTest {
+<<<<<<< HEAD
  private:
   class StringDest : public WritableFile {
    public:
@@ -118,6 +119,14 @@ class LogTest {
               reader_(new Reader(&source_, &report_, true/*checksum*/,
                       0/*initial_offset*/)) {
   }
+=======
+ public:
+  LogTest()
+      : reading_(false),
+        writer_(new Writer(&dest_)),
+        reader_(new Reader(&source_, &report_, true /*checksum*/,
+                           0 /*initial_offset*/)) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   ~LogTest() {
     delete writer_;
@@ -134,9 +143,13 @@ class LogTest {
     writer_->AddRecord(Slice(msg));
   }
 
+<<<<<<< HEAD
   size_t WrittenBytes() const {
     return dest_.contents_.size();
   }
+=======
+  size_t WrittenBytes() const { return dest_.contents_.size(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   std::string Read() {
     if (!reading_) {
@@ -166,11 +179,16 @@ class LogTest {
 
   void FixChecksum(int header_offset, int len) {
     // Compute crc of type/len/data
+<<<<<<< HEAD
     uint32_t crc = crc32c::Value(&dest_.contents_[header_offset+6], 1 + len);
+=======
+    uint32_t crc = crc32c::Value(&dest_.contents_[header_offset + 6], 1 + len);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     crc = crc32c::Mask(crc);
     EncodeFixed32(&dest_.contents_[header_offset], crc);
   }
 
+<<<<<<< HEAD
   void ForceError() {
     source_.force_error_ = true;
   }
@@ -182,6 +200,13 @@ class LogTest {
   std::string ReportMessage() const {
     return report_.message_;
   }
+=======
+  void ForceError() { source_.force_error_ = true; }
+
+  size_t DroppedBytes() const { return report_.dropped_bytes_; }
+
+  std::string ReportMessage() const { return report_.message_; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Returns OK iff recorded error message contains "msg"
   std::string MatchError(const std::string& msg) const {
@@ -202,14 +227,22 @@ class LogTest {
 
   void StartReadingAt(uint64_t initial_offset) {
     delete reader_;
+<<<<<<< HEAD
     reader_ = new Reader(&source_, &report_, true/*checksum*/, initial_offset);
+=======
+    reader_ = new Reader(&source_, &report_, true /*checksum*/, initial_offset);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
 
   void CheckOffsetPastEndReturnsNoRecords(uint64_t offset_past_end) {
     WriteInitialOffsetLog();
     reading_ = true;
     source_.contents_ = Slice(dest_.contents_);
+<<<<<<< HEAD
     Reader* offset_reader = new Reader(&source_, &report_, true/*checksum*/,
+=======
+    Reader* offset_reader = new Reader(&source_, &report_, true /*checksum*/,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                                        WrittenBytes() + offset_past_end);
     Slice record;
     std::string scratch;
@@ -222,8 +255,13 @@ class LogTest {
     WriteInitialOffsetLog();
     reading_ = true;
     source_.contents_ = Slice(dest_.contents_);
+<<<<<<< HEAD
     Reader* offset_reader = new Reader(&source_, &report_, true/*checksum*/,
                                        initial_offset);
+=======
+    Reader* offset_reader =
+        new Reader(&source_, &report_, true /*checksum*/, initial_offset);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     // Read all records from expected_record_offset through the last one.
     ASSERT_LT(expected_record_offset, num_initial_offset_records_);
@@ -240,6 +278,7 @@ class LogTest {
     }
     delete offset_reader;
   }
+<<<<<<< HEAD
 };
 
 size_t LogTest::initial_offset_record_sizes_[] =
@@ -270,6 +309,112 @@ int LogTest::num_initial_offset_records_ =
 TEST(LogTest, Empty) {
   ASSERT_EQ("EOF", Read());
 }
+=======
+
+ private:
+  class StringDest : public WritableFile {
+   public:
+    Status Close() override { return Status::OK(); }
+    Status Flush() override { return Status::OK(); }
+    Status Sync() override { return Status::OK(); }
+    Status Append(const Slice& slice) override {
+      contents_.append(slice.data(), slice.size());
+      return Status::OK();
+    }
+    std::string GetName() const override { return ""; }
+
+    std::string contents_;
+  };
+
+  class StringSource : public SequentialFile {
+   public:
+    StringSource() : force_error_(false), returned_partial_(false) {}
+
+    Status Read(size_t n, Slice* result, char* scratch) override {
+      ASSERT_TRUE(!returned_partial_) << "must not Read() after eof/error";
+
+      if (force_error_) {
+        force_error_ = false;
+        returned_partial_ = true;
+        return Status::Corruption("read error");
+      }
+
+      if (contents_.size() < n) {
+        n = contents_.size();
+        returned_partial_ = true;
+      }
+      *result = Slice(contents_.data(), n);
+      contents_.remove_prefix(n);
+      return Status::OK();
+    }
+
+    Status Skip(uint64_t n) override {
+      if (n > contents_.size()) {
+        contents_.clear();
+        return Status::NotFound("in-memory file skipped past end");
+      }
+
+      contents_.remove_prefix(n);
+
+      return Status::OK();
+    }
+    std::string GetName() const { return ""; }
+
+    Slice contents_;
+    bool force_error_;
+    bool returned_partial_;
+  };
+
+  class ReportCollector : public Reader::Reporter {
+   public:
+    ReportCollector() : dropped_bytes_(0) {}
+    void Corruption(size_t bytes, const Status& status) override {
+      dropped_bytes_ += bytes;
+      message_.append(status.ToString());
+    }
+
+    size_t dropped_bytes_;
+    std::string message_;
+  };
+
+  // Record metadata for testing initial offset functionality
+  static size_t initial_offset_record_sizes_[];
+  static uint64_t initial_offset_last_record_offsets_[];
+  static int num_initial_offset_records_;
+
+  StringDest dest_;
+  StringSource source_;
+  ReportCollector report_;
+  bool reading_;
+  Writer* writer_;
+  Reader* reader_;
+};
+
+size_t LogTest::initial_offset_record_sizes_[] = {
+    10000,  // Two sizable records in first block
+    10000,
+    2 * log::kBlockSize - 1000,  // Span three blocks
+    1,
+    13716,                          // Consume all but two bytes of block 3.
+    log::kBlockSize - kHeaderSize,  // Consume the entirety of block 4.
+};
+
+uint64_t LogTest::initial_offset_last_record_offsets_[] = {
+    0,
+    kHeaderSize + 10000,
+    2 * (kHeaderSize + 10000),
+    2 * (kHeaderSize + 10000) + (2 * log::kBlockSize - 1000) + 3 * kHeaderSize,
+    2 * (kHeaderSize + 10000) + (2 * log::kBlockSize - 1000) + 3 * kHeaderSize +
+        kHeaderSize + 1,
+    3 * log::kBlockSize,
+};
+
+// LogTest::initial_offset_last_record_offsets_ must be defined before this.
+int LogTest::num_initial_offset_records_ =
+    sizeof(LogTest::initial_offset_last_record_offsets_) / sizeof(uint64_t);
+
+TEST(LogTest, Empty) { ASSERT_EQ("EOF", Read()); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(LogTest, ReadWrite) {
   Write("foo");
@@ -306,7 +451,11 @@ TEST(LogTest, Fragmentation) {
 
 TEST(LogTest, MarginalTrailer) {
   // Make a trailer that is exactly the same length as an empty record.
+<<<<<<< HEAD
   const int n = kBlockSize - 2*kHeaderSize;
+=======
+  const int n = kBlockSize - 2 * kHeaderSize;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Write(BigString("foo", n));
   ASSERT_EQ(kBlockSize - kHeaderSize, WrittenBytes());
   Write("");
@@ -319,7 +468,11 @@ TEST(LogTest, MarginalTrailer) {
 
 TEST(LogTest, MarginalTrailer2) {
   // Make a trailer that is exactly the same length as an empty record.
+<<<<<<< HEAD
   const int n = kBlockSize - 2*kHeaderSize;
+=======
+  const int n = kBlockSize - 2 * kHeaderSize;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Write(BigString("foo", n));
   ASSERT_EQ(kBlockSize - kHeaderSize, WrittenBytes());
   Write("bar");
@@ -331,7 +484,11 @@ TEST(LogTest, MarginalTrailer2) {
 }
 
 TEST(LogTest, ShortTrailer) {
+<<<<<<< HEAD
   const int n = kBlockSize - 2*kHeaderSize + 4;
+=======
+  const int n = kBlockSize - 2 * kHeaderSize + 4;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Write(BigString("foo", n));
   ASSERT_EQ(kBlockSize - kHeaderSize + 4, WrittenBytes());
   Write("");
@@ -343,7 +500,11 @@ TEST(LogTest, ShortTrailer) {
 }
 
 TEST(LogTest, AlignedEof) {
+<<<<<<< HEAD
   const int n = kBlockSize - 2*kHeaderSize + 4;
+=======
+  const int n = kBlockSize - 2 * kHeaderSize + 4;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Write(BigString("foo", n));
   ASSERT_EQ(kBlockSize - kHeaderSize + 4, WrittenBytes());
   ASSERT_EQ(BigString("foo", n), Read());
@@ -394,7 +555,11 @@ TEST(LogTest, BadRecordType) {
 
 TEST(LogTest, TruncatedTrailingRecordIsIgnored) {
   Write("foo");
+<<<<<<< HEAD
   ShrinkSize(4);   // Drop all payload as well as a header byte
+=======
+  ShrinkSize(4);  // Drop all payload as well as a header byte
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   ASSERT_EQ("EOF", Read());
   // Truncated last record is ignored, not treated as an error.
   ASSERT_EQ(0, DroppedBytes());
@@ -492,7 +657,11 @@ TEST(LogTest, SkipIntoMultiRecord) {
   // If initial_offset points to a record after first(R1) but before first(R2)
   // incomplete fragment errors are not actual errors, and must be suppressed
   // until a new first or full record is encountered.
+<<<<<<< HEAD
   Write(BigString("foo", 3*kBlockSize));
+=======
+  Write(BigString("foo", 3 * kBlockSize));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Write("correct");
   StartReadingAt(kBlockSize);
 
@@ -514,13 +683,18 @@ TEST(LogTest, ErrorJoinsRecords) {
   Write("correct");
 
   // Wipe the middle block
+<<<<<<< HEAD
   for (int offset = kBlockSize; offset < 2*kBlockSize; offset++) {
+=======
+  for (int offset = kBlockSize; offset < 2 * kBlockSize; offset++) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     SetByte(offset, 'x');
   }
 
   ASSERT_EQ("correct", Read());
   ASSERT_EQ("EOF", Read());
   const size_t dropped = DroppedBytes();
+<<<<<<< HEAD
   ASSERT_LE(dropped, 2*kBlockSize + 100);
   ASSERT_GE(dropped, 2*kBlockSize);
 }
@@ -552,6 +726,25 @@ TEST(LogTest, ReadThirdStart) {
 TEST(LogTest, ReadFourthOneOff) {
   CheckInitialOffsetRecord(20015, 3);
 }
+=======
+  ASSERT_LE(dropped, 2 * kBlockSize + 100);
+  ASSERT_GE(dropped, 2 * kBlockSize);
+}
+
+TEST(LogTest, ReadStart) { CheckInitialOffsetRecord(0, 0); }
+
+TEST(LogTest, ReadSecondOneOff) { CheckInitialOffsetRecord(1, 1); }
+
+TEST(LogTest, ReadSecondTenThousand) { CheckInitialOffsetRecord(10000, 1); }
+
+TEST(LogTest, ReadSecondStart) { CheckInitialOffsetRecord(10007, 1); }
+
+TEST(LogTest, ReadThirdOneOff) { CheckInitialOffsetRecord(10008, 2); }
+
+TEST(LogTest, ReadThirdStart) { CheckInitialOffsetRecord(20014, 2); }
+
+TEST(LogTest, ReadFourthOneOff) { CheckInitialOffsetRecord(20015, 3); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(LogTest, ReadFourthFirstBlockTrailer) {
   CheckInitialOffsetRecord(log::kBlockSize - 4, 3);
@@ -575,6 +768,7 @@ TEST(LogTest, ReadInitialOffsetIntoBlockPadding) {
   CheckInitialOffsetRecord(3 * log::kBlockSize - 3, 5);
 }
 
+<<<<<<< HEAD
 TEST(LogTest, ReadEnd) {
   CheckOffsetPastEndReturnsNoRecords(0);
 }
@@ -582,10 +776,19 @@ TEST(LogTest, ReadEnd) {
 TEST(LogTest, ReadPastEnd) {
   CheckOffsetPastEndReturnsNoRecords(5);
 }
+=======
+TEST(LogTest, ReadEnd) { CheckOffsetPastEndReturnsNoRecords(0); }
+
+TEST(LogTest, ReadPastEnd) { CheckOffsetPastEndReturnsNoRecords(5); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 }  // namespace log
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

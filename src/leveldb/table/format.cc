@@ -21,8 +21,12 @@ void BlockHandle::EncodeTo(std::string* dst) const {
 }
 
 Status BlockHandle::DecodeFrom(Slice* input) {
+<<<<<<< HEAD
   if (GetVarint64(input, &offset_) &&
       GetVarint64(input, &size_)) {
+=======
+  if (GetVarint64(input, &offset_) && GetVarint64(input, &size_)) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return Status::OK();
   } else {
     return Status::Corruption("bad block handle");
@@ -62,10 +66,15 @@ Status Footer::DecodeFrom(Slice* input) {
   return result;
 }
 
+<<<<<<< HEAD
 Status ReadBlock(RandomAccessFile* file,
                  const ReadOptions& options,
                  const BlockHandle& handle,
                  BlockContents* result) {
+=======
+Status ReadBlock(RandomAccessFile* file, const ReadOptions& options,
+                 const BlockHandle& handle, BlockContents* result) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   result->data = Slice();
   result->cachable = false;
   result->heap_allocated = false;
@@ -86,7 +95,11 @@ Status ReadBlock(RandomAccessFile* file,
   }
 
   // Check the crc of the type and the block contents
+<<<<<<< HEAD
   const char* data = contents.data();    // Pointer to where Read put the data
+=======
+  const char* data = contents.data();  // Pointer to where Read put the data
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   if (options.verify_checksums) {
     const uint32_t crc = crc32c::Unmask(DecodeFixed32(data + n + 1));
     const uint32_t actual = crc32c::Value(data, n + 1);

@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 // Copyright (c) 2015 The Bitcoin Core developers
+=======
+// Copyright (c) 2015-2017 The Bitcoin Core developers
+// Copyright (c) 2017-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,6 +15,7 @@
 
 #include <string>
 
+<<<<<<< HEAD
 #include <boost/function.hpp>
 #include <boost/chrono/chrono.hpp>
 #include <boost/thread.hpp>
@@ -18,6 +24,12 @@ extern const std::string DEFAULT_TOR_CONTROL;
 static const bool DEFAULT_LISTEN_ONION = true;
 
 void StartTorControl(boost::thread_group& threadGroup);
+=======
+extern const std::string DEFAULT_TOR_CONTROL;
+static const bool DEFAULT_LISTEN_ONION = true;
+
+void StartTorControl();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 void InterruptTorControl();
 void StopTorControl();
 

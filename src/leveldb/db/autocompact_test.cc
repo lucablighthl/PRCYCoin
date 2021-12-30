@@ -2,9 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file. See the AUTHORS file for names of contributors.
 
+<<<<<<< HEAD
 #include "leveldb/db.h"
 #include "db/db_impl.h"
 #include "leveldb/cache.h"
+=======
+#include "db/db_impl.h"
+#include "leveldb/cache.h"
+#include "leveldb/db.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "util/testharness.h"
 #include "util/testutil.h"
 
@@ -12,11 +18,14 @@ namespace leveldb {
 
 class AutoCompactTest {
  public:
+<<<<<<< HEAD
   std::string dbname_;
   Cache* tiny_cache_;
   Options options_;
   DB* db_;
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   AutoCompactTest() {
     dbname_ = test::TmpDir() + "/autocompact_test";
     tiny_cache_ = NewLRUCache(100);
@@ -47,6 +56,15 @@ class AutoCompactTest {
   }
 
   void DoReads(int n);
+<<<<<<< HEAD
+=======
+
+ private:
+  std::string dbname_;
+  Cache* tiny_cache_;
+  Options options_;
+  DB* db_;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 static const int kValueSize = 200 * 1024;
@@ -81,17 +99,27 @@ void AutoCompactTest::DoReads(int n) {
     ASSERT_LT(read, 100) << "Taking too long to compact";
     Iterator* iter = db_->NewIterator(ReadOptions());
     for (iter->SeekToFirst();
+<<<<<<< HEAD
          iter->Valid() && iter->key().ToString() < limit_key;
          iter->Next()) {
+=======
+         iter->Valid() && iter->key().ToString() < limit_key; iter->Next()) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       // Drop data
     }
     delete iter;
     // Wait a little bit to allow any triggered compactions to complete.
     Env::Default()->SleepForMicroseconds(1000000);
     uint64_t size = Size(Key(0), Key(n));
+<<<<<<< HEAD
     fprintf(stderr, "iter %3d => %7.3f MB [other %7.3f MB]\n",
             read+1, size/1048576.0, Size(Key(n), Key(kCount))/1048576.0);
     if (size <= initial_size/10) {
+=======
+    fprintf(stderr, "iter %3d => %7.3f MB [other %7.3f MB]\n", read + 1,
+            size / 1048576.0, Size(Key(n), Key(kCount)) / 1048576.0);
+    if (size <= initial_size / 10) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       break;
     }
   }
@@ -100,6 +128,7 @@ void AutoCompactTest::DoReads(int n) {
   // is pretty much unchanged.
   const int64_t final_other_size = Size(Key(n), Key(kCount));
   ASSERT_LE(final_other_size, initial_other_size + 1048576);
+<<<<<<< HEAD
   ASSERT_GE(final_other_size, initial_other_size/5 - 1048576);
 }
 
@@ -116,3 +145,15 @@ TEST(AutoCompactTest, ReadHalf) {
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+  ASSERT_GE(final_other_size, initial_other_size / 5 - 1048576);
+}
+
+TEST(AutoCompactTest, ReadAll) { DoReads(kCount); }
+
+TEST(AutoCompactTest, ReadHalf) { DoReads(kCount / 2); }
+
+}  // namespace leveldb
+
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

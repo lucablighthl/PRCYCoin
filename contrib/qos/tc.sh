@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+=======
+#!/usr/bin/env bash
+#
+# Copyright (c) 2017 The Bitcoin Core developers
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+export LC_ALL=C
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #network interface on which to limit traffic
 IF="eth0"
 #limit of the network interface in question
@@ -32,10 +42,19 @@ tc filter add dev ${IF} parent 1: protocol ip prio 2 handle 2 fw classid 1:11
 #	ret=$?
 #done
 
+<<<<<<< HEAD
 #limit outgoing traffic to and from port 59682. but not when dealing with a host on the local network
+=======
+#limit outgoing traffic to and from port 51472. but not when dealing with a host on the local network
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #	(defined by $LOCALNET)
 #	--set-mark marks packages matching these criteria with the number "2"
 #	these packages are filtered by the tc filter with "handle 2"
 #	this filter sends the packages into the 1:11 class, and this class is limited to ${LIMIT}
+<<<<<<< HEAD
 iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 59682 ! -d ${LOCALNET} -j MARK --set-mark 0x2
 iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 59682 ! -d ${LOCALNET} -j MARK --set-mark 0x2
+=======
+iptables -t mangle -A OUTPUT -p tcp -m tcp --dport 51472 ! -d ${LOCALNET} -j MARK --set-mark 0x2
+iptables -t mangle -A OUTPUT -p tcp -m tcp --sport 51472 ! -d ${LOCALNET} -j MARK --set-mark 0x2
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

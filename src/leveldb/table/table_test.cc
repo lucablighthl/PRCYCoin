@@ -6,6 +6,10 @@
 
 #include <map>
 #include <string>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "db/dbformat.h"
 #include "db/memtable.h"
 #include "db/write_batch_internal.h"
@@ -27,8 +31,13 @@ namespace leveldb {
 static std::string Reverse(const Slice& key) {
   std::string str(key.ToString());
   std::string rev("");
+<<<<<<< HEAD
   for (std::string::reverse_iterator rit = str.rbegin();
        rit != str.rend(); ++rit) {
+=======
+  for (std::string::reverse_iterator rit = str.rbegin(); rit != str.rend();
+       ++rit) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     rev.push_back(*rit);
   }
   return rev;
@@ -37,6 +46,7 @@ static std::string Reverse(const Slice& key) {
 namespace {
 class ReverseKeyComparator : public Comparator {
  public:
+<<<<<<< HEAD
   virtual const char* Name() const {
     return "leveldb.ReverseBytewiseComparator";
   }
@@ -48,13 +58,29 @@ class ReverseKeyComparator : public Comparator {
   virtual void FindShortestSeparator(
       std::string* start,
       const Slice& limit) const {
+=======
+  const char* Name() const override {
+    return "leveldb.ReverseBytewiseComparator";
+  }
+
+  int Compare(const Slice& a, const Slice& b) const override {
+    return BytewiseComparator()->Compare(Reverse(a), Reverse(b));
+  }
+
+  void FindShortestSeparator(std::string* start,
+                             const Slice& limit) const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     std::string s = Reverse(*start);
     std::string l = Reverse(limit);
     BytewiseComparator()->FindShortestSeparator(&s, l);
     *start = Reverse(s);
   }
 
+<<<<<<< HEAD
   virtual void FindShortSuccessor(std::string* key) const {
+=======
+  void FindShortSuccessor(std::string* key) const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     std::string s = Reverse(*key);
     BytewiseComparator()->FindShortSuccessor(&s);
     *key = Reverse(s);
@@ -79,14 +105,20 @@ namespace {
 struct STLLessThan {
   const Comparator* cmp;
 
+<<<<<<< HEAD
   STLLessThan() : cmp(BytewiseComparator()) { }
   STLLessThan(const Comparator* c) : cmp(c) { }
+=======
+  STLLessThan() : cmp(BytewiseComparator()) {}
+  STLLessThan(const Comparator* c) : cmp(c) {}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   bool operator()(const std::string& a, const std::string& b) const {
     return cmp->Compare(Slice(a), Slice(b)) < 0;
   }
 };
 }  // namespace
 
+<<<<<<< HEAD
 class StringSink: public WritableFile {
  public:
   ~StringSink() { }
@@ -98,14 +130,32 @@ class StringSink: public WritableFile {
   virtual Status Sync() { return Status::OK(); }
 
   virtual Status Append(const Slice& data) {
+=======
+class StringSink : public WritableFile {
+ public:
+  ~StringSink() override = default;
+
+  const std::string& contents() const { return contents_; }
+
+  Status Close() override { return Status::OK(); }
+  Status Flush() override { return Status::OK(); }
+  Status Sync() override { return Status::OK(); }
+
+  Status Append(const Slice& data) override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     contents_.append(data.data(), data.size());
     return Status::OK();
   }
 
+<<<<<<< HEAD
+=======
+  std::string GetName() const override { return ""; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  private:
   std::string contents_;
 };
 
+<<<<<<< HEAD
 
 class StringSource: public RandomAccessFile {
  public:
@@ -120,6 +170,20 @@ class StringSource: public RandomAccessFile {
   virtual Status Read(uint64_t offset, size_t n, Slice* result,
                        char* scratch) const {
     if (offset > contents_.size()) {
+=======
+class StringSource : public RandomAccessFile {
+ public:
+  StringSource(const Slice& contents)
+      : contents_(contents.data(), contents.size()) {}
+
+  ~StringSource() override = default;
+
+  uint64_t Size() const { return contents_.size(); }
+
+  Status Read(uint64_t offset, size_t n, Slice* result,
+              char* scratch) const override {
+    if (offset >= contents_.size()) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       return Status::InvalidArgument("invalid Read offset");
     }
     if (offset + n > contents_.size()) {
@@ -130,6 +194,10 @@ class StringSource: public RandomAccessFile {
     return Status::OK();
   }
 
+<<<<<<< HEAD
+=======
+  std::string GetName() const { return ""; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  private:
   std::string contents_;
 };
@@ -140,8 +208,13 @@ typedef std::map<std::string, std::string, STLLessThan> KVMap;
 // BlockBuilder/TableBuilder and Block/Table.
 class Constructor {
  public:
+<<<<<<< HEAD
   explicit Constructor(const Comparator* cmp) : data_(STLLessThan(cmp)) { }
   virtual ~Constructor() { }
+=======
+  explicit Constructor(const Comparator* cmp) : data_(STLLessThan(cmp)) {}
+  virtual ~Constructor() = default;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   void Add(const std::string& key, const Slice& value) {
     data_[key] = value.ToString();
@@ -150,6 +223,7 @@ class Constructor {
   // Finish constructing the data structure with all the keys that have
   // been added so far.  Returns the keys in sorted order in "*keys"
   // and stores the key/value pairs in "*kvmap"
+<<<<<<< HEAD
   void Finish(const Options& options,
               std::vector<std::string>* keys,
               KVMap* kvmap) {
@@ -159,6 +233,14 @@ class Constructor {
          it != data_.end();
          ++it) {
       keys->push_back(it->first);
+=======
+  void Finish(const Options& options, std::vector<std::string>* keys,
+              KVMap* kvmap) {
+    *kvmap = data_;
+    keys->clear();
+    for (const auto& kvp : data_) {
+      keys->push_back(kvp.first);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
     data_.clear();
     Status s = FinishImpl(options, *kvmap);
@@ -170,14 +252,21 @@ class Constructor {
 
   virtual Iterator* NewIterator() const = 0;
 
+<<<<<<< HEAD
   virtual const KVMap& data() { return data_; }
 
   virtual DB* db() const { return NULL; }  // Overridden in DBConstructor
+=======
+  const KVMap& data() const { return data_; }
+
+  virtual DB* db() const { return nullptr; }  // Overridden in DBConstructor
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
  private:
   KVMap data_;
 };
 
+<<<<<<< HEAD
 class BlockConstructor: public Constructor {
  public:
   explicit BlockConstructor(const Comparator* cmp)
@@ -196,6 +285,20 @@ class BlockConstructor: public Constructor {
          it != data.end();
          ++it) {
       builder.Add(it->first, it->second);
+=======
+class BlockConstructor : public Constructor {
+ public:
+  explicit BlockConstructor(const Comparator* cmp)
+      : Constructor(cmp), comparator_(cmp), block_(nullptr) {}
+  ~BlockConstructor() override { delete block_; }
+  Status FinishImpl(const Options& options, const KVMap& data) override {
+    delete block_;
+    block_ = nullptr;
+    BlockBuilder builder(&options);
+
+    for (const auto& kvp : data) {
+      builder.Add(kvp.first, kvp.second);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
     // Open the block
     data_ = builder.Finish().ToString();
@@ -206,18 +309,27 @@ class BlockConstructor: public Constructor {
     block_ = new Block(contents);
     return Status::OK();
   }
+<<<<<<< HEAD
   virtual Iterator* NewIterator() const {
+=======
+  Iterator* NewIterator() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return block_->NewIterator(comparator_);
   }
 
  private:
+<<<<<<< HEAD
   const Comparator* comparator_;
+=======
+  const Comparator* const comparator_;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   std::string data_;
   Block* block_;
 
   BlockConstructor();
 };
 
+<<<<<<< HEAD
 class TableConstructor: public Constructor {
  public:
   TableConstructor(const Comparator* cmp)
@@ -228,14 +340,27 @@ class TableConstructor: public Constructor {
     Reset();
   }
   virtual Status FinishImpl(const Options& options, const KVMap& data) {
+=======
+class TableConstructor : public Constructor {
+ public:
+  TableConstructor(const Comparator* cmp)
+      : Constructor(cmp), source_(nullptr), table_(nullptr) {}
+  ~TableConstructor() override { Reset(); }
+  Status FinishImpl(const Options& options, const KVMap& data) override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     Reset();
     StringSink sink;
     TableBuilder builder(options, &sink);
 
+<<<<<<< HEAD
     for (KVMap::const_iterator it = data.begin();
          it != data.end();
          ++it) {
       builder.Add(it->first, it->second);
+=======
+    for (const auto& kvp : data) {
+      builder.Add(kvp.first, kvp.second);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       ASSERT_TRUE(builder.status().ok());
     }
     Status s = builder.Finish();
@@ -250,7 +375,11 @@ class TableConstructor: public Constructor {
     return Table::Open(table_options, source_, sink.contents().size(), &table_);
   }
 
+<<<<<<< HEAD
   virtual Iterator* NewIterator() const {
+=======
+  Iterator* NewIterator() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return table_->NewIterator(ReadOptions());
   }
 
@@ -262,8 +391,13 @@ class TableConstructor: public Constructor {
   void Reset() {
     delete table_;
     delete source_;
+<<<<<<< HEAD
     table_ = NULL;
     source_ = NULL;
+=======
+    table_ = nullptr;
+    source_ = nullptr;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
 
   StringSource* source_;
@@ -273,23 +407,46 @@ class TableConstructor: public Constructor {
 };
 
 // A helper class that converts internal format keys into user keys
+<<<<<<< HEAD
 class KeyConvertingIterator: public Iterator {
  public:
   explicit KeyConvertingIterator(Iterator* iter) : iter_(iter) { }
   virtual ~KeyConvertingIterator() { delete iter_; }
   virtual bool Valid() const { return iter_->Valid(); }
   virtual void Seek(const Slice& target) {
+=======
+class KeyConvertingIterator : public Iterator {
+ public:
+  explicit KeyConvertingIterator(Iterator* iter) : iter_(iter) {}
+
+  KeyConvertingIterator(const KeyConvertingIterator&) = delete;
+  KeyConvertingIterator& operator=(const KeyConvertingIterator&) = delete;
+
+  ~KeyConvertingIterator() override { delete iter_; }
+
+  bool Valid() const override { return iter_->Valid(); }
+  void Seek(const Slice& target) override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     ParsedInternalKey ikey(target, kMaxSequenceNumber, kTypeValue);
     std::string encoded;
     AppendInternalKey(&encoded, ikey);
     iter_->Seek(encoded);
   }
+<<<<<<< HEAD
   virtual void SeekToFirst() { iter_->SeekToFirst(); }
   virtual void SeekToLast() { iter_->SeekToLast(); }
   virtual void Next() { iter_->Next(); }
   virtual void Prev() { iter_->Prev(); }
 
   virtual Slice key() const {
+=======
+  void SeekToFirst() override { iter_->SeekToFirst(); }
+  void SeekToLast() override { iter_->SeekToLast(); }
+  void Next() override { iter_->Next(); }
+  void Prev() override { iter_->Prev(); }
+
+  Slice key() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     assert(Valid());
     ParsedInternalKey key;
     if (!ParseInternalKey(iter_->key(), &key)) {
@@ -299,14 +456,20 @@ class KeyConvertingIterator: public Iterator {
     return key.user_key;
   }
 
+<<<<<<< HEAD
   virtual Slice value() const { return iter_->value(); }
   virtual Status status() const {
+=======
+  Slice value() const override { return iter_->value(); }
+  Status status() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return status_.ok() ? iter_->status() : status_;
   }
 
  private:
   mutable Status status_;
   Iterator* iter_;
+<<<<<<< HEAD
 
   // No copying allowed
   KeyConvertingIterator(const KeyConvertingIterator&);
@@ -325,23 +488,46 @@ class MemTableConstructor: public Constructor {
     memtable_->Unref();
   }
   virtual Status FinishImpl(const Options& options, const KVMap& data) {
+=======
+};
+
+class MemTableConstructor : public Constructor {
+ public:
+  explicit MemTableConstructor(const Comparator* cmp)
+      : Constructor(cmp), internal_comparator_(cmp) {
+    memtable_ = new MemTable(internal_comparator_);
+    memtable_->Ref();
+  }
+  ~MemTableConstructor() override { memtable_->Unref(); }
+  Status FinishImpl(const Options& options, const KVMap& data) override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     memtable_->Unref();
     memtable_ = new MemTable(internal_comparator_);
     memtable_->Ref();
     int seq = 1;
+<<<<<<< HEAD
     for (KVMap::const_iterator it = data.begin();
          it != data.end();
          ++it) {
       memtable_->Add(seq, kTypeValue, it->first, it->second);
+=======
+    for (const auto& kvp : data) {
+      memtable_->Add(seq, kTypeValue, kvp.first, kvp.second);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       seq++;
     }
     return Status::OK();
   }
+<<<<<<< HEAD
   virtual Iterator* NewIterator() const {
+=======
+  Iterator* NewIterator() const override {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return new KeyConvertingIterator(memtable_->NewIterator());
   }
 
  private:
+<<<<<<< HEAD
   InternalKeyComparator internal_comparator_;
   MemTable* memtable_;
 };
@@ -366,15 +552,44 @@ class DBConstructor: public Constructor {
          ++it) {
       WriteBatch batch;
       batch.Put(it->first, it->second);
+=======
+  const InternalKeyComparator internal_comparator_;
+  MemTable* memtable_;
+};
+
+class DBConstructor : public Constructor {
+ public:
+  explicit DBConstructor(const Comparator* cmp)
+      : Constructor(cmp), comparator_(cmp) {
+    db_ = nullptr;
+    NewDB();
+  }
+  ~DBConstructor() override { delete db_; }
+  Status FinishImpl(const Options& options, const KVMap& data) override {
+    delete db_;
+    db_ = nullptr;
+    NewDB();
+    for (const auto& kvp : data) {
+      WriteBatch batch;
+      batch.Put(kvp.first, kvp.second);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       ASSERT_TRUE(db_->Write(WriteOptions(), &batch).ok());
     }
     return Status::OK();
   }
+<<<<<<< HEAD
   virtual Iterator* NewIterator() const {
     return db_->NewIterator(ReadOptions());
   }
 
   virtual DB* db() const { return db_; }
+=======
+  Iterator* NewIterator() const override {
+    return db_->NewIterator(ReadOptions());
+  }
+
+  DB* db() const override { return db_; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
  private:
   void NewDB() {
@@ -392,6 +607,7 @@ class DBConstructor: public Constructor {
     ASSERT_TRUE(status.ok()) << status.ToString();
   }
 
+<<<<<<< HEAD
   const Comparator* comparator_;
   DB* db_;
 };
@@ -402,6 +618,13 @@ enum TestType {
   MEMTABLE_TEST,
   DB_TEST
 };
+=======
+  const Comparator* const comparator_;
+  DB* db_;
+};
+
+enum TestType { TABLE_TEST, BLOCK_TEST, MEMTABLE_TEST, DB_TEST };
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 struct TestArgs {
   TestType type;
@@ -410,6 +633,7 @@ struct TestArgs {
 };
 
 static const TestArgs kTestArgList[] = {
+<<<<<<< HEAD
   { TABLE_TEST, false, 16 },
   { TABLE_TEST, false, 1 },
   { TABLE_TEST, false, 1024 },
@@ -431,16 +655,47 @@ static const TestArgs kTestArgList[] = {
   // Do not bother with restart interval variations for DB
   { DB_TEST, false, 16 },
   { DB_TEST, true, 16 },
+=======
+    {TABLE_TEST, false, 16},
+    {TABLE_TEST, false, 1},
+    {TABLE_TEST, false, 1024},
+    {TABLE_TEST, true, 16},
+    {TABLE_TEST, true, 1},
+    {TABLE_TEST, true, 1024},
+
+    {BLOCK_TEST, false, 16},
+    {BLOCK_TEST, false, 1},
+    {BLOCK_TEST, false, 1024},
+    {BLOCK_TEST, true, 16},
+    {BLOCK_TEST, true, 1},
+    {BLOCK_TEST, true, 1024},
+
+    // Restart interval does not matter for memtables
+    {MEMTABLE_TEST, false, 16},
+    {MEMTABLE_TEST, true, 16},
+
+    // Do not bother with restart interval variations for DB
+    {DB_TEST, false, 16},
+    {DB_TEST, true, 16},
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 static const int kNumTestArgs = sizeof(kTestArgList) / sizeof(kTestArgList[0]);
 
 class Harness {
  public:
+<<<<<<< HEAD
   Harness() : constructor_(NULL) { }
 
   void Init(const TestArgs& args) {
     delete constructor_;
     constructor_ = NULL;
+=======
+  Harness() : constructor_(nullptr) {}
+
+  void Init(const TestArgs& args) {
+    delete constructor_;
+    constructor_ = nullptr;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     options_ = Options();
 
     options_.block_restart_interval = args.restart_interval;
@@ -466,9 +721,13 @@ class Harness {
     }
   }
 
+<<<<<<< HEAD
   ~Harness() {
     delete constructor_;
   }
+=======
+  ~Harness() { delete constructor_; }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   void Add(const std::string& key, const std::string& value) {
     constructor_->Add(key, value);
@@ -490,8 +749,12 @@ class Harness {
     ASSERT_TRUE(!iter->Valid());
     iter->SeekToFirst();
     for (KVMap::const_iterator model_iter = data.begin();
+<<<<<<< HEAD
          model_iter != data.end();
          ++model_iter) {
+=======
+         model_iter != data.end(); ++model_iter) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       ASSERT_EQ(ToString(data, model_iter), ToString(iter));
       iter->Next();
     }
@@ -505,8 +768,12 @@ class Harness {
     ASSERT_TRUE(!iter->Valid());
     iter->SeekToLast();
     for (KVMap::const_reverse_iterator model_iter = data.rbegin();
+<<<<<<< HEAD
          model_iter != data.rend();
          ++model_iter) {
+=======
+         model_iter != data.rend(); ++model_iter) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       ASSERT_EQ(ToString(data, model_iter), ToString(iter));
       iter->Prev();
     }
@@ -514,8 +781,12 @@ class Harness {
     delete iter;
   }
 
+<<<<<<< HEAD
   void TestRandomAccess(Random* rnd,
                         const std::vector<std::string>& keys,
+=======
+  void TestRandomAccess(Random* rnd, const std::vector<std::string>& keys,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                         const KVMap& data) {
     static const bool kVerbose = false;
     Iterator* iter = constructor_->NewIterator();
@@ -546,8 +817,13 @@ class Harness {
         case 2: {
           std::string key = PickRandomKey(rnd, keys);
           model_iter = data.lower_bound(key);
+<<<<<<< HEAD
           if (kVerbose) fprintf(stderr, "Seek '%s'\n",
                                 EscapeString(key).c_str());
+=======
+          if (kVerbose)
+            fprintf(stderr, "Seek '%s'\n", EscapeString(key).c_str());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
           iter->Seek(Slice(key));
           ASSERT_EQ(ToString(data, model_iter), ToString(iter));
           break;
@@ -558,7 +834,11 @@ class Harness {
             if (kVerbose) fprintf(stderr, "Prev\n");
             iter->Prev();
             if (model_iter == data.begin()) {
+<<<<<<< HEAD
               model_iter = data.end();   // Wrap around to invalid value
+=======
+              model_iter = data.end();  // Wrap around to invalid value
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             } else {
               --model_iter;
             }
@@ -621,8 +901,13 @@ class Harness {
           break;
         case 1: {
           // Attempt to return something smaller than an existing key
+<<<<<<< HEAD
           if (result.size() > 0 && result[result.size()-1] > '\0') {
             result[result.size()-1]--;
+=======
+          if (!result.empty() && result[result.size() - 1] > '\0') {
+            result[result.size() - 1]--;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
           }
           break;
         }
@@ -636,7 +921,11 @@ class Harness {
     }
   }
 
+<<<<<<< HEAD
   // Returns NULL if not running against a DB
+=======
+  // Returns nullptr if not running against a DB
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   DB* db() const { return constructor_->db(); }
 
  private:
@@ -720,8 +1009,13 @@ TEST(Harness, Randomized) {
     for (int num_entries = 0; num_entries < 2000;
          num_entries += (num_entries < 50 ? 1 : 200)) {
       if ((num_entries % 10) == 0) {
+<<<<<<< HEAD
         fprintf(stderr, "case %d of %d: num_entries = %d\n",
                 (i + 1), int(kNumTestArgs), num_entries);
+=======
+        fprintf(stderr, "case %d of %d: num_entries = %d\n", (i + 1),
+                int(kNumTestArgs), num_entries);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       }
       for (int e = 0; e < num_entries; e++) {
         std::string v;
@@ -735,7 +1029,11 @@ TEST(Harness, Randomized) {
 
 TEST(Harness, RandomizedLongDB) {
   Random rnd(test::RandomSeed());
+<<<<<<< HEAD
   TestArgs args = { DB_TEST, false, 16 };
+=======
+  TestArgs args = {DB_TEST, false, 16};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Init(args);
   int num_entries = 100000;
   for (int e = 0; e < num_entries; e++) {
@@ -757,7 +1055,11 @@ TEST(Harness, RandomizedLongDB) {
   ASSERT_GT(files, 0);
 }
 
+<<<<<<< HEAD
 class MemTableTest { };
+=======
+class MemTableTest {};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(MemTableTest, Simple) {
   InternalKeyComparator cmp(BytewiseComparator());
@@ -774,8 +1076,12 @@ TEST(MemTableTest, Simple) {
   Iterator* iter = memtable->NewIterator();
   iter->SeekToFirst();
   while (iter->Valid()) {
+<<<<<<< HEAD
     fprintf(stderr, "key: '%s' -> '%s'\n",
             iter->key().ToString().c_str(),
+=======
+    fprintf(stderr, "key: '%s' -> '%s'\n", iter->key().ToString().c_str(),
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             iter->value().ToString().c_str());
     iter->Next();
   }
@@ -788,14 +1094,22 @@ static bool Between(uint64_t val, uint64_t low, uint64_t high) {
   bool result = (val >= low) && (val <= high);
   if (!result) {
     fprintf(stderr, "Value %llu is not in range [%llu, %llu]\n",
+<<<<<<< HEAD
             (unsigned long long)(val),
             (unsigned long long)(low),
+=======
+            (unsigned long long)(val), (unsigned long long)(low),
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             (unsigned long long)(high));
   }
   return result;
 }
 
+<<<<<<< HEAD
 class TableTest { };
+=======
+class TableTest {};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(TableTest, ApproximateOffsetOfPlain) {
   TableConstructor c(BytewiseComparator());
@@ -813,6 +1127,7 @@ TEST(TableTest, ApproximateOffsetOfPlain) {
   options.compression = kNoCompression;
   c.Finish(options, &keys, &kvmap);
 
+<<<<<<< HEAD
   ASSERT_TRUE(Between(c.ApproximateOffsetOf("abc"),       0,      0));
   ASSERT_TRUE(Between(c.ApproximateOffsetOf("k01"),       0,      0));
   ASSERT_TRUE(Between(c.ApproximateOffsetOf("k01a"),      0,      0));
@@ -825,6 +1140,19 @@ TEST(TableTest, ApproximateOffsetOfPlain) {
   ASSERT_TRUE(Between(c.ApproximateOffsetOf("k07"),  510000, 511000));
   ASSERT_TRUE(Between(c.ApproximateOffsetOf("xyz"),  610000, 612000));
 
+=======
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("abc"), 0, 0));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k01"), 0, 0));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k01a"), 0, 0));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k02"), 0, 0));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k03"), 0, 0));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k04"), 10000, 11000));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k04a"), 210000, 211000));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k05"), 210000, 211000));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k06"), 510000, 511000));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("k07"), 510000, 511000));
+  ASSERT_TRUE(Between(c.ApproximateOffsetOf("xyz"), 610000, 612000));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 static bool SnappyCompressionSupported() {
@@ -855,7 +1183,11 @@ TEST(TableTest, ApproximateOffsetOfCompressed) {
 
   // Expected upper and lower bounds of space used by compressible strings.
   static const int kSlop = 1000;  // Compressor effectiveness varies.
+<<<<<<< HEAD
   const int expected = 2500;  // 10000 * compression ratio (0.25)
+=======
+  const int expected = 2500;      // 10000 * compression ratio (0.25)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   const int min_z = expected - kSlop;
   const int max_z = expected + kSlop;
 
@@ -871,6 +1203,10 @@ TEST(TableTest, ApproximateOffsetOfCompressed) {
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

@@ -1,6 +1,10 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2018-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -52,6 +56,7 @@ public:
     void refreshBanlist()
     {
         banmap_t banMap;
+<<<<<<< HEAD
         CNode::GetBanned(banMap);
 
         cachedBanlist.clear();
@@ -61,6 +66,18 @@ public:
             CCombinedBan banEntry;
             banEntry.subnet = (*it).first;
             banEntry.banEntry = (*it).second;
+=======
+        if(g_connman)
+            g_connman->GetBanned(banMap);
+
+        cachedBanlist.clear();
+        cachedBanlist.reserve(banMap.size());
+        for (const auto& entry : banMap)
+        {
+            CCombinedBan banEntry;
+            banEntry.subnet = entry.first;
+            banEntry.banEntry = entry.second;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             cachedBanlist.append(banEntry);
         }
 
@@ -150,7 +167,11 @@ QVariant BanTableModel::headerData(int section, Qt::Orientation orientation, int
 Qt::ItemFlags BanTableModel::flags(const QModelIndex &index) const
 {
     if(!index.isValid())
+<<<<<<< HEAD
         return 0;
+=======
+        return Qt::NoItemFlags;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     Qt::ItemFlags retval = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     return retval;

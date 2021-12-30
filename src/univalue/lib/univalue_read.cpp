@@ -8,7 +8,17 @@
 #include "univalue.h"
 #include "univalue_utffilter.h"
 
+<<<<<<< HEAD
 using namespace std;
+=======
+/*
+ * According to stackexchange, the original json test suite wanted
+ * to limit depth to 22.  Widely-deployed PHP bails at depth 512,
+ * so we will follow PHP's lead, which should be more than sufficient
+ * (further stackexchange comments indicate depth > 32 rarely occurs).
+ */
+static const size_t MAX_JSON_DEPTH = 512;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 static bool json_isdigit(int ch)
 {
@@ -42,7 +52,11 @@ static const char *hatoui(const char *first, const char *last,
     return first;
 }
 
+<<<<<<< HEAD
 enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
+=======
+enum jtokentype getJsonToken(std::string& tokenVal, unsigned int& consumed,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                             const char *raw, const char *end)
 {
     tokenVal.clear();
@@ -114,7 +128,11 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
     case '8':
     case '9': {
         // part 1: int
+<<<<<<< HEAD
         string numStr;
+=======
+        std::string numStr;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
         const char *first = raw;
 
@@ -174,7 +192,11 @@ enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
     case '"': {
         raw++;                                // skip "
 
+<<<<<<< HEAD
         string valStr;
+=======
+        std::string valStr;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         JSONUTF8StringFilter writer(valStr);
 
         while (true) {
@@ -255,9 +277,15 @@ bool UniValue::read(const char *raw, size_t size)
     clear();
 
     uint32_t expectMask = 0;
+<<<<<<< HEAD
     vector<UniValue*> stack;
 
     string tokenVal;
+=======
+    std::vector<UniValue*> stack;
+
+    std::string tokenVal;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     unsigned int consumed;
     enum jtokentype tok = JTOK_NONE;
     enum jtokentype last_tok = JTOK_NONE;
@@ -325,6 +353,12 @@ bool UniValue::read(const char *raw, size_t size)
                 stack.push_back(newTop);
             }
 
+<<<<<<< HEAD
+=======
+            if (stack.size() > MAX_JSON_DEPTH)
+                return false;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             if (utyp == VOBJ)
                 setExpect(OBJ_NAME);
             else
@@ -449,6 +483,9 @@ bool UniValue::read(const char *raw, size_t size)
     return true;
 }
 
+<<<<<<< HEAD
 bool UniValue::read(const char *raw) {
     return read(raw, strlen(raw));
 }
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

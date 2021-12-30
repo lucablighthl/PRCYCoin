@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,12 +11,21 @@
 #define BITCOIN_KEYSTORE_H
 
 #include "key.h"
+<<<<<<< HEAD
 #include "hdchain.h"
 #include "pubkey.h"
 #include "sync.h"
 
 #include <boost/signals2/signal.hpp>
 #include <boost/variant.hpp>
+=======
+#include "pubkey.h"
+#include "sapling/address.h"
+#include "sapling/zip32.h"
+#include "sync.h"
+
+#include <boost/signals2/signal.hpp>
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 class CScript;
 class CScriptID;
@@ -20,10 +33,17 @@ class CScriptID;
 /** A virtual base class for key stores */
 class CKeyStore
 {
+<<<<<<< HEAD
 protected:
     mutable RecursiveMutex cs_KeyStore;
 
 public:
+=======
+public:
+    // todo: Make it protected again once we are more advanced in the wallet/spkm decoupling.
+    mutable RecursiveMutex cs_KeyStore;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     virtual ~CKeyStore() {}
 
     //! Add a key to the store.
@@ -34,7 +54,11 @@ public:
     virtual bool HaveKey(const CKeyID& address) const = 0;
     virtual bool GetKey(const CKeyID& address, CKey& keyOut) const = 0;
     virtual void GetKeys(std::set<CKeyID>& setAddress) const = 0;
+<<<<<<< HEAD
     virtual bool GetPubKey(const CKeyID& address, CPubKey& vchPubKeyOut) const;
+=======
+    virtual bool GetPubKey(const CKeyID& address, CPubKey& vchPubKeyOut) const = 0;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     //! Support for BIP 0013 : see https://github.com/bitcoin/bips/blob/master/bip-0013.mediawiki
     virtual bool AddCScript(const CScript& redeemScript) = 0;
@@ -46,18 +70,68 @@ public:
     virtual bool RemoveWatchOnly(const CScript& dest) = 0;
     virtual bool HaveWatchOnly(const CScript& dest) const = 0;
     virtual bool HaveWatchOnly() const = 0;
+<<<<<<< HEAD
 };
 
 typedef std::map<CKeyID, CKey> KeyMap;
 typedef std::map<CScriptID, CScript> ScriptMap;
 typedef std::set<CScript> WatchOnlySet;
 typedef std::set<CScript> MultiSigScriptSet;
+=======
+
+    //! Support for Sapling
+    // Add a Sapling spending key to the store.
+    virtual bool AddSaplingSpendingKey(const libzcash::SaplingExtendedSpendingKey &sk) = 0;
+
+    // Check whether a Sapling spending key corresponding to a given Sapling viewing key is present in the store.
+    virtual bool HaveSaplingSpendingKey(
+            const libzcash::SaplingExtendedFullViewingKey &extfvk) const = 0;
+    virtual bool GetSaplingSpendingKey(
+            const libzcash::SaplingExtendedFullViewingKey &extfvk,
+            libzcash::SaplingExtendedSpendingKey& skOut) const = 0;
+
+    //! Support for Sapling full viewing keys
+    virtual bool AddSaplingFullViewingKey(const libzcash::SaplingExtendedFullViewingKey &extfvk) = 0;
+    virtual bool HaveSaplingFullViewingKey(const libzcash::SaplingIncomingViewingKey &ivk) const = 0;
+    virtual bool GetSaplingFullViewingKey(
+        const libzcash::SaplingIncomingViewingKey &ivk,
+        libzcash::SaplingExtendedFullViewingKey& extfvkOut) const = 0;
+    virtual void GetSaplingPaymentAddresses(std::set<libzcash::SaplingPaymentAddress> &setAddress) const = 0;
+
+    //! Sapling incoming viewing keys
+    virtual bool AddSaplingIncomingViewingKey(
+            const libzcash::SaplingIncomingViewingKey &ivk,
+            const libzcash::SaplingPaymentAddress &addr) = 0;
+    virtual bool HaveSaplingIncomingViewingKey(const libzcash::SaplingPaymentAddress &addr) const = 0;
+    virtual bool GetSaplingIncomingViewingKey(
+        const libzcash::SaplingPaymentAddress &addr,
+        libzcash::SaplingIncomingViewingKey& ivkOut) const = 0;
+};
+
+typedef std::map<CKeyID, CKey> KeyMap;
+typedef std::map<CKeyID, CPubKey> WatchKeyMap;
+typedef std::map<CScriptID, CScript> ScriptMap;
+typedef std::set<CScript> WatchOnlySet;
+
+// Full viewing key has equivalent functionality to a transparent address
+// When encrypting wallet, encrypt SaplingSpendingKeyMap, while leaving SaplingFullViewingKeyMap unencrypted
+typedef std::map<
+        libzcash::SaplingExtendedFullViewingKey,
+        libzcash::SaplingExtendedSpendingKey> SaplingSpendingKeyMap;
+typedef std::map<
+        libzcash::SaplingIncomingViewingKey,
+        libzcash::SaplingExtendedFullViewingKey> SaplingFullViewingKeyMap;
+// Only maps from default addresses to ivk, may need to be reworked when adding diversified addresses.
+typedef std::map<libzcash::SaplingPaymentAddress, libzcash::SaplingIncomingViewingKey> SaplingIncomingViewingKeyMap;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /** Basic key store, that keeps keys in an address->secret map */
 class CBasicKeyStore : public CKeyStore
 {
 protected:
     KeyMap mapKeys;
+<<<<<<< HEAD
     ScriptMap mapScripts;
     WatchOnlySet setWatchOnly;
     MultiSigScriptSet setMultiSig;
@@ -98,6 +172,25 @@ public:
         }
         return false;
     }
+=======
+    WatchKeyMap mapWatchKeys;
+    ScriptMap mapScripts;
+    WatchOnlySet setWatchOnly;
+
+public:
+
+    // todo future: Move every Sapling map to the new sspkm box.
+    SaplingSpendingKeyMap mapSaplingSpendingKeys;
+    SaplingFullViewingKeyMap mapSaplingFullViewingKeys;
+    SaplingIncomingViewingKeyMap mapSaplingIncomingViewingKeys;
+
+    bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey);
+    bool GetPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const;
+    bool HaveKey(const CKeyID& address) const;
+    void GetKeys(std::set<CKeyID>& setAddress) const;
+    bool GetKey(const CKeyID& address, CKey& keyOut) const;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     virtual bool AddCScript(const CScript& redeemScript);
     virtual bool HaveCScript(const CScriptID& hash) const;
     virtual bool GetCScript(const CScriptID& hash, CScript& redeemScriptOut) const;
@@ -106,9 +199,41 @@ public:
     virtual bool RemoveWatchOnly(const CScript& dest);
     virtual bool HaveWatchOnly(const CScript& dest) const;
     virtual bool HaveWatchOnly() const;
+<<<<<<< HEAD
+=======
+
+    //! Sapling
+    bool AddSaplingSpendingKey(const libzcash::SaplingExtendedSpendingKey &sk);
+    bool HaveSaplingSpendingKey(const libzcash::SaplingExtendedFullViewingKey &extfvk) const;
+    bool GetSaplingSpendingKey(const libzcash::SaplingExtendedFullViewingKey &extfvk, libzcash::SaplingExtendedSpendingKey &skOut) const;
+
+    virtual bool AddSaplingFullViewingKey(const libzcash::SaplingExtendedFullViewingKey &extfvk);
+    virtual bool HaveSaplingFullViewingKey(const libzcash::SaplingIncomingViewingKey &ivk) const;
+    virtual bool GetSaplingFullViewingKey(
+            const libzcash::SaplingIncomingViewingKey &ivk,
+            libzcash::SaplingExtendedFullViewingKey& extfvkOut) const;
+    virtual bool AddSaplingIncomingViewingKey(
+            const libzcash::SaplingIncomingViewingKey &ivk,
+            const libzcash::SaplingPaymentAddress &addr);
+    virtual bool HaveSaplingIncomingViewingKey(const libzcash::SaplingPaymentAddress &addr) const;
+    virtual bool GetSaplingIncomingViewingKey(
+            const libzcash::SaplingPaymentAddress &addr,
+            libzcash::SaplingIncomingViewingKey& ivkOut) const;
+
+    bool GetSaplingExtendedSpendingKey(
+            const libzcash::SaplingPaymentAddress &addr,
+            libzcash::SaplingExtendedSpendingKey &extskOut) const;
+
+    void GetSaplingPaymentAddresses(std::set<libzcash::SaplingPaymentAddress> &setAddress) const;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 typedef std::vector<unsigned char, secure_allocator<unsigned char> > CKeyingMaterial;
 typedef std::map<CKeyID, std::pair<CPubKey, std::vector<unsigned char> > > CryptedKeyMap;
+<<<<<<< HEAD
+=======
+//! Sapling
+typedef std::map<libzcash::SaplingExtendedFullViewingKey, std::vector<unsigned char> > CryptedSaplingSpendingKeyMap;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #endif // BITCOIN_KEYSTORE_H

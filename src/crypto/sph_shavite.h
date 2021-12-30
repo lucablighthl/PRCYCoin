@@ -77,10 +77,17 @@ extern "C"{
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[64];    /* first field, for alignment */
     size_t ptr;
     sph_u32 h[8];
     sph_u32 count0, count1;
+=======
+	unsigned char buf[64];    /* first field, for alignment */
+	size_t ptr;
+	sph_u32 h[8];
+	sph_u32 count0, count1;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_shavite_small_context;
 
@@ -108,10 +115,17 @@ typedef sph_shavite_small_context sph_shavite256_context;
  */
 typedef struct {
 #ifndef DOXYGEN_IGNORE
+<<<<<<< HEAD
     unsigned char buf[128];    /* first field, for alignment */
     size_t ptr;
     sph_u32 h[16];
     sph_u32 count0, count1, count2, count3;
+=======
+	unsigned char buf[128];    /* first field, for alignment */
+	size_t ptr;
+	sph_u32 h[16];
+	sph_u32 count0, count1, count2, count3;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 } sph_shavite_big_context;
 
@@ -170,7 +184,11 @@ void sph_shavite224_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_shavite224_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a SHAvite-256 context. This process performs no memory allocation.
@@ -215,7 +233,11 @@ void sph_shavite256_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_shavite256_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a SHAvite-384 context. This process performs no memory allocation.
@@ -260,7 +282,11 @@ void sph_shavite384_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_shavite384_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Initialize a SHAvite-512 context. This process performs no memory allocation.
@@ -305,10 +331,19 @@ void sph_shavite512_close(void *cc, void *dst);
  * @param dst   the destination buffer
  */
 void sph_shavite512_addbits_and_close(
+<<<<<<< HEAD
     void *cc, unsigned ub, unsigned n, void *dst);
     
 #ifdef __cplusplus
 }
 #endif	
     
+=======
+	void *cc, unsigned ub, unsigned n, void *dst);
+	
+#ifdef __cplusplus
+}
+#endif	
+	
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif

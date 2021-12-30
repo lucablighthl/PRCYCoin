@@ -1,10 +1,15 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "interpreter.h"
 
+<<<<<<< HEAD
 #include "primitives/transaction.h"
 #include "crypto/ripemd160.h"
 #include "crypto/sha1.h"
@@ -18,6 +23,17 @@
 using namespace std;
 
 typedef vector<unsigned char> valtype;
+=======
+#include "consensus/upgrades.h"
+#include "crypto/ripemd160.h"
+#include "crypto/sha1.h"
+#include "crypto/sha256.h"
+#include "pubkey.h"
+#include "script/script.h"
+
+
+typedef std::vector<unsigned char> valtype;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 namespace {
 
@@ -49,9 +65,12 @@ bool CastToBool(const valtype& vch)
             return true;
         }
     }
+<<<<<<< HEAD
     if (vch.size() == 0) {
         return true;
     }
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return false;
 }
 
@@ -61,25 +80,44 @@ bool CastToBool(const valtype& vch)
  */
 #define stacktop(i)  (stack.at(stack.size()+(i)))
 #define altstacktop(i)  (altstack.at(altstack.size()+(i)))
+<<<<<<< HEAD
 static inline void popstack(vector<valtype>& stack)
 {
     if (stack.empty())
         throw runtime_error("popstack() : stack empty");
+=======
+static inline void popstack(std::vector<valtype>& stack)
+{
+    if (stack.empty())
+        throw std::runtime_error("popstack() : stack empty");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     stack.pop_back();
 }
 
 bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
+<<<<<<< HEAD
     if (vchPubKey.size() < 33) {
+=======
+    if (vchPubKey.size() < CPubKey::COMPRESSED_PUBLIC_KEY_SIZE) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         //  Non-canonical public key: too short
         return false;
     }
     if (vchPubKey[0] == 0x04) {
+<<<<<<< HEAD
         if (vchPubKey.size() != 65) {
+=======
+        if (vchPubKey.size() != CPubKey::PUBLIC_KEY_SIZE) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             //  Non-canonical public key: invalid length for uncompressed key
             return false;
         }
     } else if (vchPubKey[0] == 0x02 || vchPubKey[0] == 0x03) {
+<<<<<<< HEAD
         if (vchPubKey.size() != 33) {
+=======
+        if (vchPubKey.size() != CPubKey::COMPRESSED_PUBLIC_KEY_SIZE) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             //  Non-canonical public key: invalid length for compressed key
             return false;
         }
@@ -95,7 +133,11 @@ bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
  * Where R and S are not negative (their first byte has its highest bit not set), and not
  * excessively padded (do not start with a 0 byte, unless an otherwise negative number follows,
  * in which case a single 0 byte is necessary and even required).
+<<<<<<< HEAD
  * 
+=======
+ *
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
  * See https://bitcointalk.org/index.php?topic=8392.msg127623#msg127623
  *
  * This function is consensus-critical since BIP66.
@@ -135,7 +177,11 @@ bool static IsValidSignatureEncoding(const std::vector<unsigned char> &sig) {
     // Verify that the length of the signature matches the sum of the length
     // of the elements.
     if ((size_t)(lenR + lenS + 7) != sig.size()) return false;
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // Check whether the R element is an integer.
     if (sig[2] != 0x02) return false;
 
@@ -169,6 +215,7 @@ bool static IsLowDERSignature(const valtype &vchSig, ScriptError* serror) {
     if (!IsValidSignatureEncoding(vchSig)) {
         return set_error(serror, SCRIPT_ERR_SIG_DER);
     }
+<<<<<<< HEAD
     unsigned int nLenR = vchSig[3];
     unsigned int nLenS = vchSig[5+nLenR];
     const unsigned char *S = &vchSig[6+nLenR];
@@ -176,6 +223,16 @@ bool static IsLowDERSignature(const valtype &vchSig, ScriptError* serror) {
     // complement modulo the order could have been used instead, which is
     // one byte shorter when encoded correctly.
     if (!eccrypto::CheckSignatureElement(S, nLenS, true))
+=======
+    // https://bitcoin.stackexchange.com/a/12556:
+    //     Also note that inside transaction signatures, an extra hashtype byte
+    //     follows the actual signature data.
+    std::vector<unsigned char> vchSigCopy(vchSig.begin(), vchSig.begin() + vchSig.size() - 1);
+    // If the S value is above the order of the curve divided by two, its
+    // complement modulo the order could have been used instead, which is
+    // one byte shorter when encoded correctly.
+    if (!CPubKey::CheckLowS(vchSigCopy))
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         return set_error(serror, SCRIPT_ERR_SIG_HIGH_S);
 
     return true;
@@ -192,7 +249,11 @@ bool static IsDefinedHashtypeSignature(const valtype &vchSig) {
     return true;
 }
 
+<<<<<<< HEAD
 bool static CheckSignatureEncoding(const valtype &vchSig, unsigned int flags, ScriptError* serror) {
+=======
+bool CheckSignatureEncoding(const std::vector<unsigned char> &vchSig, unsigned int flags, ScriptError* serror) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // Empty signature. Not strictly DER encoded, but allowed to provide a
     // compact way to provide an invalid signature for use with CHECK(MULTI)SIG
     if (vchSig.size() == 0) {
@@ -239,6 +300,7 @@ bool static CheckMinimalPush(const valtype& data, opcodetype opcode) {
     return true;
 }
 
+<<<<<<< HEAD
 bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
 {
     static const CScriptNum bnZero(0);
@@ -247,6 +309,13 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
     static const CScriptNum bnTrue(1);
     static const valtype vchFalse(0);
     static const valtype vchZero(0);
+=======
+bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, SigVersion sigversion, ScriptError* serror)
+{
+    static const CScriptNum bnZero(0);
+    static const CScriptNum bnOne(1);
+    static const valtype vchFalse(0);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     static const valtype vchTrue(1, 1);
 
     CScript::const_iterator pc = script.begin();
@@ -254,10 +323,17 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
     CScript::const_iterator pbegincodehash = script.begin();
     opcodetype opcode;
     valtype vchPushValue;
+<<<<<<< HEAD
     vector<bool> vfExec;
     vector<valtype> altstack;
     set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
     if (script.size() > 10000)
+=======
+    std::vector<bool> vfExec;
+    std::vector<valtype> altstack;
+    set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
+    if (script.size() > MAX_SCRIPT_SIZE)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         return set_error(serror, SCRIPT_ERR_SCRIPT_SIZE);
     int nOpCount = 0;
     bool fRequireMinimal = (flags & SCRIPT_VERIFY_MINIMALDATA) != 0;
@@ -350,6 +426,10 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                         }
                         break;
                     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                     if (stack.size() < 1)
                         return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
 
@@ -821,7 +901,11 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                     popstack(stack);
                     stack.push_back(vchHash);
                 }
+<<<<<<< HEAD
                 break;                                   
+=======
+                break;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
                 case OP_CODESEPARATOR:
                 {
@@ -850,7 +934,11 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                         //serror is set
                         return false;
                     }
+<<<<<<< HEAD
                     bool fSuccess = checker.CheckSig(vchSig, vchPubKey, scriptCode);
+=======
+                    bool fSuccess = checker.CheckSig(vchSig, vchPubKey, scriptCode, sigversion);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
                     popstack(stack);
                     popstack(stack);
@@ -875,7 +963,11 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                         return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
 
                     int nKeysCount = CScriptNum(stacktop(-i), fRequireMinimal).getint();
+<<<<<<< HEAD
                     if (nKeysCount < 0 || nKeysCount > 20)
+=======
+                    if (nKeysCount < 0 || nKeysCount > MAX_PUBKEYS_PER_MULTISIG)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                         return set_error(serror, SCRIPT_ERR_PUBKEY_COUNT);
                     nOpCount += nKeysCount;
                     if (nOpCount > 201)
@@ -918,7 +1010,11 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                         }
 
                         // Check signature
+<<<<<<< HEAD
                         bool fOk = checker.CheckSig(vchSig, vchPubKey, scriptCode);
+=======
+                        bool fOk = checker.CheckSig(vchSig, vchPubKey, scriptCode, sigversion);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
                         if (fOk) {
                             isig++;
@@ -938,6 +1034,15 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                     while (i-- > 1)
                         popstack(stack);
 
+<<<<<<< HEAD
+=======
+                    // A bug causes CHECKMULTISIG to consume one extra argument
+                    // whose contents were not checked in any way.
+                    //
+                    // Unfortunately this is a potential source of mutability,
+                    // so optionally verify it is exactly equal to zero prior
+                    // to removing it from the stack.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                     if (stack.size() < 1)
                         return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
                     if ((flags & SCRIPT_VERIFY_NULLDUMMY) && stacktop(-1).size())
@@ -956,6 +1061,28 @@ bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, un
                 }
                 break;
 
+<<<<<<< HEAD
+=======
+                case OP_CHECKCOLDSTAKEVERIFY:
+                {
+                    if (!checker.CheckColdStake(false, script, stack, flags, serror)) {
+                        // serror set
+                        return false;
+                    }
+                }
+                break;
+
+                case OP_CHECKCOLDSTAKEVERIFY_LOF:
+                {
+                    // Allow last output script "free"
+                    if (!checker.CheckColdStake(true, script, stack, flags, serror)) {
+                        // serror set
+                        return false;
+                    }
+                }
+                break;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 default:
                     return set_error(serror, SCRIPT_ERR_BAD_OPCODE);
             }
@@ -1000,7 +1127,11 @@ public:
 
     /** Serialize the passed scriptCode, skipping OP_CODESEPARATORs */
     template<typename S>
+<<<<<<< HEAD
     void SerializeScriptCode(S &s, int nType, int nVersion) const {
+=======
+    void SerializeScriptCode(S &s) const {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         CScript::const_iterator it = scriptCode.begin();
         CScript::const_iterator itBegin = it;
         opcodetype opcode;
@@ -1023,11 +1154,16 @@ public:
 
     /** Serialize an input of txTo */
     template<typename S>
+<<<<<<< HEAD
     void SerializeInput(S &s, unsigned int nInput, int nType, int nVersion) const {
+=======
+    void SerializeInput(S &s, unsigned int nInput) const {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         // In case of SIGHASH_ANYONECANPAY, only the input being signed is serialized
         if (fAnyoneCanPay)
             nInput = nIn;
         // Serialize the prevout
+<<<<<<< HEAD
         ::Serialize(s, txTo.vin[nInput].prevout, nType, nVersion);
         // Serialize the script
         if (nInput != nIn)
@@ -1041,32 +1177,70 @@ public:
             ::Serialize(s, (int)0, nType, nVersion);
         else
             ::Serialize(s, txTo.vin[nInput].nSequence, nType, nVersion);
+=======
+        ::Serialize(s, txTo.vin[nInput].prevout);
+        assert(nInput != NOT_AN_INPUT);
+        // Serialize the script
+        if (nInput != nIn)
+            // Blank out other inputs' signatures
+            ::Serialize(s, CScript());
+        else
+            SerializeScriptCode(s);
+        // Serialize the nSequence
+        if (nInput != nIn && (fHashSingle || fHashNone))
+            // let the others update at will
+            ::Serialize(s, (int)0);
+        else
+            ::Serialize(s, txTo.vin[nInput].nSequence);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     /** Serialize an output of txTo */
     template<typename S>
+<<<<<<< HEAD
     void SerializeOutput(S &s, unsigned int nOutput, int nType, int nVersion) const {
         if (fHashSingle && nOutput != nIn)
             // Do not lock-in the txout payee at other indices as txin
             ::Serialize(s, CTxOut(), nType, nVersion);
         else
             ::Serialize(s, txTo.vout[nOutput], nType, nVersion);
+=======
+    void SerializeOutput(S &s, unsigned int nOutput) const {
+        if (fHashSingle && nOutput != nIn)
+            // Do not lock-in the txout payee at other indices as txin
+            ::Serialize(s, CTxOut());
+        else
+            ::Serialize(s, txTo.vout[nOutput]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     /** Serialize txTo */
     template<typename S>
+<<<<<<< HEAD
     void Serialize(S &s, int nType, int nVersion) const {
         // Serialize nVersion
         ::Serialize(s, txTo.nVersion, nType, nVersion);
+=======
+    void Serialize(S &s) const {
+        // Serialize nVersion
+        ::Serialize(s, txTo.nVersion);
+        // Serialize nType
+        ::Serialize(s, txTo.nType);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         // Serialize vin
         unsigned int nInputs = fAnyoneCanPay ? 1 : txTo.vin.size();
         ::WriteCompactSize(s, nInputs);
         for (unsigned int nInput = 0; nInput < nInputs; nInput++)
+<<<<<<< HEAD
              SerializeInput(s, nInput, nType, nVersion);
+=======
+             SerializeInput(s, nInput);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         // Serialize vout
         unsigned int nOutputs = fHashNone ? 0 : (fHashSingle ? nIn+1 : txTo.vout.size());
         ::WriteCompactSize(s, nOutputs);
         for (unsigned int nOutput = 0; nOutput < nOutputs; nOutput++)
+<<<<<<< HEAD
              SerializeOutput(s, nOutput, nType, nVersion);
         // Serialize nLockTime
         ::Serialize(s, txTo.nLockTime, nType, nVersion);
@@ -1080,13 +1254,194 @@ uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsig
     if (nIn >= txTo.vin.size()) {
         //  nIn out of range
         return 1;
+=======
+             SerializeOutput(s, nOutput);
+        // Serialize nLockTime
+        ::Serialize(s, txTo.nLockTime);
+    }
+};
+
+const unsigned char PIVX_PREVOUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+        {'P','I','V','X','P','r','e','v','o','u','t','H','a','s','h'};
+const unsigned char PIVX_SEQUENCE_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+        {'P','I','V','X','S','e','q','u','e','n','c','H','a','s','h'};
+const unsigned char PIVX_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+        {'P','I','V','X','O','u','t','p','u','t','s','H','a','s','h'};
+const unsigned char PIVX_SHIELDED_SPENDS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+        {'P','I','V','X','S','S','p','e','n','d','s','H','a','s','h'};
+const unsigned char PIVX_SHIELDED_OUTPUTS_HASH_PERSONALIZATION[crypto_generichash_blake2b_PERSONALBYTES] =
+        {'P','I','V','X','S','O','u','t','p','u','t','H','a','s','h'};
+
+
+
+uint256 GetPrevoutHash(const CTransaction& txTo) {
+    CBLAKE2bWriter ss(SER_GETHASH, 0, PIVX_PREVOUTS_HASH_PERSONALIZATION);
+    for (unsigned int n = 0; n < txTo.vin.size(); n++) {
+        ss << txTo.vin[n].prevout;
+    }
+    return ss.GetHash();
+}
+
+uint256 GetSequenceHash(const CTransaction& txTo) {
+    CBLAKE2bWriter ss(SER_GETHASH, 0, PIVX_SEQUENCE_HASH_PERSONALIZATION);
+    for (unsigned int n = 0; n < txTo.vin.size(); n++) {
+        ss << txTo.vin[n].nSequence;
+    }
+    return ss.GetHash();
+}
+
+uint256 GetOutputsHash(const CTransaction& txTo) {
+    CBLAKE2bWriter ss(SER_GETHASH, 0, PIVX_OUTPUTS_HASH_PERSONALIZATION);
+    for (unsigned int n = 0; n < txTo.vout.size(); n++) {
+        ss << txTo.vout[n];
+    }
+    return ss.GetHash();
+}
+
+uint256 GetShieldedSpendsHash(const CTransaction& txTo) {
+    assert(txTo.sapData);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, PIVX_SHIELDED_SPENDS_HASH_PERSONALIZATION);
+    auto sapData = txTo.sapData;
+    for (const auto& n : sapData->vShieldedSpend) {
+        ss << n.cv;
+        ss << n.anchor;
+        ss << n.nullifier;
+        ss << n.rk;
+        ss << n.zkproof;
+    }
+    return ss.GetHash();
+}
+
+uint256 GetShieldedOutputsHash(const CTransaction& txTo) {
+    assert(txTo.sapData);
+    CBLAKE2bWriter ss(SER_GETHASH, 0, PIVX_SHIELDED_OUTPUTS_HASH_PERSONALIZATION);
+    auto sapData = txTo.sapData;
+    for (const auto& n : sapData->vShieldedOutput) {
+        ss << n;
+    }
+    return ss.GetHash();
+}
+
+} // anon namespace
+
+PrecomputedTransactionData::PrecomputedTransactionData(const CTransaction& txTo)
+{
+    hashPrevouts = GetPrevoutHash(txTo);
+    hashSequence = GetSequenceHash(txTo);
+    hashOutputs = GetOutputsHash(txTo);
+    if (txTo.sapData) {
+        hashShieldedSpends = GetShieldedSpendsHash(txTo);
+        hashShieldedOutputs = GetShieldedOutputsHash(txTo);
+    }
+}
+
+uint256 SignatureHash(const CScript& scriptCode, const CTransaction& txTo, unsigned int nIn, int nHashType, const CAmount& amount, SigVersion sigversion, const PrecomputedTransactionData* cache)
+{
+    if (nIn >= txTo.vin.size() && nIn != NOT_AN_INPUT) {
+        //  nIn out of range
+        return UINT256_ONE;
+    }
+
+    if (txTo.isSaplingVersion() && sigversion != SIGVERSION_SAPLING) {
+        throw std::runtime_error("SignatureHash in Sapling tx with wrong sigversion " + std::to_string(sigversion));
+    }
+
+    if (sigversion == SIGVERSION_SAPLING) {
+
+        uint256 hashPrevouts;
+        uint256 hashSequence;
+        uint256 hashOutputs;
+        uint256 hashShieldedSpends;
+        uint256 hashShieldedOutputs;
+        bool hasSapData = false;
+
+        if (!(nHashType & SIGHASH_ANYONECANPAY)) {
+            hashPrevouts = cache ? cache->hashPrevouts : GetPrevoutHash(txTo);
+        }
+
+        if (!(nHashType & SIGHASH_ANYONECANPAY) && (nHashType & 0x1f) != SIGHASH_SINGLE && (nHashType & 0x1f) != SIGHASH_NONE) {
+            hashSequence = cache ? cache->hashSequence : GetSequenceHash(txTo);
+        }
+
+        if ((nHashType & 0x1f) != SIGHASH_SINGLE && (nHashType & 0x1f) != SIGHASH_NONE) {
+            hashOutputs = cache ? cache->hashOutputs : GetOutputsHash(txTo);
+        } else if ((nHashType & 0x1f) == SIGHASH_SINGLE && nIn < txTo.vout.size()) {
+            CBLAKE2bWriter ss(SER_GETHASH, 0, PIVX_OUTPUTS_HASH_PERSONALIZATION);
+            ss << txTo.vout[nIn];
+            hashOutputs = ss.GetHash();
+        }
+
+        if (txTo.sapData) {
+            if (!txTo.sapData->vShieldedSpend.empty()) {
+                hashShieldedSpends = cache ? cache->hashShieldedSpends : GetShieldedSpendsHash(txTo);
+                hasSapData = true;
+            }
+
+            if (!txTo.sapData->vShieldedOutput.empty()) {
+                hashShieldedOutputs = cache ? cache->hashShieldedOutputs : GetShieldedOutputsHash(txTo);
+                hasSapData = true;
+            }
+        }
+
+        // todo: complete branch id with the active network upgrade
+        uint32_t leConsensusBranchId = htole32(0);
+        unsigned char personalization[16] = {};
+        memcpy(personalization, "PIVXSigHash", 12);
+        memcpy(personalization+12, &leConsensusBranchId, 4);
+
+        CBLAKE2bWriter ss(SER_GETHASH, 0, personalization);
+        // Version
+        ss << txTo.nVersion;
+        // Type
+        ss << txTo.nType;
+        // Input prevouts/nSequence (none/all, depending on flags)
+        ss << hashPrevouts;
+        ss << hashSequence;
+        // Outputs (none/one/all, depending on flags)
+        ss << hashOutputs;
+
+        if (hasSapData) {
+            // Spend descriptions
+            ss << hashShieldedSpends;
+            // Output descriptions
+            ss << hashShieldedOutputs;
+            // Sapling value balance
+            ss << txTo.sapData->valueBalance;
+        }
+
+        if (nIn != NOT_AN_INPUT) {
+            // The input being signed (replacing the scriptSig with scriptCode + amount)
+            // The prevout may already be contained in hashPrevout, and the nSequence
+            // may already be contained in hashSequence.
+            ss << txTo.vin[nIn].prevout;
+            ss << scriptCode;
+            ss << amount;
+            ss << txTo.vin[nIn].nSequence;
+        }
+
+        // Extra payload for special transactions
+        if (txTo.IsSpecialTx()) {
+            ss << *(txTo.extraPayload);
+        }
+
+        // Locktime
+        ss << txTo.nLockTime;
+        // Sighash type
+        ss << nHashType;
+
+        return ss.GetHash();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 
     // Check for invalid use of SIGHASH_SINGLE
     if ((nHashType & 0x1f) == SIGHASH_SINGLE) {
         if (nIn >= txTo.vout.size()) {
             //  nOut out of range
+<<<<<<< HEAD
             return 1;
+=======
+            return UINT256_ONE;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
     }
 
@@ -1104,20 +1459,32 @@ bool TransactionSignatureChecker::VerifySignature(const std::vector<unsigned cha
     return pubkey.Verify(sighash, vchSig);
 }
 
+<<<<<<< HEAD
 bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn, const vector<unsigned char>& vchPubKey, const CScript& scriptCode) const
+=======
+bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vchSigIn, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode, SigVersion sigversion) const
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     CPubKey pubkey(vchPubKey);
     if (!pubkey.IsValid())
         return false;
 
     // Hash type is one byte tacked on to the end of the signature
+<<<<<<< HEAD
     vector<unsigned char> vchSig(vchSigIn);
+=======
+    std::vector<unsigned char> vchSig(vchSigIn);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if (vchSig.empty())
         return false;
     int nHashType = vchSig.back();
     vchSig.pop_back();
 
+<<<<<<< HEAD
     uint256 sighash = SignatureHash(scriptCode, *txTo, nIn, nHashType);
+=======
+    const uint256& sighash = SignatureHash(scriptCode, *txTo, nIn, nHashType, amount, sigversion, this->precomTxData);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     if (!VerifySignature(vchSig, pubkey, sighash))
         return false;
@@ -1161,13 +1528,72 @@ bool TransactionSignatureChecker::CheckLockTime(const CScriptNum& nLockTime) con
     return true;
 }
 
+<<<<<<< HEAD
 bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
+=======
+bool TransactionSignatureChecker::CheckColdStake(bool fAllowLastOutputFree, const CScript& prevoutScript, std::vector<valtype>& stack, unsigned int flags, ScriptError* serror) const
+{
+    // the stack can contain only <sig> <pk> <pkh> at this point
+    if ((int)stack.size() != 3) {
+        return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
+    }
+    // check pubkey/signature encoding
+    valtype& vchSig    = stacktop(-3);
+    valtype& vchPubKey = stacktop(-2);
+    if (!CheckSignatureEncoding(vchSig, flags, serror) ||
+            !CheckPubKeyEncoding(vchPubKey, flags, serror)) {
+        // serror is set
+        return false;
+    }
+    // check hash size
+    valtype& vchPubKeyHash = stacktop(-1);
+    if ((int)vchPubKeyHash.size() != 20) {
+        return set_error(serror, SCRIPT_ERR_SCRIPT_SIZE);
+    }
+
+    // check it is used in a valid cold stake transaction.
+    // Transaction must be a coinstake tx
+    if (!txTo->IsCoinStake()) {
+        return set_error(serror, SCRIPT_ERR_CHECKCOLDSTAKEVERIFY);
+    }
+    // There must be one single input
+    if (txTo->vin.size() != 1) {
+        return set_error(serror, SCRIPT_ERR_CHECKCOLDSTAKEVERIFY);
+    }
+    // Since this is a coinstake, it has at least 2 outputs
+    const unsigned int outs = txTo->vout.size();
+    assert(outs >= 2);
+    // All outputs must have the same pubKeyScript, and it must match the script we are spending.
+    // If the coinstake has at least 3 outputs, the last one can be left free, to be used for
+    // budget/masternode payments (before v6.0 enforcement), and is checked in CheckColdstakeFreeOutput().
+    // Here we verify only that input amount goes to the non-free outputs.
+    CAmount outValue{0};
+    for (unsigned int i = 1; i < outs; i++) {
+        if (txTo->vout[i].scriptPubKey != prevoutScript) {
+            // Only the last one can be different (and only when outs >=3 and fAllowLastOutputFree=true)
+            if (!fAllowLastOutputFree || i != outs-1 || outs < 3) {
+                return set_error(serror, SCRIPT_ERR_CHECKCOLDSTAKEVERIFY);
+            }
+        } else {
+            outValue += txTo->vout[i].nValue;
+        }
+    }
+    if (outValue < amount) {
+        return set_error(serror, SCRIPT_ERR_CHECKCOLDSTAKEVERIFY);
+    }
+    return true;
+}
+
+
+bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigned int flags, const BaseSignatureChecker& checker, SigVersion sigversion, ScriptError* serror)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
 
     if ((flags & SCRIPT_VERIFY_SIGPUSHONLY) != 0 && !scriptSig.IsPushOnly()) {
         return set_error(serror, SCRIPT_ERR_SIG_PUSHONLY);
     }
+<<<<<<< HEAD
     vector<vector<unsigned char> > stack, stackCopy;
     if (!EvalScript(stack, scriptSig, flags, checker, serror)) {
         // serror is set
@@ -1185,6 +1611,23 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigne
     if (CastToBool(stack.back()) == false) {
         return set_error(serror, SCRIPT_ERR_EVAL_FALSE);
     }
+=======
+
+    std::vector<std::vector<unsigned char> > stack, stackCopy;
+    if (!EvalScript(stack, scriptSig, flags, checker, sigversion, serror))
+        // serror is set
+        return false;
+    if (flags & SCRIPT_VERIFY_P2SH)
+        stackCopy = stack;
+    if (!EvalScript(stack, scriptPubKey, flags, checker, sigversion, serror))
+        // serror is set
+        return false;
+    if (stack.empty())
+        return set_error(serror, SCRIPT_ERR_EVAL_FALSE);
+    if (CastToBool(stack.back()) == false)
+        return set_error(serror, SCRIPT_ERR_EVAL_FALSE);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // Additional validation for spend-to-script-hash transactions:
     if ((flags & SCRIPT_VERIFY_P2SH) && scriptPubKey.IsPayToScriptHash())
     {
@@ -1192,6 +1635,7 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigne
         if (!scriptSig.IsPushOnly())
             return set_error(serror, SCRIPT_ERR_SIG_PUSHONLY);
 
+<<<<<<< HEAD
         // stackCopy cannot be empty here, because if it was the
         // P2SH  HASH <> EQUAL  scriptPubKey would be evaluated with
         // an empty stack and the EvalScript above would return false.
@@ -1211,5 +1655,40 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigne
         else
             return set_success(serror);
     }
+=======
+        // Restore stack.
+        swap(stack, stackCopy);
+
+        // stack cannot be empty here, because if it was the
+        // P2SH  HASH <> EQUAL  scriptPubKey would be evaluated with
+        // an empty stack and the EvalScript above would return false.
+        assert(!stack.empty());
+
+        const valtype& pubKeySerialized = stack.back();
+        CScript pubKey2(pubKeySerialized.begin(), pubKeySerialized.end());
+        popstack(stack);
+
+        if (!EvalScript(stack, pubKey2, flags, checker, sigversion, serror))
+            // serror is set
+            return false;
+        if (stack.empty())
+            return set_error(serror, SCRIPT_ERR_EVAL_FALSE);
+        if (!CastToBool(stack.back()))
+            return set_error(serror, SCRIPT_ERR_EVAL_FALSE);
+    }
+
+    // The CLEANSTACK check is only performed after potential P2SH evaluation,
+    // as the non-P2SH evaluation of a P2SH script will obviously not result in
+    // a clean stack (the P2SH inputs remain).
+    if ((flags & SCRIPT_VERIFY_CLEANSTACK) != 0) {
+        // Disallow CLEANSTACK without P2SH, as otherwise a switch CLEANSTACK->P2SH+CLEANSTACK
+        // would be possible, which is not a softfork (and P2SH should be one).
+        assert((flags & SCRIPT_VERIFY_P2SH) != 0);
+        if (stack.size() != 1) {
+            return set_error(serror, SCRIPT_ERR_CLEANSTACK);
+        }
+    }
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     return set_success(serror);
 }

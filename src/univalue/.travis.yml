@@ -25,7 +25,10 @@ addons:
       - pkg-config
 
 before_script:
+<<<<<<< HEAD
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew uninstall libtool; brew install libtool; fi
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   - if [ -n "$USE_SHELL" ]; then export CONFIG_SHELL="$USE_SHELL"; fi
   - test -n "$USE_SHELL" && eval '"$USE_SHELL" -c "./autogen.sh"' || ./autogen.sh
 

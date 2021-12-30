@@ -18,6 +18,10 @@
 #include <map>
 #include <set>
 #include <vector>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "db/dbformat.h"
 #include "db/version_edit.h"
 #include "port/port.h"
@@ -25,7 +29,13 @@
 
 namespace leveldb {
 
+<<<<<<< HEAD
 namespace log { class Writer; }
+=======
+namespace log {
+class Writer;
+}
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 class Compaction;
 class Iterator;
@@ -39,6 +49,7 @@ class WritableFile;
 // Return the smallest index i such that files[i]->largest >= key.
 // Return files.size() if there is no such file.
 // REQUIRES: "files" contains a sorted list of non-overlapping files.
+<<<<<<< HEAD
 extern int FindFile(const InternalKeyComparator& icmp,
                     const std::vector<FileMetaData*>& files,
                     const Slice& key);
@@ -63,6 +74,25 @@ class Version {
   // REQUIRES: This version has been saved (see VersionSet::SaveTo)
   void AddIterators(const ReadOptions&, std::vector<Iterator*>* iters);
 
+=======
+int FindFile(const InternalKeyComparator& icmp,
+             const std::vector<FileMetaData*>& files, const Slice& key);
+
+// Returns true iff some file in "files" overlaps the user key range
+// [*smallest,*largest].
+// smallest==nullptr represents a key smaller than all keys in the DB.
+// largest==nullptr represents a key largest than all keys in the DB.
+// REQUIRES: If disjoint_sorted_files, files[] contains disjoint ranges
+//           in sorted order.
+bool SomeFileOverlapsRange(const InternalKeyComparator& icmp,
+                           bool disjoint_sorted_files,
+                           const std::vector<FileMetaData*>& files,
+                           const Slice* smallest_user_key,
+                           const Slice* largest_user_key);
+
+class Version {
+ public:
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   // Lookup the value for key.  If found, store it in *val and
   // return OK.  Else return a non-OK status.  Fills *stats.
   // REQUIRES: lock is not held
@@ -70,6 +100,15 @@ class Version {
     FileMetaData* seek_file;
     int seek_file_level;
   };
+<<<<<<< HEAD
+=======
+
+  // Append to *iters a sequence of iterators that will
+  // yield the contents of this Version when merged together.
+  // REQUIRES: This version has been saved (see VersionSet::SaveTo)
+  void AddIterators(const ReadOptions&, std::vector<Iterator*>* iters);
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Status Get(const ReadOptions&, const LookupKey& key, std::string* val,
              GetStats* stats);
 
@@ -91,16 +130,27 @@ class Version {
 
   void GetOverlappingInputs(
       int level,
+<<<<<<< HEAD
       const InternalKey* begin,         // NULL means before all keys
       const InternalKey* end,           // NULL means after all keys
+=======
+      const InternalKey* begin,  // nullptr means before all keys
+      const InternalKey* end,    // nullptr means after all keys
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
       std::vector<FileMetaData*>* inputs);
 
   // Returns true iff some file in the specified level overlaps
   // some part of [*smallest_user_key,*largest_user_key].
+<<<<<<< HEAD
   // smallest_user_key==NULL represents a key smaller than all keys in the DB.
   // largest_user_key==NULL represents a key largest than all keys in the DB.
   bool OverlapInLevel(int level,
                       const Slice* smallest_user_key,
+=======
+  // smallest_user_key==nullptr represents a key smaller than all the DB's keys.
+  // largest_user_key==nullptr represents a key largest than all the DB's keys.
+  bool OverlapInLevel(int level, const Slice* smallest_user_key,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                       const Slice* largest_user_key);
 
   // Return the level at which we should place a new memtable compaction
@@ -118,6 +168,25 @@ class Version {
   friend class VersionSet;
 
   class LevelFileNumIterator;
+<<<<<<< HEAD
+=======
+
+  explicit Version(VersionSet* vset)
+      : vset_(vset),
+        next_(this),
+        prev_(this),
+        refs_(0),
+        file_to_compact_(nullptr),
+        file_to_compact_level_(-1),
+        compaction_score_(-1),
+        compaction_level_(-1) {}
+
+  Version(const Version&) = delete;
+  Version& operator=(const Version&) = delete;
+
+  ~Version();
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   Iterator* NewConcatenatingIterator(const ReadOptions&, int level) const;
 
   // Call func(arg, level, f) for every file that overlaps user_key in
@@ -125,6 +194,7 @@ class Version {
   // false, makes no more calls.
   //
   // REQUIRES: user portion of internal_key == user_key.
+<<<<<<< HEAD
   void ForEachOverlapping(Slice user_key, Slice internal_key,
                           void* arg,
                           bool (*func)(void*, int, FileMetaData*));
@@ -133,6 +203,15 @@ class Version {
   Version* next_;               // Next version in linked list
   Version* prev_;               // Previous version in linked list
   int refs_;                    // Number of live refs to this version
+=======
+  void ForEachOverlapping(Slice user_key, Slice internal_key, void* arg,
+                          bool (*func)(void*, int, FileMetaData*));
+
+  VersionSet* vset_;  // VersionSet to which this Version belongs
+  Version* next_;     // Next version in linked list
+  Version* prev_;     // Previous version in linked list
+  int refs_;          // Number of live refs to this version
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // List of files per level
   std::vector<FileMetaData*> files_[config::kNumLevels];
@@ -146,6 +225,7 @@ class Version {
   // are initialized by Finalize().
   double compaction_score_;
   int compaction_level_;
+<<<<<<< HEAD
 
   explicit Version(VersionSet* vset)
       : vset_(vset), next_(this), prev_(this), refs_(0),
@@ -160,14 +240,24 @@ class Version {
   // No copying allowed
   Version(const Version&);
   void operator=(const Version&);
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 class VersionSet {
  public:
+<<<<<<< HEAD
   VersionSet(const std::string& dbname,
              const Options* options,
              TableCache* table_cache,
              const InternalKeyComparator*);
+=======
+  VersionSet(const std::string& dbname, const Options* options,
+             TableCache* table_cache, const InternalKeyComparator*);
+  VersionSet(const VersionSet&) = delete;
+  VersionSet& operator=(const VersionSet&) = delete;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   ~VersionSet();
 
   // Apply *edit to the current version to form a new descriptor that
@@ -179,7 +269,11 @@ class VersionSet {
       EXCLUSIVE_LOCKS_REQUIRED(mu);
 
   // Recover the last saved descriptor from persistent storage.
+<<<<<<< HEAD
   Status Recover(bool *save_manifest);
+=======
+  Status Recover(bool* save_manifest);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Return the current version.
   Version* current() const { return current_; }
@@ -225,12 +319,17 @@ class VersionSet {
   uint64_t PrevLogNumber() const { return prev_log_number_; }
 
   // Pick level and inputs for a new compaction.
+<<<<<<< HEAD
   // Returns NULL if there is no compaction to be done.
+=======
+  // Returns nullptr if there is no compaction to be done.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   // Otherwise returns a pointer to a heap-allocated object that
   // describes the compaction.  Caller should delete the result.
   Compaction* PickCompaction();
 
   // Return a compaction object for compacting the range [begin,end] in
+<<<<<<< HEAD
   // the specified level.  Returns NULL if there is nothing in that
   // level that overlaps the specified range.  Caller should delete
   // the result.
@@ -238,6 +337,13 @@ class VersionSet {
       int level,
       const InternalKey* begin,
       const InternalKey* end);
+=======
+  // the specified level.  Returns nullptr if there is nothing in that
+  // level that overlaps the specified range.  Caller should delete
+  // the result.
+  Compaction* CompactRange(int level, const InternalKey* begin,
+                           const InternalKey* end);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // Return the maximum overlapping data (in bytes) at next level for any
   // file at a level >= 1.
@@ -250,7 +356,11 @@ class VersionSet {
   // Returns true iff some level needs a compaction.
   bool NeedsCompaction() const {
     Version* v = current_;
+<<<<<<< HEAD
     return (v->compaction_score_ >= 1) || (v->file_to_compact_ != NULL);
+=======
+    return (v->compaction_score_ >= 1) || (v->file_to_compact_ != nullptr);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   }
 
   // Add all files listed in any live version to *live.
@@ -278,14 +388,22 @@ class VersionSet {
 
   void Finalize(Version* v);
 
+<<<<<<< HEAD
   void GetRange(const std::vector<FileMetaData*>& inputs,
                 InternalKey* smallest,
+=======
+  void GetRange(const std::vector<FileMetaData*>& inputs, InternalKey* smallest,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 InternalKey* largest);
 
   void GetRange2(const std::vector<FileMetaData*>& inputs1,
                  const std::vector<FileMetaData*>& inputs2,
+<<<<<<< HEAD
                  InternalKey* smallest,
                  InternalKey* largest);
+=======
+                 InternalKey* smallest, InternalKey* largest);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   void SetupOtherInputs(Compaction* c);
 
@@ -314,10 +432,13 @@ class VersionSet {
   // Per-level key at which the next compaction at that level should start.
   // Either an empty string, or a valid InternalKey.
   std::string compact_pointer_[config::kNumLevels];
+<<<<<<< HEAD
 
   // No copying allowed
   VersionSet(const VersionSet&);
   void operator=(const VersionSet&);
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 // A Compaction encapsulates information about a compaction.
@@ -374,7 +495,11 @@ class Compaction {
   VersionEdit edit_;
 
   // Each compaction reads inputs from "level_" and "level_+1"
+<<<<<<< HEAD
   std::vector<FileMetaData*> inputs_[2];      // The two sets of inputs
+=======
+  std::vector<FileMetaData*> inputs_[2];  // The two sets of inputs
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   // State used to check for number of overlapping grandparent files
   // (parent == level_ + 1, grandparent == level_ + 2)

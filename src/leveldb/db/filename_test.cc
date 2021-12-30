@@ -11,7 +11,11 @@
 
 namespace leveldb {
 
+<<<<<<< HEAD
 class FileNameTest { };
+=======
+class FileNameTest {};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 TEST(FileNameTest, Parse) {
   Slice db;
@@ -24,6 +28,7 @@ TEST(FileNameTest, Parse) {
     uint64_t number;
     FileType type;
   } cases[] = {
+<<<<<<< HEAD
     { "100.log",            100,   kLogFile },
     { "0.log",              0,     kLogFile },
     { "0.sst",              0,     kTableFile },
@@ -35,6 +40,19 @@ TEST(FileNameTest, Parse) {
     { "LOG",                0,     kInfoLogFile },
     { "LOG.old",            0,     kInfoLogFile },
     { "18446744073709551615.log", 18446744073709551615ull, kLogFile },
+=======
+      {"100.log", 100, kLogFile},
+      {"0.log", 0, kLogFile},
+      {"0.sst", 0, kTableFile},
+      {"0.ldb", 0, kTableFile},
+      {"CURRENT", 0, kCurrentFile},
+      {"LOCK", 0, kDBLockFile},
+      {"MANIFEST-2", 2, kDescriptorFile},
+      {"MANIFEST-7", 7, kDescriptorFile},
+      {"LOG", 0, kInfoLogFile},
+      {"LOG.old", 0, kInfoLogFile},
+      {"18446744073709551615.log", 18446744073709551615ull, kLogFile},
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   };
   for (int i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
     std::string f = cases[i].fname;
@@ -44,6 +62,7 @@ TEST(FileNameTest, Parse) {
   }
 
   // Errors
+<<<<<<< HEAD
   static const char* errors[] = {
     "",
     "foo",
@@ -68,6 +87,30 @@ TEST(FileNameTest, Parse) {
     "100.",
     "100.lop"
   };
+=======
+  static const char* errors[] = {"",
+                                 "foo",
+                                 "foo-dx-100.log",
+                                 ".log",
+                                 "",
+                                 "manifest",
+                                 "CURREN",
+                                 "CURRENTX",
+                                 "MANIFES",
+                                 "MANIFEST",
+                                 "MANIFEST-",
+                                 "XMANIFEST-3",
+                                 "MANIFEST-3x",
+                                 "LOC",
+                                 "LOCKx",
+                                 "LO",
+                                 "LOGx",
+                                 "18446744073709551616.log",
+                                 "184467440737095516150.log",
+                                 "100",
+                                 "100.",
+                                 "100.lop"};
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   for (int i = 0; i < sizeof(errors) / sizeof(errors[0]); i++) {
     std::string f = errors[i];
     ASSERT_TRUE(!ParseFileName(f, &number, &type)) << f;
@@ -114,10 +157,29 @@ TEST(FileNameTest, Construction) {
   ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
   ASSERT_EQ(999, number);
   ASSERT_EQ(kTempFile, type);
+<<<<<<< HEAD
+=======
+
+  fname = InfoLogFileName("foo");
+  ASSERT_EQ("foo/", std::string(fname.data(), 4));
+  ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
+  ASSERT_EQ(0, number);
+  ASSERT_EQ(kInfoLogFile, type);
+
+  fname = OldInfoLogFileName("foo");
+  ASSERT_EQ("foo/", std::string(fname.data(), 4));
+  ASSERT_TRUE(ParseFileName(fname.c_str() + 4, &number, &type));
+  ASSERT_EQ(0, number);
+  ASSERT_EQ(kInfoLogFile, type);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 }  // namespace leveldb
 
+<<<<<<< HEAD
 int main(int argc, char** argv) {
   return leveldb::test::RunAllTests();
 }
+=======
+int main(int argc, char** argv) { return leveldb::test::RunAllTests(); }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

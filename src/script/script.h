@@ -1,5 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2016-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,16 +14,35 @@
 #include <assert.h>
 #include <climits>
 #include <limits>
+<<<<<<< HEAD
 #include "pubkey.h"
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include <stdexcept>
 #include <stdint.h>
 #include <string.h>
 #include <string>
 #include <vector>
 
+<<<<<<< HEAD
 typedef std::vector<unsigned char> valtype;
 
 static const unsigned int MAX_SCRIPT_ELEMENT_SIZE = 520; // bytes
+=======
+#include "crypto/common.h"
+#include "memusage.h"
+#include "prevector.h"
+#include "pubkey.h"
+
+typedef std::vector<unsigned char> valtype;
+
+static const unsigned int MAX_SCRIPT_ELEMENT_SIZE = 520; // bytes
+
+// Maximum number of public keys per multisig
+static const int MAX_PUBKEYS_PER_MULTISIG = 20;
+
+// Maximum script length in bytes
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 static const int MAX_SCRIPT_SIZE = 10000;
 
 // Threshold for nLockTime: below this value it is interpreted as block number,
@@ -167,11 +191,22 @@ enum opcodetype
     OP_NOP9 = 0xb8,
     OP_NOP10 = 0xb9,
 
+<<<<<<< HEAD
     // template matching params
     OP_SMALLINTEGER = 0xfa,
     OP_PUBKEYS = 0xfb,
     OP_PUBKEYHASH = 0xfd,
     OP_PUBKEY = 0xfe,
+=======
+    // zerocoin
+    OP_ZEROCOINMINT = 0xc1,
+    OP_ZEROCOINSPEND = 0xc2,
+    OP_ZEROCOINPUBLICSPEND = 0xc3,
+
+    // cold staking
+    OP_CHECKCOLDSTAKEVERIFY_LOF = 0xd1,     // last output free for masternode/budget payments
+    OP_CHECKCOLDSTAKEVERIFY = 0xd2,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     OP_INVALIDOPCODE = 0xff,
 };
@@ -301,7 +336,11 @@ public:
 
         std::vector<unsigned char> result;
         const bool neg = value < 0;
+<<<<<<< HEAD
         uint64_t absvalue = neg ? -value : value;
+=======
+        uint64_t absvalue = neg ? ~static_cast<uint64_t>(value) + 1 : static_cast<uint64_t>(value);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
         while(absvalue)
         {
@@ -348,8 +387,21 @@ private:
     int64_t m_value;
 };
 
+<<<<<<< HEAD
 /** Serialized script, used inside transaction inputs and outputs */
 class CScript : public std::vector<unsigned char>
+=======
+/**
+ * We use a prevector for the script to reduce the considerable memory overhead
+ * of vectors in cases where they normally contain a small number of small elements.
+ * Tests in October 2015 (bitcoin) showed use of this reduced dbcache memory usage by 23%
+ *  and made an initial sync 13% faster.
+ */
+typedef prevector<28, unsigned char> CScriptBase;
+
+/** Serialized script, used inside transaction inputs and outputs */
+class CScript : public CScriptBase
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
 protected:
     CScript& push_int64(int64_t n)
@@ -370,12 +422,24 @@ protected:
     }
 public:
     CScript() { }
+<<<<<<< HEAD
     CScript(const CScript& b) : std::vector<unsigned char>(b.begin(), b.end()) { }
     CScript(const_iterator pbegin, const_iterator pend) : std::vector<unsigned char>(pbegin, pend) { }
     CScript(const unsigned char* pbegin, const unsigned char* pend) : std::vector<unsigned char>(pbegin, pend) { }
 
     CScript& operator+=(const CScript& b)
     {
+=======
+    CScript(const_iterator pbegin, const_iterator pend) : CScriptBase(pbegin, pend) { }
+    CScript(std::vector<unsigned char>::const_iterator pbegin, std::vector<unsigned char>::const_iterator pend) : CScriptBase(pbegin, pend) { }
+    CScript(const unsigned char* pbegin, const unsigned char* pend) : CScriptBase(pbegin, pend) { }
+
+    SERIALIZE_METHODS(CScript, obj) { READWRITEAS(CScriptBase, obj); }
+
+    CScript& operator+=(const CScript& b)
+    {
+        reserve(size() + b.size());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         insert(end(), b.begin(), b.end());
         return *this;
     }
@@ -424,14 +488,26 @@ public:
         else if (b.size() <= 0xffff)
         {
             insert(end(), OP_PUSHDATA2);
+<<<<<<< HEAD
             unsigned short nSize = b.size();
             insert(end(), (unsigned char*)&nSize, (unsigned char*)&nSize + sizeof(nSize));
+=======
+            uint8_t data[2];
+            WriteLE16(data, b.size());
+            insert(end(), data, data + sizeof(data));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
         else
         {
             insert(end(), OP_PUSHDATA4);
+<<<<<<< HEAD
             unsigned int nSize = b.size();
             insert(end(), (unsigned char*)&nSize, (unsigned char*)&nSize + sizeof(nSize));
+=======
+            uint8_t data[4];
+            WriteLE32(data, b.size());
+            insert(end(), data, data + sizeof(data));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
         insert(end(), b.begin(), b.end());
         return *this;
@@ -510,15 +586,23 @@ public:
             {
                 if (end() - pc < 2)
                     return false;
+<<<<<<< HEAD
                 nSize = 0;
                 memcpy(&nSize, &pc[0], 2);
+=======
+                nSize = ReadLE16(&pc[0]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 pc += 2;
             }
             else if (opcode == OP_PUSHDATA4)
             {
                 if (end() - pc < 4)
                     return false;
+<<<<<<< HEAD
                 memcpy(&nSize, &pc[0], 4);
+=======
+                nSize = ReadLE32(&pc[0]);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 pc += 4;
             }
             if (end() - pc < 0 || (unsigned int)(end() - pc) < nSize)
@@ -528,7 +612,11 @@ public:
             pc += nSize;
         }
 
+<<<<<<< HEAD
         opcodeRet = (opcodetype)opcode;
+=======
+        opcodeRet = static_cast<opcodetype>(opcode);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         return true;
     }
 
@@ -555,7 +643,10 @@ public:
             return nFound;
         CScript result;
         iterator pc = begin(), pc2 = begin();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         opcodetype opcode;
         do
         {
@@ -573,7 +664,11 @@ public:
             result.insert(result.end(), pc2, end());
             *this = result;
         }
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         return nFound;
     }
     int Find(opcodetype op) const
@@ -601,8 +696,19 @@ public:
      */
     unsigned int GetSigOpCount(const CScript& scriptSig) const;
 
+<<<<<<< HEAD
     bool IsNormalPaymentScript() const;
     bool IsPayToScriptHash() const;
+=======
+    bool IsPayToPublicKeyHash() const;
+    bool IsPayToScriptHash() const;
+    bool IsPayToColdStaking() const;
+    bool IsPayToColdStakingLOF() const;
+    bool StartsWithOpcode(const opcodetype opcode) const;
+    bool IsZerocoinMint() const;
+    bool IsZerocoinSpend() const;
+    bool IsZerocoinPublicSpend() const;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     /** Called by IsStandardTx and P2SH/BIP62 VerifyScript (which makes it consensus-critical). */
     bool IsPushOnly(const_iterator pc) const;
@@ -615,6 +721,7 @@ public:
      */
     bool IsUnspendable() const
     {
+<<<<<<< HEAD
         return (size() > 0 && *begin() == OP_RETURN);
     }
 
@@ -626,4 +733,20 @@ public:
     }
 };
 
+=======
+        return (size() > 0 && *begin() == OP_RETURN) || (size() > MAX_SCRIPT_SIZE);
+    }
+
+    void clear()
+    {
+        // The default prevector::clear() does not release memory
+        CScriptBase::clear();
+        shrink_to_fit();
+    }
+
+    size_t DynamicMemoryUsage() const;
+};
+
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif // BITCOIN_SCRIPT_SCRIPT_H

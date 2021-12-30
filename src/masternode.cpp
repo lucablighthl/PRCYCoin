@@ -1,10 +1,15 @@
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "masternode.h"
+<<<<<<< HEAD
 #include "addrman.h"
 #include "masternodeman.h"
 #include "obfuscation.h"
@@ -59,12 +64,81 @@ bool GetBlockHash(uint256& hash, int nBlockHeight)
 }
 
 CMasternode::CMasternode()
+=======
+
+#include "addrman.h"
+#include "masternode-sync.h"
+#include "masternodeman.h"
+#include "netbase.h"
+#include "sync.h"
+#include "wallet/wallet.h"
+
+#define MASTERNODE_MIN_CONFIRMATIONS_REGTEST 1
+#define MASTERNODE_MIN_MNP_SECONDS_REGTEST 90
+#define MASTERNODE_MIN_MNB_SECONDS_REGTEST 25
+#define MASTERNODE_PING_SECONDS_REGTEST 25
+#define MASTERNODE_EXPIRATION_SECONDS_REGTEST 12 * 60
+#define MASTERNODE_REMOVAL_SECONDS_REGTEST 13 * 60
+
+#define MASTERNODE_MIN_CONFIRMATIONS 15
+#define MASTERNODE_MIN_MNP_SECONDS (10 * 60)
+#define MASTERNODE_MIN_MNB_SECONDS (5 * 60)
+#define MASTERNODE_PING_SECONDS (5 * 60)
+#define MASTERNODE_EXPIRATION_SECONDS (120 * 60)
+#define MASTERNODE_REMOVAL_SECONDS (130 * 60)
+#define MASTERNODE_CHECK_SECONDS 5
+
+// keep track of the scanning errors I've seen
+std::map<uint256, int> mapSeenMasternodeScanningErrors;
+
+
+int MasternodeMinPingSeconds()
+{
+    return Params().IsRegTestNet() ? MASTERNODE_MIN_MNP_SECONDS_REGTEST : MASTERNODE_MIN_MNP_SECONDS;
+}
+
+int MasternodeBroadcastSeconds()
+{
+    return Params().IsRegTestNet() ? MASTERNODE_MIN_MNB_SECONDS_REGTEST : MASTERNODE_MIN_MNB_SECONDS;
+}
+
+int MasternodeCollateralMinConf()
+{
+    return Params().IsRegTestNet() ? MASTERNODE_MIN_CONFIRMATIONS_REGTEST : MASTERNODE_MIN_CONFIRMATIONS;
+}
+
+int MasternodePingSeconds()
+{
+    return Params().IsRegTestNet() ? MASTERNODE_PING_SECONDS_REGTEST : MASTERNODE_PING_SECONDS;
+}
+
+int MasternodeExpirationSeconds()
+{
+    return Params().IsRegTestNet() ? MASTERNODE_EXPIRATION_SECONDS_REGTEST : MASTERNODE_EXPIRATION_SECONDS;
+}
+
+int MasternodeRemovalSeconds()
+{
+    return Params().IsRegTestNet() ? MASTERNODE_REMOVAL_SECONDS_REGTEST : MASTERNODE_REMOVAL_SECONDS;
+}
+
+// Used for sigTime < maxTimeWindow
+int64_t GetMaxTimeWindow()
+{
+    return GetAdjustedTime() + 60 * 2;
+}
+
+
+CMasternode::CMasternode() :
+        CSignedMessage()
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     LOCK(cs);
     vin = CTxIn();
     addr = CService();
     pubKeyCollateralAddress = CPubKey();
     pubKeyMasternode = CPubKey();
+<<<<<<< HEAD
     sig = std::vector<unsigned char>();
     activeState = MASTERNODE_ENABLED;
     sigTime = GetAdjustedTime();
@@ -84,12 +158,25 @@ CMasternode::CMasternode()
 }
 
 CMasternode::CMasternode(const CMasternode& other)
+=======
+    sigTime = 0;
+    lastPing = CMasternodePing();
+    protocolVersion = PROTOCOL_VERSION;
+    nScanningErrorCount = 0;
+    nLastScanningErrorBlockHeight = 0;
+    mnPayeeScript.clear();
+}
+
+CMasternode::CMasternode(const CMasternode& other) :
+        CSignedMessage(other)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     LOCK(cs);
     vin = other.vin;
     addr = other.addr;
     pubKeyCollateralAddress = other.pubKeyCollateralAddress;
     pubKeyMasternode = other.pubKeyMasternode;
+<<<<<<< HEAD
     sig = other.sig;
     activeState = other.activeState;
     sigTime = other.sigTime;
@@ -131,6 +218,53 @@ CMasternode::CMasternode(const CMasternodeBroadcast& mnb)
     lastTimeChecked = 0;
     nLastDsee = 0;  // temporary, do not save. Remove after migration to v12
     nLastDseep = 0; // temporary, do not save. Remove after migration to v12
+=======
+    sigTime = other.sigTime;
+    lastPing = other.lastPing;
+    protocolVersion = other.protocolVersion;
+    nScanningErrorCount = other.nScanningErrorCount;
+    nLastScanningErrorBlockHeight = other.nLastScanningErrorBlockHeight;
+    mnPayeeScript = other.mnPayeeScript;
+}
+
+CMasternode::CMasternode(const CDeterministicMNCPtr& dmn, int64_t registeredTime, const uint256& registeredHash) :
+        CSignedMessage()
+{
+    LOCK(cs);
+    vin = CTxIn(dmn->collateralOutpoint);
+    addr = dmn->pdmnState->addr;
+    pubKeyCollateralAddress = CPubKey();
+    pubKeyMasternode = CPubKey();
+    sigTime = registeredTime;
+    lastPing = CMasternodePing(vin, registeredHash, registeredTime);
+    protocolVersion = PROTOCOL_VERSION;
+    nScanningErrorCount = 0;
+    nLastScanningErrorBlockHeight = 0;
+    mnPayeeScript = dmn->pdmnState->scriptPayout;
+}
+
+uint256 CMasternode::GetSignatureHash() const
+{
+    int version = !addr.IsAddrV1Compatible() ? PROTOCOL_VERSION | ADDRV2_FORMAT : PROTOCOL_VERSION;
+    CHashWriter ss(SER_GETHASH, version);
+    ss << nMessVersion;
+    ss << addr;
+    ss << sigTime;
+    ss << pubKeyCollateralAddress;
+    ss << pubKeyMasternode;
+    ss << protocolVersion;
+    return ss.GetHash();
+}
+
+std::string CMasternode::GetStrMessage() const
+{
+    return (addr.ToString() +
+            std::to_string(sigTime) +
+            pubKeyCollateralAddress.GetID().ToString() +
+            pubKeyMasternode.GetID().ToString() +
+            std::to_string(protocolVersion)
+    );
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 //
@@ -139,6 +273,7 @@ CMasternode::CMasternode(const CMasternodeBroadcast& mnb)
 bool CMasternode::UpdateFromNewBroadcast(CMasternodeBroadcast& mnb)
 {
     if (mnb.sigTime > sigTime) {
+<<<<<<< HEAD
         pubKeyMasternode = mnb.pubKeyMasternode;
         pubKeyCollateralAddress = mnb.pubKeyCollateralAddress;
         sigTime = mnb.sigTime;
@@ -150,6 +285,20 @@ bool CMasternode::UpdateFromNewBroadcast(CMasternodeBroadcast& mnb)
         if (mnb.lastPing == CMasternodePing() || (mnb.lastPing != CMasternodePing() && mnb.lastPing.CheckAndUpdate(nDoS, false))) {
             lastPing = mnb.lastPing;
             mnodeman.mapSeenMasternodePing.insert(make_pair(lastPing.GetHash(), lastPing));
+=======
+        // TODO: lock cs. Need to be careful as mnb.lastPing.CheckAndUpdate locks cs_main internally.
+        nMessVersion = mnb.nMessVersion;
+        pubKeyMasternode = mnb.pubKeyMasternode;
+        pubKeyCollateralAddress = mnb.pubKeyCollateralAddress;
+        sigTime = mnb.sigTime;
+        vchSig = mnb.vchSig;
+        protocolVersion = mnb.protocolVersion;
+        addr = mnb.addr;
+        int nDoS = 0;
+        if (mnb.lastPing.IsNull() || (!mnb.lastPing.IsNull() && mnb.lastPing.CheckAndUpdate(nDoS, false))) {
+            lastPing = mnb.lastPing;
+            mnodeman.mapSeenMasternodePing.emplace(lastPing.GetHash(), lastPing);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
         return true;
     }
@@ -161,6 +310,7 @@ bool CMasternode::UpdateFromNewBroadcast(CMasternodeBroadcast& mnb)
 // the proof of work for that block. The further away they are the better, the furthest will win the election
 // and get paid this block
 //
+<<<<<<< HEAD
 uint256 CMasternode::CalculateScore(int mod, int64_t nBlockHeight)
 {
     if (chainActive.Tip() == NULL) return 0;
@@ -337,11 +487,61 @@ CMasternodeBroadcast::CMasternodeBroadcast()
 }
 
 CMasternodeBroadcast::CMasternodeBroadcast(CService newAddr, CTxIn newVin, CPubKey pubKeyCollateralAddressNew, CPubKey pubKeyMasternodeNew, int protocolVersionIn)
+=======
+arith_uint256 CMasternode::CalculateScore(const uint256& hash) const
+{
+    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+    ss << hash;
+    const arith_uint256& hash2 = UintToArith256(ss.GetHash());
+
+    CHashWriter ss2(SER_GETHASH, PROTOCOL_VERSION);
+    ss2 << hash;
+    const arith_uint256& aux = UintToArith256(vin.prevout.hash) + vin.prevout.n;
+    ss2 << aux;
+    const arith_uint256& hash3 = UintToArith256(ss2.GetHash());
+
+    return (hash3 > hash2 ? hash3 - hash2 : hash2 - hash3);
+}
+
+CMasternode::state CMasternode::GetActiveState() const
+{
+    LOCK(cs);
+    if (fCollateralSpent) {
+        return MASTERNODE_VIN_SPENT;
+    }
+    if (!IsPingedWithin(MasternodeRemovalSeconds())) {
+        return MASTERNODE_REMOVE;
+    }
+    if (!IsPingedWithin(MasternodeExpirationSeconds())) {
+        return MASTERNODE_EXPIRED;
+    }
+    if(lastPing.sigTime - sigTime < MasternodeMinPingSeconds()){
+        return MASTERNODE_PRE_ENABLED;
+    }
+    return MASTERNODE_ENABLED;
+}
+
+bool CMasternode::IsValidNetAddr() const
+{
+    // TODO: regtest is fine with any addresses for now,
+    // should probably be a bit smarter if one day we start to implement tests for this
+    return Params().IsRegTestNet() ||
+           (IsReachable(addr) && addr.IsRoutable());
+}
+
+CMasternodeBroadcast::CMasternodeBroadcast() :
+        CMasternode()
+{ }
+
+CMasternodeBroadcast::CMasternodeBroadcast(CService newAddr, CTxIn newVin, CPubKey pubKeyCollateralAddressNew, CPubKey pubKeyMasternodeNew, int protocolVersionIn, const CMasternodePing& _lastPing) :
+        CMasternode()
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     vin = newVin;
     addr = newAddr;
     pubKeyCollateralAddress = pubKeyCollateralAddressNew;
     pubKeyMasternode = pubKeyMasternodeNew;
+<<<<<<< HEAD
     sig = std::vector<unsigned char>();
     activeState = MASTERNODE_ENABLED;
     sigTime = GetAdjustedTime();
@@ -377,6 +577,25 @@ CMasternodeBroadcast::CMasternodeBroadcast(const CMasternode& mn)
 }
 
 bool CMasternodeBroadcast::Create(std::string strService, std::string strKeyMasternode, std::string strTxHash, std::string strOutputIndex, std::string& strErrorRet, CMasternodeBroadcast& mnbRet, bool fOffline)
+=======
+    protocolVersion = protocolVersionIn;
+    lastPing = _lastPing;
+    sigTime = lastPing.sigTime;
+}
+
+CMasternodeBroadcast::CMasternodeBroadcast(const CMasternode& mn) :
+        CMasternode(mn)
+{ }
+
+bool CMasternodeBroadcast::Create(const std::string& strService,
+                                  const std::string& strKeyMasternode,
+                                  const std::string& strTxHash,
+                                  const std::string& strOutputIndex,
+                                  std::string& strErrorRet,
+                                  CMasternodeBroadcast& mnbRet,
+                                  bool fOffline,
+                                  int chainHeight)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     CTxIn txin;
     CPubKey pubKeyCollateralAddressNew;
@@ -387,6 +606,7 @@ bool CMasternodeBroadcast::Create(std::string strService, std::string strKeyMast
     //need correct blocks to send ping
     if (!fOffline && !masternodeSync.IsBlockchainSynced()) {
         strErrorRet = "Sync in progress. Must wait until sync is complete to start Masternode";
+<<<<<<< HEAD
         LogPrint("masternode","CMasternodeBroadcast::Create -- %s\n", strErrorRet);
         return false;
     }
@@ -411,10 +631,53 @@ bool CMasternodeBroadcast::Create(std::string strService, std::string strKeyMast
 }
 
 bool CMasternodeBroadcast::Create(CTxIn txin, CService service, CKey keyCollateralAddressNew, CPubKey pubKeyCollateralAddressNew, CKey keyMasternodeNew, CPubKey pubKeyMasternodeNew, std::string& strErrorRet, CMasternodeBroadcast& mnbRet)
+=======
+        LogPrint(BCLog::MASTERNODE,"CMasternodeBroadcast::Create -- %s\n", strErrorRet);
+        return false;
+    }
+
+    if (!CMessageSigner::GetKeysFromSecret(strKeyMasternode, keyMasternodeNew, pubKeyMasternodeNew)) {
+        strErrorRet = strprintf("Invalid masternode key %s", strKeyMasternode);
+        LogPrint(BCLog::MASTERNODE,"CMasternodeBroadcast::Create -- %s\n", strErrorRet);
+        return false;
+    }
+
+    std::string strError;
+    // Use wallet-0 here. Legacy mnb creation can be removed after transition to DMN
+    if (vpwallets.empty() || !vpwallets[0]->GetMasternodeVinAndKeys(txin, pubKeyCollateralAddressNew, keyCollateralAddressNew, strTxHash, strOutputIndex, strError)) {
+        strErrorRet = strError; // GetMasternodeVinAndKeys logs this error. Only returned for GUI error notification.
+        LogPrint(BCLog::MASTERNODE,"CMasternodeBroadcast::Create -- %s\n", strprintf("Could not allocate txin %s:%s for masternode %s", strTxHash, strOutputIndex, strService));
+        return false;
+    }
+
+    int nPort = 0;
+    int nDefaultPort = Params().GetDefaultPort();
+    std::string strHost;
+    SplitHostPort(strService, nPort, strHost);
+    if (nPort == 0) nPort = nDefaultPort;
+    CService _service(LookupNumeric(strHost.c_str(), nPort));
+
+    // The service needs the correct default port to work properly
+    if (!CheckDefaultPort(_service, strErrorRet, "CMasternodeBroadcast::Create"))
+        return false;
+
+    return Create(txin, _service, keyCollateralAddressNew, pubKeyCollateralAddressNew, keyMasternodeNew, pubKeyMasternodeNew, strErrorRet, mnbRet);
+}
+
+bool CMasternodeBroadcast::Create(const CTxIn& txin,
+                                  const CService& service,
+                                  const CKey& keyCollateralAddressNew,
+                                  const CPubKey& pubKeyCollateralAddressNew,
+                                  const CKey& keyMasternodeNew,
+                                  const CPubKey& pubKeyMasternodeNew,
+                                  std::string& strErrorRet,
+                                  CMasternodeBroadcast& mnbRet)
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 {
     // wait for reindex and/or import to finish
     if (fImporting || fReindex) return false;
 
+<<<<<<< HEAD
     LogPrint("masternode", "CMasternodeBroadcast::Create -- pubKeyCollateralAddressNew = %s, pubKeyMasternodeNew.GetID() = %s\n",
         CBitcoinAddress(pubKeyCollateralAddressNew.GetID()).ToString(),
         pubKeyMasternodeNew.GetID().ToString());
@@ -423,23 +686,49 @@ bool CMasternodeBroadcast::Create(CTxIn txin, CService service, CKey keyCollater
     if (!mnp.Sign(keyMasternodeNew, pubKeyMasternodeNew)) {
         strErrorRet = strprintf("Failed to sign ping, masternode=%s", txin.prevout.hash.ToString());
         LogPrint("masternode","CMasternodeBroadcast::Create -- %s\n", strErrorRet);
+=======
+    LogPrint(BCLog::MASTERNODE, "CMasternodeBroadcast::Create -- pubKeyCollateralAddressNew = %s, pubKeyMasternodeNew.GetID() = %s\n",
+             EncodeDestination(pubKeyCollateralAddressNew.GetID()),
+        pubKeyMasternodeNew.GetID().ToString());
+
+    // Get block hash to ping (TODO: move outside of this function)
+    const uint256& nBlockHashToPing = mnodeman.GetBlockHashToPing();
+    CMasternodePing mnp(txin, nBlockHashToPing, GetAdjustedTime());
+    if (!mnp.Sign(keyMasternodeNew, pubKeyMasternodeNew.GetID())) {
+        strErrorRet = strprintf("Failed to sign ping, masternode=%s", txin.prevout.hash.ToString());
+        LogPrint(BCLog::MASTERNODE,"CMasternodeBroadcast::Create -- %s\n", strErrorRet);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         mnbRet = CMasternodeBroadcast();
         return false;
     }
 
+<<<<<<< HEAD
     mnbRet = CMasternodeBroadcast(service, txin, pubKeyCollateralAddressNew, pubKeyMasternodeNew, PROTOCOL_VERSION);
 
     if (!mnbRet.IsValidNetAddr()) {
         strErrorRet = strprintf("Invalid IP address %s, masternode=%s", mnbRet.addr.ToStringIP (), txin.prevout.hash.ToString());
         LogPrint("masternode","CMasternodeBroadcast::Create -- %s\n", strErrorRet);
+=======
+    mnbRet = CMasternodeBroadcast(service, txin, pubKeyCollateralAddressNew, pubKeyMasternodeNew, PROTOCOL_VERSION, mnp);
+
+    if (!mnbRet.IsValidNetAddr()) {
+        strErrorRet = strprintf("Invalid IP address %s, masternode=%s", mnbRet.addr.ToStringIP (), txin.prevout.hash.ToString());
+        LogPrint(BCLog::MASTERNODE,"CMasternodeBroadcast::Create -- %s\n", strErrorRet);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         mnbRet = CMasternodeBroadcast();
         return false;
     }
 
+<<<<<<< HEAD
     mnbRet.lastPing = mnp;
     if (!mnbRet.Sign(keyCollateralAddressNew)) {
         strErrorRet = strprintf("Failed to sign broadcast, masternode=%s", txin.prevout.hash.ToString());
         LogPrint("masternode","CMasternodeBroadcast::Create -- %s\n", strErrorRet);
+=======
+    if (!mnbRet.Sign(keyCollateralAddressNew, pubKeyCollateralAddressNew)) {
+        strErrorRet = strprintf("Failed to sign broadcast, masternode=%s", txin.prevout.hash.ToString());
+        LogPrint(BCLog::MASTERNODE,"CMasternodeBroadcast::Create -- %s\n", strErrorRet);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         mnbRet = CMasternodeBroadcast();
         return false;
     }
@@ -447,6 +736,7 @@ bool CMasternodeBroadcast::Create(CTxIn txin, CService service, CKey keyCollater
     return true;
 }
 
+<<<<<<< HEAD
 
 bool CMasternodeBroadcast::CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext)
 {
@@ -457,6 +747,49 @@ bool CMasternodeBroadcast::CheckDefaultPort(std::string strService, std::string&
         strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.",
                                 service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
         LogPrint("masternode", "%s - %s\n", strContext, strErrorRet);
+=======
+bool CMasternodeBroadcast::Sign(const CKey& key, const CPubKey& pubKey)
+{
+    std::string strError = "";
+    nMessVersion = MessageVersion::MESS_VER_HASH;
+    const std::string strMessage = GetSignatureHash().GetHex();
+
+    if (!CMessageSigner::SignMessage(strMessage, vchSig, key)) {
+        return error("%s : SignMessage() (nMessVersion=%d) failed", __func__, nMessVersion);
+    }
+
+    if (!CMessageSigner::VerifyMessage(pubKey, vchSig, strMessage, strError)) {
+        return error("%s : VerifyMessage() (nMessVersion=%d) failed, error: %s\n",
+                __func__, nMessVersion, strError);
+    }
+
+    return true;
+}
+
+bool CMasternodeBroadcast::CheckSignature() const
+{
+    std::string strError = "";
+    std::string strMessage = (
+                            nMessVersion == MessageVersion::MESS_VER_HASH ?
+                            GetSignatureHash().GetHex() :
+                            GetStrMessage()
+                            );
+
+    if(!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, vchSig, strMessage, strError))
+        return error("%s : VerifyMessage (nMessVersion=%d) failed: %s", __func__, nMessVersion, strError);
+
+    return true;
+}
+
+bool CMasternodeBroadcast::CheckDefaultPort(CService service, std::string& strErrorRet, const std::string& strContext)
+{
+    int nDefaultPort = Params().GetDefaultPort();
+
+    if (service.GetPort() != nDefaultPort && !Params().IsRegTestNet()) {
+        strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.",
+            service.GetPort(), service.ToString(), nDefaultPort, Params().NetworkIDString());
+        LogPrintf("%s - %s\n", strContext, strErrorRet);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         return false;
     }
 
@@ -466,12 +799,18 @@ bool CMasternodeBroadcast::CheckDefaultPort(std::string strService, std::string&
 bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
 {
     // make sure signature isn't in the future (past is OK)
+<<<<<<< HEAD
     if (sigTime > GetAdjustedTime() + 60 * 60) {
         LogPrint("masternode","mnb - Signature rejected, too far into the future %s\n", vin.prevout.hash.ToString());
+=======
+    if (sigTime > GetMaxTimeWindow()) {
+        LogPrint(BCLog::MASTERNODE,"mnb - Signature rejected, too far into the future %s\n", vin.prevout.hash.ToString());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         nDos = 1;
         return false;
     }
 
+<<<<<<< HEAD
     // incorrect ping or its sigTime
     if(lastPing == CMasternodePing() || !lastPing.CheckAndUpdate(nDos, false, true)) {
         LogPrint("masternode","mnb - Incorrect ping or its sigTime");
@@ -495,19 +834,46 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
     LogPrint("masternode", "\nCMasternodeBroadcast::CheckAndUpdate: pubKeyCollateralAddress=%s\n", pubkeyScript.ToString());
     if ((pubkeyScript.size() != 35) && (pubkeyScript.size() != 67)) {
         LogPrint("masternode","mnb - pubkey the wrong size\n");
+=======
+    // reject old signature version
+    if (nMessVersion != MessageVersion::MESS_VER_HASH) {
+        LogPrint(BCLog::MASTERNODE, "mnb - rejecting old message version for mn %s\n", vin.prevout.hash.ToString());
+        nDos = 30;
+        return false;
+    }
+
+    if (protocolVersion < ActiveProtocol()) {
+        LogPrint(BCLog::MASTERNODE,"mnb - ignoring outdated Masternode %s protocol version %d\n", vin.prevout.hash.ToString(), protocolVersion);
+        return false;
+    }
+
+    CScript pubkeyScript;
+    pubkeyScript = GetScriptForDestination(pubKeyCollateralAddress.GetID());
+
+    if (pubkeyScript.size() != 25) {
+        LogPrint(BCLog::MASTERNODE,"mnb - pubkey the wrong size\n");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         nDos = 100;
         return false;
     }
 
     CScript pubkeyScript2;
+<<<<<<< HEAD
     pubkeyScript2 = GetScriptForDestination(pubKeyMasternode);
     if ((pubkeyScript2.size() != 35) && (pubkeyScript2.size() != 67)) {
         LogPrint("masternode","mnb - pubkey2 the wrong size\n");
+=======
+    pubkeyScript2 = GetScriptForDestination(pubKeyMasternode.GetID());
+
+    if (pubkeyScript2.size() != 25) {
+        LogPrint(BCLog::MASTERNODE,"mnb - pubkey2 the wrong size\n");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         nDos = 100;
         return false;
     }
 
     if (!vin.scriptSig.empty()) {
+<<<<<<< HEAD
         LogPrint("masternode","mnb - Ignore Not Empty ScriptSig %s\n", vin.prevout.hash.ToString());
         return false;
     }
@@ -549,6 +915,53 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
         LogPrint("masternode","mnb - Got updated entry for %s\n", vin.prevout.hash.ToString());
         if (pmn->UpdateFromNewBroadcast((*this))) {
             pmn->Check();
+=======
+        LogPrint(BCLog::MASTERNODE,"mnb - Ignore Not Empty ScriptSig %s\n", vin.prevout.hash.ToString());
+        return false;
+    }
+
+    std::string strError = "";
+    if (!CheckSignature()) {
+        // For now (till v6.0), let's be "naive" and not fully ban nodes when the node is syncing
+        // This could be a bad parsed BIP155 address that got stored on db on an old software version.
+        nDos = masternodeSync.IsSynced() ? 100 : 5;
+        return error("%s : Got bad Masternode address signature", __func__);
+    }
+
+    if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
+        if (addr.GetPort() != 51472) return false;
+    } else if (addr.GetPort() == 51472)
+        return false;
+
+    // incorrect ping or its sigTime
+    if(lastPing.IsNull() || !lastPing.CheckAndUpdate(nDos, false, true)) {
+        return false;
+    }
+
+    //search existing Masternode list, this is where we update existing Masternodes with new mnb broadcasts
+    CMasternode* pmn = mnodeman.Find(vin.prevout);
+
+    // no such masternode, nothing to update
+    if (pmn == NULL) return true;
+
+    // this broadcast is older or equal than the one that we already have - it's bad and should never happen
+    // unless someone is doing something fishy
+    // (mapSeenMasternodeBroadcast in CMasternodeMan::ProcessMessage should filter legit duplicates)
+    if(pmn->sigTime >= sigTime) {
+        return error("%s : Bad sigTime %d for Masternode %20s %105s (existing broadcast is at %d)",
+                      __func__, sigTime, addr.ToString(), vin.ToString(), pmn->sigTime);
+    }
+
+    // masternode is not enabled yet/already, nothing to update
+    if (!pmn->IsEnabled()) return true;
+
+    // mn.pubkey = pubkey, IsVinAssociatedWithPubkey is validated once below,
+    //   after that they just need to match
+    if (pmn->pubKeyCollateralAddress == pubKeyCollateralAddress && !pmn->IsBroadcastedWithin(MasternodeBroadcastSeconds())) {
+        //take the newest entry
+        LogPrint(BCLog::MASTERNODE,"mnb - Got updated entry for %s\n", vin.prevout.hash.ToString());
+        if (pmn->UpdateFromNewBroadcast((*this))) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             if (pmn->IsEnabled()) Relay();
         }
         masternodeSync.AddedMasternodeList(GetHash());
@@ -557,6 +970,7 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
     return true;
 }
 
+<<<<<<< HEAD
 bool CMasternodeBroadcast::CheckInputsAndAdd(int& nDoS)
 {
     // we are a masternode with the same vin (i.e. already activated) and this mnb is ours (matches our Masternode privkey)
@@ -789,10 +1203,112 @@ bool CMasternodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool fChec
             std::string errorMessage = "";
             if (!obfuScationSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, errorMessage)) {
                 LogPrint("masternode","CMasternodePing::CheckAndUpdate - Got bad Masternode address signature %s\n", vin.prevout.hash.ToString());
+=======
+void CMasternodeBroadcast::Relay()
+{
+    CInv inv(MSG_MASTERNODE_ANNOUNCE, GetHash());
+    g_connman->RelayInv(inv);
+}
+
+uint256 CMasternodeBroadcast::GetHash() const
+{
+    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+    ss << sigTime;
+    ss << pubKeyCollateralAddress;
+    return ss.GetHash();
+}
+
+CMasternodePing::CMasternodePing() :
+        CSignedMessage(),
+        vin(),
+        blockHash(),
+        sigTime(0)
+{ }
+
+CMasternodePing::CMasternodePing(const CTxIn& newVin, const uint256& nBlockHash, uint64_t _sigTime) :
+        CSignedMessage(),
+        vin(newVin),
+        blockHash(nBlockHash),
+        sigTime(_sigTime)
+{ }
+
+uint256 CMasternodePing::GetHash() const
+{
+    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+    ss << vin;
+    if (nMessVersion == MessageVersion::MESS_VER_HASH) ss << blockHash;
+    ss << sigTime;
+    return ss.GetHash();
+}
+
+std::string CMasternodePing::GetStrMessage() const
+{
+    return vin.ToString() + blockHash.ToString() + std::to_string(sigTime);
+}
+
+bool CMasternodePing::CheckAndUpdate(int& nDos, bool fRequireAvailable, bool fCheckSigTimeOnly)
+{
+    if (sigTime > GetMaxTimeWindow()) {
+        LogPrint(BCLog::MNPING,"%s: Signature rejected, too far into the future %s\n", __func__, vin.prevout.hash.ToString());
+        nDos = 30;
+        return false;
+    }
+
+    if (sigTime <= GetAdjustedTime() - 60 * 60) {
+        LogPrint(BCLog::MNPING,"%s: Signature rejected, too far into the past %s - %d %d \n", __func__, vin.prevout.hash.ToString(), sigTime, GetAdjustedTime());
+        nDos = 30;
+        return false;
+    }
+
+    // reject old signature version
+    if (nMessVersion != MessageVersion::MESS_VER_HASH) {
+        LogPrint(BCLog::MNPING, "mnp - rejecting old message version for mn %s\n", vin.prevout.hash.ToString());
+        nDos = 30;
+        return false;
+    }
+
+    // Check if the ping block hash exists and it's within 24 blocks from the tip
+    if (!mnodeman.IsWithinDepth(blockHash, 2 * MNPING_DEPTH)) {
+        LogPrint(BCLog::MNPING,"%s: Masternode %s block hash %s is too old or has an invalid block hash\n",
+                                        __func__, vin.prevout.hash.ToString(), blockHash.ToString());
+        // don't ban peers relaying stale data before the active protocol enforcement
+        nDos = 33;
+        return false;
+    }
+
+    // see if we have this Masternode
+    CMasternode* pmn = mnodeman.Find(vin.prevout);
+    const bool isMasternodeFound = (pmn != nullptr);
+    const bool isSignatureValid = (isMasternodeFound && CheckSignature(pmn->pubKeyMasternode.GetID()));
+
+    if(fCheckSigTimeOnly) {
+        if (isMasternodeFound && !isSignatureValid) {
+            nDos = 33;
+            return false;
+        }
+        return true;
+    }
+
+    LogPrint(BCLog::MNPING, "%s: New Ping - %s - %s - %lli\n", __func__, GetHash().ToString(), blockHash.ToString(), sigTime);
+
+    if (isMasternodeFound && pmn->protocolVersion >= ActiveProtocol()) {
+
+        // Update ping only if the masternode is in available state (pre-enabled or enabled)
+        if (fRequireAvailable && !pmn->IsAvailableState()) {
+            nDos = 20;
+            return false;
+        }
+
+        // update only if there is no known ping for this masternode or
+        // last ping was more then MASTERNODE_MIN_MNP_SECONDS-60 ago comparing to this one
+        if (!pmn->IsPingedWithin(MasternodeMinPingSeconds() - 60, sigTime)) {
+            if (!isSignatureValid) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
                 nDos = 33;
                 return false;
             }
 
+<<<<<<< HEAD
             BlockMap::iterator mi = mapBlockIndex.find(blockHash);
             if (mi != mapBlockIndex.end() && (*mi).second) {
                 if ((*mi).second->nHeight < chainActive.Height() - 24) {
@@ -815,22 +1331,47 @@ bool CMasternodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool fChec
             //mnodeman.mapSeenMasternodeBroadcast.lastPing is probably outdated, so we'll update it
             CMasternodeBroadcast mnb(*pmn);
             uint256 hash = mnb.GetHash();
+=======
+            // ping have passed the basic checks, can be updated now
+            mnodeman.mapSeenMasternodePing.emplace(GetHash(), *this);
+
+            // SetLastPing locks masternode cs. Be careful with the lock ordering.
+            pmn->SetLastPing(*this);
+
+            //mnodeman.mapSeenMasternodeBroadcast.lastPing is probably outdated, so we'll update it
+            CMasternodeBroadcast mnb(*pmn);
+            const uint256& hash = mnb.GetHash();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
             if (mnodeman.mapSeenMasternodeBroadcast.count(hash)) {
                 mnodeman.mapSeenMasternodeBroadcast[hash].lastPing = *this;
             }
 
+<<<<<<< HEAD
             pmn->Check(true);
             if (!pmn->IsEnabled()) return false;
 
             LogPrint("masternode", "CMasternodePing::CheckAndUpdate - Masternode ping accepted, vin: %s\n", vin.prevout.hash.ToString());
+=======
+            if (!pmn->IsEnabled()) return false;
+
+            LogPrint(BCLog::MNPING, "%s: Masternode ping accepted, vin: %s\n", __func__, vin.prevout.hash.ToString());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
             Relay();
             return true;
         }
+<<<<<<< HEAD
         LogPrint("masternode", "CMasternodePing::CheckAndUpdate - Masternode ping arrived too early, vin: %s\n", vin.prevout.hash.ToString());
         return false;
     }
     LogPrint("masternode", "CMasternodePing::CheckAndUpdate - Couldn't find compatible Masternode entry, vin: %s\n", vin.prevout.hash.ToString());
+=======
+        LogPrint(BCLog::MNPING, "%s: Masternode ping arrived too early, vin: %s\n", __func__, vin.prevout.hash.ToString());
+        //nDos = 1; //disable, this is happening frequently and causing banned peers
+        return false;
+    }
+    LogPrint(BCLog::MNPING, "%s: Couldn't find compatible Masternode entry, vin: %s\n", __func__, vin.prevout.hash.ToString());
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     return false;
 }
@@ -838,5 +1379,17 @@ bool CMasternodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool fChec
 void CMasternodePing::Relay()
 {
     CInv inv(MSG_MASTERNODE_PING, GetHash());
+<<<<<<< HEAD
     RelayInv(inv);
+=======
+    g_connman->RelayInv(inv);
+}
+
+MasternodeRef MakeMasternodeRefForDMN(const CDeterministicMNCPtr& dmn)
+{
+    // create legacy masternode for DMN
+    int refHeight = std::max(dmn->pdmnState->nRegisteredHeight, dmn->pdmnState->nPoSeRevivedHeight);
+    const CBlockIndex* pindex = WITH_LOCK(cs_main, return mapBlockIndex.at(chainActive[refHeight]->GetBlockHash()); );
+    return std::make_shared<CMasternode>(CMasternode(dmn, pindex->GetBlockTime(), pindex->GetBlockHash()));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }

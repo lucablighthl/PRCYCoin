@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+.gitignore
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 *.sublime-project
 *.sublime-workspace
 todo.txt
@@ -6,12 +10,44 @@ reset-files.bash
 *.tar.gz
 
 *.exe
+<<<<<<< HEAD
 src/prcycoin
 src/prcycoind
 src/prcycoin-cli
 src/prcycoin-tx
 src/test/test_prcycoin
 src/qt/test/test_prcycoin-qt
+=======
+src/pivx
+src/pivxd
+src/pivx-cli
+src/pivx-tx
+src/bench/bench_pivx
+src/test/test_pivx
+src/test/test_pivx_fuzzy
+src/qt/test/test_pivx-qt
+src/test/fuzz/address_deserialize
+src/test/fuzz/addrman_deserialize
+src/test/fuzz/banentry_deserialize
+src/test/fuzz/block_deserialize
+src/test/fuzz/blockheader_deserialize
+src/test/fuzz/blocklocator_deserialize
+src/test/fuzz/blockmerkleroot
+src/test/fuzz/blockundo_deserialize
+src/test/fuzz/bloomfilter_deserialize
+src/test/fuzz/coins_deserialize
+src/test/fuzz/diskblockindex_deserialize
+src/test/fuzz/inv_deserialize
+src/test/fuzz/messageheader_deserialize
+src/test/fuzz/netaddr_deserialize
+src/test/fuzz/service_deserialize
+src/test/fuzz/transaction_deserialize
+src/test/fuzz/txoutcompressor_deserialize
+src/test/fuzz/txundo_deserialize
+src/test/fuzz/transaction
+src/test/fuzz/*deserialize
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 # autoreconf
 Makefile.in
@@ -37,6 +73,7 @@ confdefs.h
 conftest.cpp
 conftest.err
 libtool
+<<<<<<< HEAD
 src/config/prcycoin-config.h
 src/config/prcycoin-config.h.in
 src/config/stamp-h1
@@ -52,12 +89,21 @@ src/secp256k1-mw/build-aux/test-driver
 src/secp256k1-mw/gen_context
 src/secp256k1-mw/libsecp256k1.pc
 src/secp256k1-mw/src/libsecp256k1-config.h
+=======
+src/config/pivx-config.h
+src/config/pivx-config.h.in
+src/config/stamp-h1
+src/obj
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 share/setup.nsi
 share/qt/Info.plist
 contrib/devtools/split-debug.sh
 
+<<<<<<< HEAD
 src/qt/prcycoin-qt-multisig
 src/qt/test/test_prcycoin-qt-multisig
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 src/univalue/gen
 
 src/qt/*.moc
@@ -70,7 +116,10 @@ src/qt/test/moc*.cpp
 .dirstamp
 .libs
 .*.swp
+<<<<<<< HEAD
 .inspect.sh.swo
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 *.*~*
 *.bak
 *.rej
@@ -78,10 +127,15 @@ src/qt/test/moc*.cpp
 *.pyc
 *.o
 *.o-*
+<<<<<<< HEAD
 *.patch
 .prcycoin
 *.a
 !libchilkat*.a
+=======
+.pivx
+*.a
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 *.pb.cc
 *.pb.h
 
@@ -92,6 +146,13 @@ src/qt/test/moc*.cpp
 *.json.h
 *.raw.h
 
+<<<<<<< HEAD
+=======
+# Only ignore unexpected patches
+*.patch
+!depends/patches/**/*.patch
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #libtool object files
 *.lo
 *.la
@@ -99,12 +160,27 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
+<<<<<<< HEAD
 prcycoin-qt
 PRCYcoin-Qt.app
 
 # Unit-tests
 Makefile.test
 prcycoin-qt_test
+=======
+pivx-qt
+PIVX-Qt.app
+background.tiff*
+
+# Rust
+.cargo/.configured-for-*
+.cargo/config
+target/
+
+# Unit-tests
+Makefile.test
+pivx-qt_test
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 src/test/buildenv.py
 
 # Resources cpp
@@ -116,14 +192,21 @@ qrc_*.cpp
 # Mac specific
 .DS_Store
 build
+<<<<<<< HEAD
 osx_volname
 dist/
 *.background.tiff
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #lcov
 *.gcno
 /*.info
+<<<<<<< HEAD
 test_prcycoin.coverage/
+=======
+test_pivx.coverage/
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 total.coverage/
 coverage_percent.txt
 
@@ -131,19 +214,31 @@ coverage_percent.txt
 linux-coverage-build
 linux-build
 win32-build
+<<<<<<< HEAD
+=======
+test/config.ini
+test/cache/*
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 qa/pull-tester/run-bitcoind-for-test.sh
 qa/pull-tester/tests-config.sh
 qa/pull-tester/cache/*
 qa/pull-tester/test.*/*
+<<<<<<< HEAD
 
 !src/leveldb*/Makefile
 !depends/Makefile
 !depends/patches/**/*.patch
+=======
+cache/*
+
+!src/leveldb*/Makefile
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 .cproject
 .project
 /doc/doxygen/
 /nbproject/
+<<<<<<< HEAD
 
 .idea
 CMakeLists.txt
@@ -152,3 +247,17 @@ cmake-build-debug
 BackupWallet*
 prcycoin-qt.pro
 !contrib/prcycoin-qt.pro
+=======
+libbitcoinconsensus.pc
+.idea
+CMakeLists.txt
+cmake-build-debug
+
+moc_*
+*.tmp
+ui_*
+build*
+pivxd.*
+pivxd-new-gui.*
+/cov-int/
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

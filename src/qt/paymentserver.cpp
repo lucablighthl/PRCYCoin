@@ -1,12 +1,17 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "paymentserver.h"
 
+<<<<<<< HEAD
 #include "bitcoinunits.h"
 #include "guiutil.h"
 #include "optionsmodel.h"
@@ -20,11 +25,21 @@
 #include <cstdlib>
 
 #include <openssl/x509_vfy.h>
+=======
+#include "guiutil.h"
+#include "optionsmodel.h"
+
+#include "key_io.h"
+#include "chainparams.h"
+#include "guiinterface.h"
+#include "util/system.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <QApplication>
 #include <QByteArray>
 #include <QDataStream>
 #include <QDateTime>
+<<<<<<< HEAD
 #include <QDebug>
 #include <QFile>
 #include <QFileOpenEvent>
@@ -73,6 +88,17 @@ namespace // Anon namespace
 
     std::unique_ptr<X509_STORE, X509StoreDeleter> certStore;
 }
+=======
+#include <QFileOpenEvent>
+#include <QLocalServer>
+#include <QLocalSocket>
+#include <QStringList>
+#include <QUrlQuery>
+
+
+const int BITCOIN_IPC_CONNECT_TIMEOUT = 1000; // milliseconds
+const QString BITCOIN_IPC_PREFIX("pivx:");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 //
 // Create a name that is unique for:
@@ -81,7 +107,11 @@ namespace // Anon namespace
 //
 static QString ipcServerName()
 {
+<<<<<<< HEAD
     QString name("PRCYQt");
+=======
+    QString name("PIVXQt");
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     // Append a simple hash of the datadir
     // Note that GetDataDir(true) returns a different path
@@ -99,6 +129,7 @@ static QString ipcServerName()
 
 static QList<QString> savedPaymentRequests;
 
+<<<<<<< HEAD
 static void ReportInvalidCertificate(const QSslCertificate& cert)
 {
     qDebug() << QString("%1: Payment server found an invalid certificate: ").arg(__func__) << cert.serialNumber() << cert.subjectInfo(QSslCertificate::CommonName) << cert.subjectInfo(QSslCertificate::DistinguishedNameQualifier) << cert.subjectInfo(QSslCertificate::OrganizationalUnitName);
@@ -172,6 +203,8 @@ void PaymentServer::LoadRootCAs(X509_STORE* _store)
     //   "certificate stapling" with server-side caching is more efficient
 }
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 //
 // Sending to the server is done synchronously, at startup.
 // If the server isn't already running, startup continues,
@@ -179,7 +212,11 @@ void PaymentServer::LoadRootCAs(X509_STORE* _store)
 // when uiReady() is called.
 //
 // Warning: ipcSendCommandLine() is called early in init,
+<<<<<<< HEAD
 // so don't use "Q_EMIT message()", but "QMessageBox::"!
+=======
+// so don't use "emit message()", but "QMessageBox::"!
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 //
 void PaymentServer::ipcParseCommandLine(int argc, char* argv[])
 {
@@ -188,16 +225,25 @@ void PaymentServer::ipcParseCommandLine(int argc, char* argv[])
         if (arg.startsWith("-"))
             continue;
 
+<<<<<<< HEAD
         // If the prcycoin: URI contains a payment request, we are not able to detect the
         // network as that would require fetching and parsing the payment request.
         // That means clicking such an URI which contains a testnet payment request
         // will start a mainnet instance and throw a "wrong network" error.
         if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // prcycoin: URI
+=======
+        // If the pivx: URI contains a payment request, we are not able to detect the
+        // network as that would require fetching and parsing the payment request.
+        // That means clicking such an URI which contains a testnet payment request
+        // will start a mainnet instance and throw a "wrong network" error.
+        if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // pivx: URI
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         {
             savedPaymentRequests.append(arg);
 
             SendCoinsRecipient r;
             if (GUIUtil::parseBitcoinURI(arg, &r) && !r.address.isEmpty()) {
+<<<<<<< HEAD
                 CBitcoinAddress address(r.address.toStdString());
 
                 if (address.IsValid(Params(CBaseChainParams::MAIN))) {
@@ -222,6 +268,14 @@ void PaymentServer::ipcParseCommandLine(int argc, char* argv[])
             // Printing to debug.log is about the best we can do here, the
             // GUI hasn't started yet so we can't pop up a message box.
             qWarning() << "PaymentServer::ipcSendCommandLine : Payment request file does not exist: " << arg;
+=======
+                if (IsValidDestinationString(r.address.toStdString(), false, *CreateChainParams(CBaseChainParams::MAIN))) {
+                    SelectParams(CBaseChainParams::MAIN);
+                } else if (IsValidDestinationString(r.address.toStdString(), false, *CreateChainParams(CBaseChainParams::TESTNET))) {
+                    SelectParams(CBaseChainParams::TESTNET);
+                }
+            }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
     }
 }
@@ -235,7 +289,11 @@ void PaymentServer::ipcParseCommandLine(int argc, char* argv[])
 bool PaymentServer::ipcSendCommandLine()
 {
     bool fResult = false;
+<<<<<<< HEAD
    Q_FOREACH (const QString& r, savedPaymentRequests) {
+=======
+    for (const QString& r : savedPaymentRequests) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         QLocalSocket* socket = new QLocalSocket();
         socket->connectToServer(ipcServerName(), QIODevice::WriteOnly);
         if (!socket->waitForConnected(BITCOIN_IPC_CONNECT_TIMEOUT)) {
@@ -266,6 +324,7 @@ bool PaymentServer::ipcSendCommandLine()
 PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) : QObject(parent),
                                                                        saveURIs(true),
                                                                        uriServer(0),
+<<<<<<< HEAD
                                                                        netManager(0),
                                                                        optionsModel(0)
 {
@@ -275,6 +334,12 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) : QObject(p
 
     // Install global event filter to catch QFileOpenEvents
     // on Mac: sent when you click prcycoin: links
+=======
+                                                                       optionsModel(0)
+{
+    // Install global event filter to catch QFileOpenEvents
+    // on Mac: sent when you click pivx: links
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // other OSes: helpful when dealing with payment request files (in the future)
     if (parent)
         parent->installEventFilter(this);
@@ -288,18 +353,27 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) : QObject(p
         uriServer = new QLocalServer(this);
 
         if (!uriServer->listen(name)) {
+<<<<<<< HEAD
             // constructor is called early in init, so don't use "Q_EMIT message()" here
             QMessageBox::critical(0, tr("Payment request error"),
                 tr("Cannot start prcycoin: click-to-pay handler"));
         } else {
             connect(uriServer, SIGNAL(newConnection()), this, SLOT(handleURIConnection()));
             connect(this, SIGNAL(receivedPaymentACK(QString)), this, SLOT(handlePaymentACK(QString)));
+=======
+            // constructor is called early in init, so don't use "emit message()" here
+            QMessageBox::critical(0, tr("Payment request error"),
+                tr("Cannot start pivx: click-to-pay handler"));
+        } else {
+            connect(uriServer, &QLocalServer::newConnection, this, &PaymentServer::handleURIConnection);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         }
     }
 }
 
 PaymentServer::~PaymentServer()
 {
+<<<<<<< HEAD
     google::protobuf::ShutdownProtobufLibrary();
 }
 
@@ -310,6 +384,16 @@ PaymentServer::~PaymentServer()
 bool PaymentServer::eventFilter(QObject* object, QEvent* event)
 {
     // clicking on prcycoin: URIs creates FileOpen events on the Mac
+=======
+}
+
+//
+// OSX-specific way of handling pivx: URIs
+//
+bool PaymentServer::eventFilter(QObject* object, QEvent* event)
+{
+    // clicking on pivx: URIs creates FileOpen events on the Mac
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     if (event->type() == QEvent::FileOpen) {
         QFileOpenEvent* fileEvent = static_cast<QFileOpenEvent*>(event);
         if (!fileEvent->file().isEmpty())
@@ -323,6 +407,7 @@ bool PaymentServer::eventFilter(QObject* object, QEvent* event)
     return QObject::eventFilter(object, event);
 }
 
+<<<<<<< HEAD
 void PaymentServer::initNetManager()
 {
     if (!optionsModel)
@@ -355,6 +440,12 @@ void PaymentServer::uiReady()
 
     saveURIs = false;
    Q_FOREACH (const QString& s, savedPaymentRequests) {
+=======
+void PaymentServer::uiReady()
+{
+    saveURIs = false;
+    for (const QString& s : savedPaymentRequests) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         handleURIOrFile(s);
     }
     savedPaymentRequests.clear();
@@ -367,6 +458,7 @@ void PaymentServer::handleURIOrFile(const QString& s)
         return;
     }
 
+<<<<<<< HEAD
     if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // prcycoin: URI
     {
         QUrlQuery uri((QUrl(s)));
@@ -398,6 +490,27 @@ void PaymentServer::handleURIOrFile(const QString& s)
             Q_EMIT receivedPaymentRequest(recipient);
 
         return;
+=======
+    if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // pivx: URI
+    {
+        QUrlQuery uri((QUrl(s)));
+        // normal URI
+        {
+            SendCoinsRecipient recipient;
+            if (GUIUtil::parseBitcoinURI(s, &recipient)) {
+                if (!IsValidDestinationString(recipient.address.toStdString(), false, Params())) {
+                    Q_EMIT message(tr("URI handling"), tr("Invalid payment address %1").arg(recipient.address),
+                        CClientUIInterface::MSG_ERROR);
+                } else
+                    Q_EMIT receivedPaymentRequest(recipient);
+            } else
+                Q_EMIT message(tr("URI handling"),
+                    tr("URI cannot be parsed! This can be caused by an invalid PIVX address or malformed URI parameters."),
+                    CClientUIInterface::ICON_WARNING);
+
+            return;
+        }
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     }
 }
 
@@ -408,8 +521,12 @@ void PaymentServer::handleURIConnection()
     while (clientConnection->bytesAvailable() < (int)sizeof(quint32))
         clientConnection->waitForReadyRead();
 
+<<<<<<< HEAD
     connect(clientConnection, SIGNAL(disconnected()),
         clientConnection, SLOT(deleteLater()));
+=======
+    connect(clientConnection, &QLocalSocket::disconnected, clientConnection, &QLocalSocket::deleteLater);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     QDataStream in(clientConnection);
     in.setVersion(QDataStream::Qt_4_0);
@@ -422,6 +539,7 @@ void PaymentServer::handleURIConnection()
     handleURIOrFile(msg);
 }
 
+<<<<<<< HEAD
 //
 // Warning: readPaymentRequestFromFile() is used in ipcSendCommandLine()
 // so don't use "Q_EMIT message()", but "QMessageBox::"!
@@ -655,10 +773,13 @@ void PaymentServer::reportSslErrors(QNetworkReply* reply, const QList<QSslError>
     Q_EMIT message(tr("Network request error"), errString, CClientUIInterface::MSG_ERROR);
 }
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 void PaymentServer::setOptionsModel(OptionsModel* optionsModel)
 {
     this->optionsModel = optionsModel;
 }
+<<<<<<< HEAD
 
 void PaymentServer::handlePaymentACK(const QString& paymentACKMsg)
 {
@@ -670,3 +791,5 @@ X509_STORE* PaymentServer::getCertStore()
 {
     return certStore.get();
 }
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

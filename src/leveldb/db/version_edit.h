@@ -8,6 +8,10 @@
 #include <set>
 #include <utility>
 #include <vector>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "db/dbformat.h"
 
 namespace leveldb {
@@ -15,6 +19,7 @@ namespace leveldb {
 class VersionSet;
 
 struct FileMetaData {
+<<<<<<< HEAD
   int refs;
   int allowed_seeks;          // Seeks allowed until compaction
   uint64_t number;
@@ -23,12 +28,26 @@ struct FileMetaData {
   InternalKey largest;        // Largest internal key served by table
 
   FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0) { }
+=======
+  FileMetaData() : refs(0), allowed_seeks(1 << 30), file_size(0) {}
+
+  int refs;
+  int allowed_seeks;  // Seeks allowed until compaction
+  uint64_t number;
+  uint64_t file_size;    // File size in bytes
+  InternalKey smallest;  // Smallest internal key served by table
+  InternalKey largest;   // Largest internal key served by table
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 class VersionEdit {
  public:
   VersionEdit() { Clear(); }
+<<<<<<< HEAD
   ~VersionEdit() { }
+=======
+  ~VersionEdit() = default;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   void Clear();
 
@@ -59,10 +78,15 @@ class VersionEdit {
   // Add the specified file at the specified number.
   // REQUIRES: This version has not been saved (see VersionSet::SaveTo)
   // REQUIRES: "smallest" and "largest" are smallest and largest keys in file
+<<<<<<< HEAD
   void AddFile(int level, uint64_t file,
                uint64_t file_size,
                const InternalKey& smallest,
                const InternalKey& largest) {
+=======
+  void AddFile(int level, uint64_t file, uint64_t file_size,
+               const InternalKey& smallest, const InternalKey& largest) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     FileMetaData f;
     f.number = file;
     f.file_size = file_size;
@@ -84,7 +108,11 @@ class VersionEdit {
  private:
   friend class VersionSet;
 
+<<<<<<< HEAD
   typedef std::set< std::pair<int, uint64_t> > DeletedFileSet;
+=======
+  typedef std::set<std::pair<int, uint64_t>> DeletedFileSet;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
   std::string comparator_;
   uint64_t log_number_;
@@ -97,9 +125,15 @@ class VersionEdit {
   bool has_next_file_number_;
   bool has_last_sequence_;
 
+<<<<<<< HEAD
   std::vector< std::pair<int, InternalKey> > compact_pointers_;
   DeletedFileSet deleted_files_;
   std::vector< std::pair<int, FileMetaData> > new_files_;
+=======
+  std::vector<std::pair<int, InternalKey>> compact_pointers_;
+  DeletedFileSet deleted_files_;
+  std::vector<std::pair<int, FileMetaData>> new_files_;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 }  // namespace leveldb

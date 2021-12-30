@@ -28,9 +28,18 @@
  */
 
 #include "crypto/scrypt.h"
+<<<<<<< HEAD
 #include "uint256.h"
 #include "utilstrencodings.h"
 #include <openssl/sha.h>
+=======
+
+#include "crypto/hmac_sha256.h"
+#include "crypto/sha256.h"
+#include "uint256.h"
+#include "utilstrencodings.h"
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include <string>
 
 #include <string.h>
@@ -47,6 +56,7 @@ static inline void be32enc(void *pp, uint32_t x)
 }
 #endif
 
+<<<<<<< HEAD
 typedef struct HMAC_SHA256Context {
     SHA256_CTX ictx;
     SHA256_CTX octx;
@@ -114,6 +124,8 @@ HMAC_SHA256_Final(unsigned char digest[32], HMAC_SHA256_CTX *ctx)
     /* Clean the stack. */
     memset(ihash, 0, 32);
 }
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * PBKDF2_SHA256(passwd, passwdlen, salt, saltlen, c, buf, dkLen):
@@ -124,7 +136,10 @@ void
 PBKDF2_SHA256(const uint8_t *passwd, size_t passwdlen, const uint8_t *salt,
               size_t saltlen, uint64_t c, uint8_t *buf, size_t dkLen)
 {
+<<<<<<< HEAD
     HMAC_SHA256_CTX PShctx, hctx;
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     size_t i;
     uint8_t ivec[4];
     uint8_t U[32];
@@ -134,8 +149,12 @@ PBKDF2_SHA256(const uint8_t *passwd, size_t passwdlen, const uint8_t *salt,
     size_t clen;
 
     /* Compute HMAC state after processing P and S. */
+<<<<<<< HEAD
     HMAC_SHA256_Init(&PShctx, passwd, passwdlen);
     HMAC_SHA256_Update(&PShctx, salt, saltlen);
+=======
+    CHMAC_SHA256 PShctx = CHMAC_SHA256(passwd, passwdlen).Write(salt, saltlen);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     /* Iterate through the blocks. */
     for (i = 0; i * 32 < dkLen; i++) {
@@ -143,18 +162,26 @@ PBKDF2_SHA256(const uint8_t *passwd, size_t passwdlen, const uint8_t *salt,
         be32enc(ivec, (uint32_t)(i + 1));
 
         /* Compute U_1 = PRF(P, S || INT(i)). */
+<<<<<<< HEAD
         memcpy(&hctx, &PShctx, sizeof(HMAC_SHA256_CTX));
         HMAC_SHA256_Update(&hctx, ivec, 4);
         HMAC_SHA256_Final(U, &hctx);
+=======
+        CHMAC_SHA256(PShctx).Write(ivec, 4).Finalize(U);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
         /* T_i = U_1 ... */
         memcpy(T, U, 32);
 
         for (j = 2; j <= c; j++) {
             /* Compute U_j. */
+<<<<<<< HEAD
             HMAC_SHA256_Init(&hctx, passwd, passwdlen);
             HMAC_SHA256_Update(&hctx, U, 32);
             HMAC_SHA256_Final(U, &hctx);
+=======
+            CHMAC_SHA256(passwd, passwdlen).Write(U, 32).Finalize(U);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
             /* ... xor U_j ... */
             for (k = 0; k < 32; k++)
@@ -168,8 +195,11 @@ PBKDF2_SHA256(const uint8_t *passwd, size_t passwdlen, const uint8_t *salt,
         memcpy(&buf[i * 32], T, clen);
     }
 
+<<<<<<< HEAD
     /* Clean PShctx, since we never called _Final on it. */
     memset(&PShctx, 0, sizeof(HMAC_SHA256_CTX));
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 static inline uint32_t

@@ -1,19 +1,31 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< HEAD
 // Copyright (c) 2015-2018 The PIVX developers
 // Copyright (c) 2018-2020 The DAPS Project developers
+=======
+// Copyright (c) 2015-2019 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< HEAD
 #include "config/prcycoin-config.h"
+=======
+#include "config/pivx-config.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 
 #include "addressbookpage.h"
 #include "ui_addressbookpage.h"
 
 #include "addresstablemodel.h"
+<<<<<<< HEAD
 #include "bitcoingui.h"
+=======
+#include "qt/pivx/pivxgui.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "csvmodelwriter.h"
 #include "editaddressdialog.h"
 #include "guiutil.h"
@@ -37,6 +49,10 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
     ui->deleteAddress->setIcon(QIcon());
     ui->exportButton->setIcon(QIcon());
 #endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     switch (mode) {
     case ForSelection:
         switch (tab) {
@@ -47,7 +63,11 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
             setWindowTitle(tr("Choose the address to receive coins with"));
             break;
         }
+<<<<<<< HEAD
         connect(ui->tableView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(accept()));
+=======
+        connect(ui->tableView, &QTableView::doubleClicked, this, &QDialog::accept);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         ui->tableView->setFocus();
         ui->closeButton->setText(tr("C&hoose"));
@@ -66,11 +86,19 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
     }
     switch (tab) {
     case SendingTab:
+<<<<<<< HEAD
         ui->labelExplanation->setText(tr("These are your PRCY addresses for sending payments. Always check the amount and the receiving address before sending coins."));
         ui->deleteAddress->setVisible(true);
         break;
     case ReceivingTab:
         ui->labelExplanation->setText(tr("These are your PRCY addresses for receiving payments. It is recommended to use a new receiving address for each transaction."));
+=======
+        ui->labelExplanation->setText(tr("These are your PIVX addresses for sending payments. Always check the amount and the receiving address before sending coins."));
+        ui->deleteAddress->setVisible(true);
+        break;
+    case ReceivingTab:
+        ui->labelExplanation->setText(tr("These are your PIVX addresses for receiving payments. It is recommended to use a new receiving address for each transaction."));
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         ui->deleteAddress->setVisible(false);
         break;
     }
@@ -82,8 +110,12 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
     deleteAction = new QAction(ui->deleteAddress->text(), this);
 
     // Build context menu
+<<<<<<< HEAD
     contextMenu = new QMenu(this);
     contextMenu->setAttribute(Qt::WA_DeleteOnClose);
+=======
+    contextMenu = new QMenu();
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     contextMenu->addAction(copyAddressAction);
     contextMenu->addAction(copyLabelAction);
     contextMenu->addAction(editAction);
@@ -92,6 +124,7 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
     contextMenu->addSeparator();
 
     // Connect signals for context menu actions
+<<<<<<< HEAD
     connect(copyAddressAction, SIGNAL(triggered()), this, SLOT(on_copyAddress_clicked()));
     connect(copyLabelAction, SIGNAL(triggered()), this, SLOT(onCopyLabelAction()));
     connect(editAction, SIGNAL(triggered()), this, SLOT(onEditAction()));
@@ -100,6 +133,16 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
     connect(ui->tableView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextualMenu(QPoint)));
 
     connect(ui->closeButton, SIGNAL(clicked()), this, SLOT(accept()));
+=======
+    connect(copyAddressAction, &QAction::triggered, this, &AddressBookPage::on_copyAddress_clicked);
+    connect(copyLabelAction, &QAction::triggered, this, &AddressBookPage::onCopyLabelAction);
+    connect(editAction, &QAction::triggered, this, &AddressBookPage::onEditAction);
+    connect(deleteAction, &QAction::triggered, this, &AddressBookPage::on_deleteAddress_clicked);
+
+    connect(ui->tableView, &QWidget::customContextMenuRequested, this, &AddressBookPage::contextualMenu);
+
+    connect(ui->closeButton, &QPushButton::clicked, this, &QDialog::accept);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 AddressBookPage::~AddressBookPage()
@@ -131,16 +174,28 @@ void AddressBookPage::setModel(AddressTableModel* model)
         break;
     }
     ui->tableView->setModel(proxyModel);
+<<<<<<< HEAD
+=======
+    ui->tableView->sortByColumn(0, Qt::AscendingOrder);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     // Set column widths
     ui->tableView->horizontalHeader()->setSectionResizeMode(AddressTableModel::Label, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(AddressTableModel::Address, QHeaderView::ResizeToContents);
 
+<<<<<<< HEAD
     connect(ui->tableView->selectionModel(), SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
         this, SLOT(selectionChanged()));
 
     // Select row for newly created address
     connect(model, SIGNAL(rowsInserted(QModelIndex, int, int)), this, SLOT(selectNewAddress(QModelIndex, int, int)));
+=======
+    connect(ui->tableView->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, &AddressBookPage::selectionChanged);
+
+    // Select row for newly created address
+    connect(model, &AddressTableModel::rowsInserted, this, &AddressBookPage::selectNewAddress);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     selectionChanged();
 }
@@ -243,7 +298,11 @@ void AddressBookPage::done(int retval)
     // Figure out which address was selected, and return it
     QModelIndexList indexes = table->selectionModel()->selectedRows(AddressTableModel::Address);
 
+<<<<<<< HEAD
    Q_FOREACH (QModelIndex index, indexes) {
+=======
+    for (QModelIndex index : indexes) {
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
         QVariant address = table->model()->data(index);
         returnValue = address.toString();
     }

@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,10 +18,17 @@
 #ifndef BITCOIN_BASE58_H
 #define BITCOIN_BASE58_H
 
+<<<<<<< HEAD
 #include "chainparams.h"
 #include "key.h"
 #include "pubkey.h"
 #include "script/script.h"
+=======
+#include "attributes.h"
+#include "chainparams.h"
+#include "key.h"
+#include "pubkey.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "script/standard.h"
 
 #include <string>
@@ -39,6 +50,7 @@ std::string EncodeBase58(const std::vector<unsigned char>& vch);
  * return true if decoding is successful.
  * psz cannot be NULL.
  */
+<<<<<<< HEAD
 bool DecodeBase58(const char* psz, std::vector<unsigned char>& vchRet);
 
 /**
@@ -46,12 +58,19 @@ bool DecodeBase58(const char* psz, std::vector<unsigned char>& vchRet);
  * psz cannot be NULL.
  */
 std::string DecodeBase58(const char* psz);
+=======
+NODISCARD bool DecodeBase58(const char* psz, std::vector<unsigned char>& vchRet, int max_ret_len);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Decode a base58-encoded string (str) into a byte vector (vchRet).
  * return true if decoding is successful.
  */
+<<<<<<< HEAD
 bool DecodeBase58(const std::string& str, std::vector<unsigned char>& vchRet);
+=======
+NODISCARD bool DecodeBase58(const std::string& str, std::vector<unsigned char>& vchRet, int max_ret_len);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Encode a byte vector into a base58-encoded string, including checksum
@@ -62,12 +81,17 @@ std::string EncodeBase58Check(const std::vector<unsigned char>& vchIn);
  * Decode a base58-encoded string (psz) that includes a checksum into a byte
  * vector (vchRet), return true if decoding is successful
  */
+<<<<<<< HEAD
 inline bool DecodeBase58Check(const char* psz, std::vector<unsigned char>& vchRet);
+=======
+NODISCARD bool DecodeBase58Check(const char* psz, std::vector<unsigned char>& vchRet, int max_ret_len);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /**
  * Decode a base58-encoded string (str) that includes a checksum into a byte
  * vector (vchRet), return true if decoding is successful
  */
+<<<<<<< HEAD
 inline bool DecodeBase58Check(const std::string& str, std::vector<unsigned char>& vchRet);
 
 /**
@@ -169,5 +193,8 @@ public:
 
 typedef CBitcoinExtKeyBase<CExtKey, 74, CChainParams::EXT_SECRET_KEY> CBitcoinExtKey;
 typedef CBitcoinExtKeyBase<CExtPubKey, 74, CChainParams::EXT_PUBLIC_KEY> CBitcoinExtPubKey;
+=======
+NODISCARD bool DecodeBase58Check(const std::string& str, std::vector<unsigned char>& vchRet, int max_ret_len);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #endif // BITCOIN_BASE58_H

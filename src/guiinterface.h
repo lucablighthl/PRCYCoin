@@ -1,5 +1,10 @@
 // Copyright (c) 2010 Satoshi Nakamoto
+<<<<<<< HEAD
 // Copyright (c) 2012 The Bitcoin developers
+=======
+// Copyright (c) 2012-2014 The Bitcoin developers
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,6 +13,10 @@
 
 #include <stdint.h>
 #include <string>
+<<<<<<< HEAD
+=======
+#include "optional.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <boost/signals2/last_value.hpp>
 #include <boost/signals2/signal.hpp>
@@ -16,6 +25,10 @@ class CBasicKeyStore;
 class CWallet;
 class uint256;
 class CBlockIndex;
+<<<<<<< HEAD
+=======
+class CDeterministicMNList;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 /** General change type (added, updated, removed). */
 enum ChangeType {
@@ -73,7 +86,12 @@ public:
         /** Predefined combinations for certain default usage cases */
         MSG_INFORMATION = ICON_INFORMATION,
         MSG_WARNING = (ICON_WARNING | BTN_OK | MODAL),
+<<<<<<< HEAD
         MSG_ERROR = (ICON_ERROR | BTN_OK | MODAL)
+=======
+        MSG_ERROR = (ICON_ERROR | BTN_OK | MODAL),
+        MSG_INFORMATION_SNACK = 1U << 2
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     };
 
     /** Show message box. */
@@ -82,6 +100,7 @@ public:
     /** Progress message during initialization. */
     boost::signals2::signal<void(const std::string& message)> InitMessage;
 
+<<<<<<< HEAD
     /** Show recovery dialog. */
     boost::signals2::signal<void()> ShowRecoveryDialog;
 
@@ -91,6 +110,14 @@ public:
     /** Number of network connections changed. */
     boost::signals2::signal<void(int newNumConnections)> NotifyNumConnectionsChanged;
 
+=======
+    /** Number of network connections changed. */
+    boost::signals2::signal<void(int newNumConnections)> NotifyNumConnectionsChanged;
+
+    /** Network activity state changed. */
+    boost::signals2::signal<void (bool networkActive)> NotifyNetworkActiveChanged;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     /** New, updated or cancelled alert. */
     boost::signals2::signal<void()> NotifyAlertChanged;
 
@@ -103,15 +130,24 @@ public:
     /** New block has been accepted */
     boost::signals2::signal<void(bool fInitialDownload, const CBlockIndex* newTip)> NotifyBlockTip;
 
+<<<<<<< HEAD
     /** New block has been accepted and is over a certain size */
     boost::signals2::signal<void(int size, const uint256& hash)> NotifyBlockSize;
 
     /** Banlist did change. */
     boost::signals2::signal<void (void)> BannedListChanged;
+=======
+    /** Banlist did change. */
+    boost::signals2::signal<void (void)> BannedListChanged;
+
+    /** Deterministic Masternode list has changed */
+    boost::signals2::signal<void (const CDeterministicMNList&)> NotifyMasternodeListChanged;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 extern CClientUIInterface uiInterface;
 
+<<<<<<< HEAD
 /**
  * Translation function: Call Translate signal on UI interface, which returns a boost::optional result.
  * If no translation slot is registered, nothing is returned, and simply return the input.
@@ -122,4 +158,6 @@ inline std::string _(const char* psz)
     return rv ? (*rv) : psz;
 }
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif // BITCOIN_GUIINTERFACE_H

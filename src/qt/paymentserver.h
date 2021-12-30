@@ -6,7 +6,11 @@
 #define BITCOIN_QT_PAYMENTSERVER_H
 
 // This class handles payment requests from clicking on
+<<<<<<< HEAD
 // prcycoin: URIs
+=======
+// pivx: URIs
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 //
 // This is somewhat tricky, because we have to deal with
 // the situation where the user clicks on a link during
@@ -32,7 +36,10 @@
 // sends them to the server.
 //
 
+<<<<<<< HEAD
 #include "paymentrequestplus.h"
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "walletmodel.h"
 
 #include <QObject>
@@ -46,6 +53,7 @@ QT_BEGIN_NAMESPACE
 class QApplication;
 class QByteArray;
 class QLocalServer;
+<<<<<<< HEAD
 class QNetworkAccessManager;
 class QNetworkReply;
 class QSslError;
@@ -55,6 +63,11 @@ QT_END_NAMESPACE
 // BIP70 max payment request size in bytes (DoS protection)
 extern const qint64 BIP70_MAX_PAYMENTREQUEST_SIZE;
 
+=======
+class QUrl;
+QT_END_NAMESPACE
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 class PaymentServer : public QObject
 {
     Q_OBJECT
@@ -75,6 +88,7 @@ public:
     PaymentServer(QObject* parent, bool startLocalServer = true);
     ~PaymentServer();
 
+<<<<<<< HEAD
     // Load root certificate authorities. Pass NULL (default)
     // to read from the file specified in the -rootcertificates setting,
     // or, if that's not set, to use the system default root certificates.
@@ -97,6 +111,14 @@ Q_SIGNALS:
 
     // Fired when a valid PaymentACK is received
     void receivedPaymentACK(const QString& paymentACKMsg);
+=======
+    // OptionsModel is used for getting proxy settings and display unit
+    void setOptionsModel(OptionsModel* optionsModel);
+
+Q_SIGNALS:
+    // Fired when a valid payment request is received
+    void receivedPaymentRequest(const SendCoinsRecipient& recipient);
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
     // Fired when a message should be reported to the user
     void message(const QString& title, const QString& message, unsigned int style);
@@ -106,17 +128,23 @@ public Q_SLOTS:
     // to display payment requests to the user
     void uiReady();
 
+<<<<<<< HEAD
     // Submit Payment message to a merchant, get back PaymentACK:
     void fetchPaymentACK(CWallet* wallet, SendCoinsRecipient recipient, QByteArray transaction);
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     // Handle an incoming URI, URI with local file scheme or file
     void handleURIOrFile(const QString& s);
 
 private Q_SLOTS:
     void handleURIConnection();
+<<<<<<< HEAD
     void netRequestFinished(QNetworkReply*);
     void reportSslErrors(QNetworkReply*, const QList<QSslError>&);
     void handlePaymentACK(const QString& paymentACKMsg);
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 protected:
     // Constructor registers this on the parent QApplication to
@@ -124,6 +152,7 @@ protected:
     bool eventFilter(QObject* object, QEvent* event);
 
 private:
+<<<<<<< HEAD
     bool processPaymentRequest(PaymentRequestPlus& request, SendCoinsRecipient& recipient);
     void fetchRequest(const QUrl& url);
 
@@ -133,6 +162,10 @@ private:
     bool saveURIs; // true during startup
     QLocalServer* uriServer;
     QNetworkAccessManager* netManager;  // Used to fetch payment requests
+=======
+    bool saveURIs; // true during startup
+    QLocalServer* uriServer;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
     OptionsModel* optionsModel;
 };
 

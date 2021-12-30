@@ -6,7 +6,11 @@
 #define BITCOIN_ZMQ_ZMQCONFIG_H
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< HEAD
 #include "config/prcycoin-config.h"
+=======
+#include "config/pivx-config.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #endif
 
 #include <stdarg.h>

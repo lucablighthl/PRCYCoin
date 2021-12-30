@@ -307,7 +307,11 @@ version numbers found in the keys to decide how to interpret them.
 ## Performance
 
 Performance can be tuned by changing the default values of the types defined in
+<<<<<<< HEAD
 `include/leveldb/options.h`.
+=======
+`include/options.h`.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 ### Block size
 
@@ -338,19 +342,32 @@ options.compression = leveldb::kNoCompression;
 ### Cache
 
 The contents of the database are stored in a set of files in the filesystem and
+<<<<<<< HEAD
 each file stores a sequence of compressed blocks. If options.cache is non-NULL,
 it is used to cache frequently used uncompressed block contents.
+=======
+each file stores a sequence of compressed blocks. If options.block_cache is
+non-NULL, it is used to cache frequently used uncompressed block contents.
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 ```c++
 #include "leveldb/cache.h"
 
 leveldb::Options options;
+<<<<<<< HEAD
 options.cache = leveldb::NewLRUCache(100 * 1048576);  // 100MB cache
+=======
+options.block_cache = leveldb::NewLRUCache(100 * 1048576);  // 100MB cache
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 leveldb::DB* db;
 leveldb::DB::Open(options, name, &db);
 ... use the db ...
 delete db
+<<<<<<< HEAD
 delete options.cache;
+=======
+delete options.block_cache;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 ```
 
 Note that the cache holds uncompressed data, and therefore it should be sized

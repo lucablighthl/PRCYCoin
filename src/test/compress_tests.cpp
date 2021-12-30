@@ -3,7 +3,12 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "compressor.h"
+<<<<<<< HEAD
 #include "util.h"
+=======
+#include "util/system.h"
+#include "test/test_pivx.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 #include <stdint.h>
 
@@ -21,6 +26,7 @@
 // amounts 50 .. 21000000
 #define NUM_MULTIPLES_50BTC 420000
 
+<<<<<<< HEAD
 #ifdef DISABLE_PASSED_TEST
 BOOST_AUTO_TEST_SUITE(compress_tests)
 
@@ -35,6 +41,21 @@ bool static TestDecode(uint64_t in) {
 bool static TestPair(uint64_t dec, uint64_t enc) {
     return CTxOutCompressor::CompressAmount(dec) == enc &&
            CTxOutCompressor::DecompressAmount(enc) == dec;
+=======
+BOOST_FIXTURE_TEST_SUITE(compress_tests, BasicTestingSetup)
+
+bool static TestEncode(uint64_t in) {
+    return in == DecompressAmount(CompressAmount(in));
+}
+
+bool static TestDecode(uint64_t in) {
+    return in == CompressAmount(DecompressAmount(in));
+}
+
+bool static TestPair(uint64_t dec, uint64_t enc) {
+    return CompressAmount(dec) == enc &&
+           DecompressAmount(enc) == dec;
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 }
 
 BOOST_AUTO_TEST_CASE(compress_amounts)
@@ -63,4 +84,7 @@ BOOST_AUTO_TEST_CASE(compress_amounts)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+<<<<<<< HEAD
 #endif
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

@@ -6,15 +6,25 @@
 #define STORAGE_LEVELDB_DB_MEMTABLE_H_
 
 #include <string>
+<<<<<<< HEAD
 #include "leveldb/db.h"
 #include "db/dbformat.h"
 #include "db/skiplist.h"
+=======
+
+#include "db/dbformat.h"
+#include "db/skiplist.h"
+#include "leveldb/db.h"
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 #include "util/arena.h"
 
 namespace leveldb {
 
 class InternalKeyComparator;
+<<<<<<< HEAD
 class Mutex;
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 class MemTableIterator;
 
 class MemTable {
@@ -23,6 +33,12 @@ class MemTable {
   // is zero and the caller must call Ref() at least once.
   explicit MemTable(const InternalKeyComparator& comparator);
 
+<<<<<<< HEAD
+=======
+  MemTable(const MemTable&) = delete;
+  MemTable& operator=(const MemTable&) = delete;
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   // Increase reference count.
   void Ref() { ++refs_; }
 
@@ -50,8 +66,12 @@ class MemTable {
   // Add an entry into memtable that maps key to value at the
   // specified sequence number and with the specified type.
   // Typically value will be empty if type==kTypeDeletion.
+<<<<<<< HEAD
   void Add(SequenceNumber seq, ValueType type,
            const Slice& key,
+=======
+  void Add(SequenceNumber seq, ValueType type, const Slice& key,
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
            const Slice& value);
 
   // If memtable contains a value for key, store it in *value and return true.
@@ -61,6 +81,7 @@ class MemTable {
   bool Get(const LookupKey& key, std::string* value, Status* s);
 
  private:
+<<<<<<< HEAD
   ~MemTable();  // Private since only Unref() should be used to delete it
 
   struct KeyComparator {
@@ -73,14 +94,32 @@ class MemTable {
 
   typedef SkipList<const char*, KeyComparator> Table;
 
+=======
+  friend class MemTableIterator;
+  friend class MemTableBackwardIterator;
+
+  struct KeyComparator {
+    const InternalKeyComparator comparator;
+    explicit KeyComparator(const InternalKeyComparator& c) : comparator(c) {}
+    int operator()(const char* a, const char* b) const;
+  };
+
+  typedef SkipList<const char*, KeyComparator> Table;
+
+  ~MemTable();  // Private since only Unref() should be used to delete it
+
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
   KeyComparator comparator_;
   int refs_;
   Arena arena_;
   Table table_;
+<<<<<<< HEAD
 
   // No copying allowed
   MemTable(const MemTable&);
   void operator=(const MemTable&);
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 };
 
 }  // namespace leveldb

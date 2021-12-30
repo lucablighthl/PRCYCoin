@@ -1,7 +1,12 @@
 # Run the "uscan" command to check for upstream updates and more.
 version=3
 # use qa.debian.org redirector; see man uscan
+<<<<<<< HEAD
 opts=uversionmangle=s/(\d)(alpha|beta|rc)/$1~$2/;s/\-src//,dversionmangle=s/~dfsg\d*// \
  http://sf.net/bitcoin/bitcoin-(\d.*)-linux\.tar\.gz debian
 opts=uversionmangle=s/(\d)(alpha|beta|rc)/$1~$2/,dversionmangle=s/~dfsg\d*// \
  http://githubredir.debian.net/github/bitcoin/bitcoin v(.*).tar.gz
+=======
+opts=uversionmangle=s/(\d)(alpha|beta|rc)/$1~$2/,dversionmangle=s/~dfsg\d*// \
+ http://githubredir.debian.net/github/pivx-project/pivx v(.*).tar.gz
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e

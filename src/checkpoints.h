@@ -1,4 +1,8 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
+=======
+// Copyright (c) 2017-2020 The PIVX developers
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,6 +21,7 @@ class CBlockIndex;
  */
 namespace Checkpoints
 {
+<<<<<<< HEAD
 typedef std::map<int, uint256> MapCheckpoints;
 
 struct CCheckpointData {
@@ -25,6 +30,8 @@ struct CCheckpointData {
     int64_t nTransactionsLastCheckpoint;
     double fTransactionsPerDay;
 };
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 
 //! Returns true if block passes checkpoint checks
 bool CheckBlock(int nHeight, const uint256& hash, bool fMatchesCheckpoint = false);
@@ -32,9 +39,12 @@ bool CheckBlock(int nHeight, const uint256& hash, bool fMatchesCheckpoint = fals
 //! Return conservative estimate of total number of blocks, 0 if unknown
 int GetTotalBlocksEstimate();
 
+<<<<<<< HEAD
 //! Returns last CBlockIndex* in mapBlockIndex that is a checkpoint
 CBlockIndex* GetLastCheckpoint();
 
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 double GuessVerificationProgress(const CBlockIndex* pindex, bool fSigchecks = true);
 
 extern bool fEnabled;

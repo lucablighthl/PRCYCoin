@@ -1,7 +1,20 @@
 bench_inv
+<<<<<<< HEAD
 bench_sign
 bench_verify
 tests
+=======
+bench_ecdh
+bench_ecmult
+bench_sign
+bench_verify
+bench_schnorr_verify
+bench_recover
+bench_internal
+tests
+exhaustive_tests
+gen_context
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 *.exe
 *.so
 *.a
@@ -20,16 +33,36 @@ config.status
 libtool
 .deps/
 .dirstamp
+<<<<<<< HEAD
 build-aux/
+=======
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 *.lo
 *.o
 *~
 src/libsecp256k1-config.h
 src/libsecp256k1-config.h.in
+<<<<<<< HEAD
 m4/libtool.m4
 m4/ltoptions.m4
 m4/ltsugar.m4
 m4/ltversion.m4
 m4/lt~obsolete.m4
+=======
+src/ecmult_static_context.h
+build-aux/config.guess
+build-aux/config.sub
+build-aux/depcomp
+build-aux/install-sh
+build-aux/ltmain.sh
+build-aux/m4/libtool.m4
+build-aux/m4/lt~obsolete.m4
+build-aux/m4/ltoptions.m4
+build-aux/m4/ltsugar.m4
+build-aux/m4/ltversion.m4
+build-aux/missing
+build-aux/compile
+build-aux/test-driver
+>>>>>>> 6ed103f204953728b4b97b6363e44051b274582e
 src/stamp-h1
 libsecp256k1.pc
